@@ -1,10 +1,12 @@
-import React, { useState, useRef, useEffect } from "react"
-// import { Link } from "gatsby"
-
-import Layout from "../components/layout"
-// import Image from "../components/image"
-import SEO from "../components/seo"
+import React, { useState, useRef, useEffect } from "react";
+import { useStaticQuery, graphql } from "gatsby"
 import Konva from 'konva';
+
+import Header from "../components/header";
+import SEO from "../components/seo";
+
+import "../components/layout.css";
+
 
 function download(filename, dataurl) {
   var element = document.createElement('a');
@@ -23,7 +25,6 @@ const IndexPage = () => {
 
   const format = useRef('png');
   
-  // let box, complexText, layer;
   const konvaElements = useRef({});
 
   const [dimensions, setDimensions] = useState({
@@ -57,10 +58,6 @@ const IndexPage = () => {
     layer.clear();
     layer.draw();
   }
-
-  // function updateDimensions(dimensions) {
-
-  // }
 
   useEffect(() => {
     console.log('getting called!', dimensions);
@@ -120,8 +117,7 @@ const IndexPage = () => {
     stage.on('click', ({ evt }) => {
       setDimensions({width: evt.layerX, height: evt.layerY});
       updateSize(evt.layerX, evt.layerY);
-      console.log(format.current);
-      download('img.' + format.current, getDataUrl());
+      // download('img.' + format.current, getDataUrl());
     });
 
     let dragging = false;
@@ -133,17 +129,41 @@ const IndexPage = () => {
     });
     stage.on('mousemove', ({ evt }) => {
       if (!dragging) return;
-      setDimensions({width: evt.layerX, height: evt.layerY});
+      setDimensions({ width: evt.layerX, height: evt.layerY });
       updateSize(evt.layerX, evt.layerY);
     });
   }, []);
 
+  const data = useStaticQuery(graphql`
+    query SiteTitleQuery {
+      site {
+        siteMetadata {
+          title
+        }
+      }
+    }
+  `);
 
   return (
-    <Layout onSettingsChange={handleSettingsChange} dimensions={dimensions}>
-      <SEO title="Home" />
-      <div id="container"></div>
-    </Layout>
+    <>
+      <Header 
+        siteTitle={data.site.siteMetadata.title} 
+        onSettingsChange={handleSettingsChange}
+        dimensions={dimensions}/>
+      <div
+        style={{
+          margin: `0 auto`,
+          maxWidth: 960,
+          padding: `0 1.0875rem 1.45rem`,
+          paddingBottom: 0
+        }}
+      >
+        <main>
+          <SEO title="Home" />
+          <div id="container"></div>
+        </main>
+      </div>
+    </>
   );
 };
 
