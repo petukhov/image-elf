@@ -702,3 +702,25 @@ pre tt:after {
 canvas {
   background: #a594941c !important;
 }
+
+.save-btn {
+  margin-left: 30px;
+  background: #af2e2ed1;
+  color: #efe5e5;
+  border: none;
+  height: 32px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #af2e2e;
+}
+
+.save-btn:active {
+  background: #f13a3a;
+  outline: none;
+}
+
+.save-btn:focus {
+  outline: none;
+}

@@ -106,7 +106,7 @@ const IndexPage = () => {
 
     stage.on('click', ({ evt }) => {
       setSettings(settings => ({ ...settings, width: evt.layerX, height: evt.layerY }));
-      downloadWrapper.current();
+      // downloadWrapper.current();
     });
 
     let dragging = false;
@@ -138,6 +138,7 @@ const IndexPage = () => {
         siteTitle={data.site.siteMetadata.title} 
         settings={settings}
         onSettingsChange={setSettings}
+        onSave={() => downloadWrapper.current()}
       />
       <div
         style={{

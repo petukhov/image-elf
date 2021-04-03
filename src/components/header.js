@@ -1,7 +1,7 @@
 import PropTypes from "prop-types"
 import React from "react"
 
-const Header = ({ siteTitle, settings, onSettingsChange}) => {
+const Header = ({ siteTitle, settings, onSettingsChange, onSave}) => {
   
   function handleClickPNG(e) {
     e.preventDefault();
@@ -44,6 +44,7 @@ const Header = ({ siteTitle, settings, onSettingsChange}) => {
         <input type="number" name="num" min="1" max="9999" onChange={handleWidthChange} value={settings.width}></input>
         <div className="navbar-text">Height:</div>
         <input type="number" name="num" min="1" max="9999" onChange={handleHeightChange} value={settings.height}></input>
+        <button className="save-btn" onClick={onSave}>Save!</button>
       </div>
     </header>
   );
