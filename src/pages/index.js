@@ -21,18 +21,20 @@ function download(filename, dataurl) {
   document.body.removeChild(element);
 }
 
+const initialState = {
+  width: 200,
+  height: 150,
+  format: 'png'
+};
+
 const IndexPage = () => {
   
   const konvaElements = useRef({});
   const downloadWrapper = useRef();
 
-  const [settings, setSettings] = useState({
-    width: 100,
-    height: 100,
-    format: 'png'
-  });
+  const [settings, setSettings] = useState(initialState);
 
-  const updateSize = (width, height) => {
+  const renderRect = (width, height) => {
     const { box, complexText, layer} = konvaElements.current;
     if (!box) return;
     box.size({
@@ -59,7 +61,8 @@ const IndexPage = () => {
   };
 
   useEffect(() => {
-    updateSize(settings.width, settings.height);
+    // console.warn('USE EFFECT', settings);
+    renderRect(settings.width, settings.height);
     downloadWrapper.current = () => download('img.' + settings.format, getDataUrl());
   }, [settings]);
   
@@ -80,8 +83,6 @@ const IndexPage = () => {
     const box = new Konva.Rect({
       x: 0,
       y: 0,
-      width: 100,
-      height: 50,
       fill: '#00a2FF',
     });
     layer.add(box);
@@ -90,7 +91,6 @@ const IndexPage = () => {
     const complexText = new Konva.Text({
       x: 0,
       y: 0,
-      text: '',
       fontSize: 20,
       fontFamily: 'Arial',
       fontStyle: 'bold',
@@ -102,7 +102,7 @@ const IndexPage = () => {
     layer.add(complexText);
     konvaElements.current.complexText = complexText;
 
-    layer.draw();
+    renderRect(initialState.width, initialState.height);
 
     stage.on('click', ({ evt }) => {
       setSettings(settings => ({ ...settings, width: evt.layerX, height: evt.layerY }));

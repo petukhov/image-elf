@@ -2,8 +2,7 @@ import PropTypes from "prop-types"
 import React from "react"
 
 const Header = ({ siteTitle, settings, onSettingsChange}) => {
-
-
+  
   function handleClickPNG(e) {
     e.preventDefault();
     onSettingsChange({...settings, format: 'png'});
