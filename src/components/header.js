@@ -1,48 +1,27 @@
-// import { Link } from "gatsby"
 import PropTypes from "prop-types"
-import React, { useState } from "react"
+import React from "react"
 
-const Header = ({ siteTitle, onSettingsChange, dimensions}) => {
+const Header = ({ siteTitle, settings, onSettingsChange}) => {
 
-  const [settings, setSettings] = useState({
-    format: 'png',
-    width: dimensions.width,
-    height: dimensions.height
-  });
-  
-  if (dimensions.width !== settings.width || dimensions.height !== settings.height) {
-    const newSettings = {...settings, ...dimensions};
-    setSettings(newSettings);
-  }
 
   function handleClickPNG(e) {
     e.preventDefault();
-    console.log('The link was clicked.');
-    const newSettings = {...settings, format: 'png'};
-    setSettings(newSettings);
-    onSettingsChange(newSettings);
+    onSettingsChange({...settings, format: 'png'});
   }
 
   function handleClickJPEG(e) {
     e.preventDefault();
-    console.log('The link was clicked.');
-    const newSettings = {...settings, format: 'jpeg'};
-    setSettings(newSettings);
-    onSettingsChange(newSettings);
+    onSettingsChange({...settings, format: 'jpeg'});
   }
 
   function handleWidthChange(e) {
     const width = +e.target.value;
-    const newSettings = {...settings, width};
-    setSettings(newSettings);
-    onSettingsChange(newSettings);
+    onSettingsChange({...settings, width});
   }
 
   function handleHeightChange(e) {
     const height = +e.target.value;
-    const newSettings = {...settings, height};
-    setSettings(newSettings);
-    onSettingsChange(newSettings);
+    onSettingsChange({...settings, height});
   }
 
   return (
@@ -54,7 +33,7 @@ const Header = ({ siteTitle, onSettingsChange, dimensions}) => {
         <a href="/">{siteTitle}</a>
         <div className="dropdown">
           <button className="dropbtn">
-            Format: {settings.format}
+              Format: {settings.format}
               <i className="fa fa-caret-down"></i>
           </button>
           <div className="dropdown-content">
@@ -63,9 +42,9 @@ const Header = ({ siteTitle, onSettingsChange, dimensions}) => {
           </div>
         </div>
         <div className="navbar-text">Width:</div>
-        <input type="number" name="num" min="1" max="9999" onChange={handleWidthChange} value={dimensions.width}></input>
+        <input type="number" name="num" min="1" max="9999" onChange={handleWidthChange} value={settings.width}></input>
         <div className="navbar-text">Height:</div>
-        <input type="number" name="num" min="1" max="9999" onChange={handleHeightChange} value={dimensions.height}></input>
+        <input type="number" name="num" min="1" max="9999" onChange={handleHeightChange} value={settings.height}></input>
       </div>
     </header>
   );

@@ -7,13 +7,13 @@ import SEO from "../components/seo";
 
 import "../components/layout.css";
 
-
 function download(filename, dataurl) {
-  var element = document.createElement('a');
+  const element = document.createElement('a');
+
   element.setAttribute('href', dataurl);
   element.setAttribute('download', filename);
-
   element.style.display = 'none';
+
   document.body.appendChild(element);
 
   element.click();
@@ -22,30 +22,19 @@ function download(filename, dataurl) {
 }
 
 const IndexPage = () => {
-
-  const format = useRef('png');
   
   const konvaElements = useRef({});
+  const downloadWrapper = useRef();
 
-  const [dimensions, setDimensions] = useState({
+  const [settings, setSettings] = useState({
     width: 100,
-    height: 100
+    height: 100,
+    format: 'png'
   });
 
-  function handleSettingsChange(newSettings) {
-    console.log('handleSettingsChange in index', newSettings);
-    format.current = newSettings.format;
-    setDimensions({
-      width: newSettings.width, 
-      height: newSettings.height
-    });
-  }
-
-  function updateSize(width, height) {
+  const updateSize = (width, height) => {
     const { box, complexText, layer} = konvaElements.current;
-    console.log('updating size 1', box, complexText);
     if (!box) return;
-    console.log('updating size 2');
     box.size({
       width,
       height
@@ -59,27 +48,30 @@ const IndexPage = () => {
     layer.draw();
   }
 
+  const getDataUrl = () => {
+    const { stage, box } = konvaElements.current;
+    return stage.toDataURL({
+      x: box.x(),
+      y: box.y(),
+      width: box.width(),
+      height: box.height()
+    });
+  };
+
   useEffect(() => {
-    console.log('getting called!', dimensions);
-    updateSize(dimensions.width, dimensions.height);
-  }, [dimensions]);
+    updateSize(settings.width, settings.height);
+    downloadWrapper.current = () => download('img.' + settings.format, getDataUrl());
+  }, [settings]);
   
   useEffect(() => {
-
-    const getDataUrl = () => {
-      return stage.toDataURL({
-        x: box.x(),
-        y: box.y(),
-        width: box.width(),
-        height: box.height()
-      });
-    };
+    console.warn('SETTING UP KONVA');
 
     const stage = new Konva.Stage({
       container: 'container',
       width: window.innerWidth - 400,
       height: window.innerHeight - 100
     });
+    konvaElements.current.stage = stage;
 
     const layer = new Konva.Layer();
     konvaElements.current.layer = layer;
@@ -110,14 +102,11 @@ const IndexPage = () => {
     layer.add(complexText);
     konvaElements.current.complexText = complexText;
 
-
     layer.draw();
 
-    console.log('rerun!!!!');
     stage.on('click', ({ evt }) => {
-      setDimensions({width: evt.layerX, height: evt.layerY});
-      updateSize(evt.layerX, evt.layerY);
-      // download('img.' + format.current, getDataUrl());
+      setSettings(settings => ({ ...settings, width: evt.layerX, height: evt.layerY }));
+      downloadWrapper.current();
     });
 
     let dragging = false;
@@ -129,8 +118,7 @@ const IndexPage = () => {
     });
     stage.on('mousemove', ({ evt }) => {
       if (!dragging) return;
-      setDimensions({ width: evt.layerX, height: evt.layerY });
-      updateSize(evt.layerX, evt.layerY);
+      setSettings(settings => ({ ...settings, width: evt.layerX, height: evt.layerY }));
     });
   }, []);
 
@@ -148,8 +136,9 @@ const IndexPage = () => {
     <>
       <Header 
         siteTitle={data.site.siteMetadata.title} 
-        onSettingsChange={handleSettingsChange}
-        dimensions={dimensions}/>
+        settings={settings}
+        onSettingsChange={setSettings}
+      />
       <div
         style={{
           margin: `0 auto`,
