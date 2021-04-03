@@ -121,7 +121,7 @@ const IndexPage = () => {
       setDimensions({width: evt.layerX, height: evt.layerY});
       updateSize(evt.layerX, evt.layerY);
       console.log(format.current);
-      // download('img.' + format.current, getDataUrl());
+      download('img.' + format.current, getDataUrl());
     });
 
     let dragging = false;
