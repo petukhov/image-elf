@@ -104,9 +104,26 @@ const IndexPage = () => {
     layer.add(complexText);
     konvaElements.current.complexText = complexText;
 
+    var horizontalLine = new Konva.Line({
+      points: [OFFSET, OFFSET, window.innerWidth, OFFSET],
+      stroke: 'rgb(0, 161, 0)',
+      strokeWidth: 1,
+      dash: [4, 6],
+    });
+    layer.add(horizontalLine);
+
+    var verticalLine = new Konva.Line({
+      points: [OFFSET, OFFSET, OFFSET, window.innerHeight],
+      stroke: 'rgb(0, 161, 0)',
+      strokeWidth: 1,
+      dash: [4, 6],
+    });
+    layer.add(verticalLine);
+
     renderRect(initialState.width, initialState.height);
 
     stage.on('click', ({ evt }) => {
+      if (!dragging) return;
       setSettings(settings => ({ ...settings, width: evt.layerX - OFFSET, height: evt.layerY - OFFSET }));
       // downloadWrapper.current();
     });
