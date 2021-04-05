@@ -25,8 +25,7 @@ const Header = ({ siteTitle, settings, onSettingsChange, onSave}) => {
 
   return (
     <header style={{
-      background: '#333',
-      marginBottom: `1.45rem`,
+      background: '#333'
     }}>
       <div className="navbar">
         <a href="/">{siteTitle}</a>

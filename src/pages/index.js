@@ -27,6 +27,8 @@ const initialState = {
   format: 'png'
 };
 
+const OFFSET = 30;
+
 const IndexPage = () => {
   
   const konvaElements = useRef({});
@@ -71,8 +73,8 @@ const IndexPage = () => {
 
     const stage = new Konva.Stage({
       container: 'container',
-      width: window.innerWidth - 400,
-      height: window.innerHeight - 100
+      width: window.innerWidth,
+      height: window.innerHeight - 54
     });
     konvaElements.current.stage = stage;
 
@@ -81,16 +83,16 @@ const IndexPage = () => {
     stage.add(layer);
 
     const box = new Konva.Rect({
-      x: 0,
-      y: 0,
+      x: OFFSET,
+      y: OFFSET,
       fill: '#00a2FF',
     });
     layer.add(box);
     konvaElements.current.box = box;
 
     const complexText = new Konva.Text({
-      x: 0,
-      y: 0,
+      x: OFFSET,
+      y: OFFSET,
       fontSize: 20,
       fontFamily: 'Arial',
       fontStyle: 'bold',
@@ -105,7 +107,7 @@ const IndexPage = () => {
     renderRect(initialState.width, initialState.height);
 
     stage.on('click', ({ evt }) => {
-      setSettings(settings => ({ ...settings, width: evt.layerX, height: evt.layerY }));
+      setSettings(settings => ({ ...settings, width: evt.layerX - OFFSET, height: evt.layerY - OFFSET }));
       // downloadWrapper.current();
     });
 
@@ -118,7 +120,7 @@ const IndexPage = () => {
     });
     stage.on('mousemove', ({ evt }) => {
       if (!dragging) return;
-      setSettings(settings => ({ ...settings, width: evt.layerX, height: evt.layerY }));
+      setSettings(settings => ({ ...settings, width: evt.layerX - OFFSET, height: evt.layerY - OFFSET }));
     });
   }, []);
 
@@ -145,7 +147,9 @@ const IndexPage = () => {
           margin: `0 auto`,
           maxWidth: 960,
           padding: `0 1.0875rem 1.45rem`,
-          paddingBottom: 0
+          paddingBottom: 0,
+          marginLeft: 0,
+          paddingLeft: 0
         }}
       >
         <main>
