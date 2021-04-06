@@ -1,11 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useStaticQuery, graphql } from "gatsby"
+import React, { useState, useRef, useEffect } from 'react';
+import { useStaticQuery, graphql } from 'gatsby';
 import Konva from 'konva';
 
-import Header from "../components/header";
-import SEO from "../components/seo";
+import KonvaWrapper from '../services/konva-wrapper';
+import Header from '../components/header';
+import SEO from '../components/seo';
 
-import "../components/layout.css";
+import '../components/layout.css';
 
 function download(filename, dataurl) {
   const element = document.createElement('a');
@@ -29,12 +30,43 @@ const initialState = {
 
 const OFFSET = 30;
 
+let imgWidth = 1200;
+let imgHeight = 1200;
+let speed = 0;
+
+let boostingSize = false;
+
 const IndexPage = () => {
   
   const konvaElements = useRef({});
   const downloadWrapper = useRef();
 
   const [settings, setSettings] = useState(initialState);
+
+  const onNextFrame = () => {
+    const { complexText, layer } = konvaElements.current;
+    imgWidth += speed;
+    complexText.text(`${Math.round(imgWidth)}`);
+    layer.clear();
+    layer.draw();
+    // console.log('onNextFrame', imgWidth);
+    if (boostingSize) {
+      window.requestAnimationFrame(onNextFrame);
+    }
+  }
+  
+  const boostSize = (turnOn) => {
+    if (!boostingSize && turnOn) {
+      console.warn('start boosting');
+      window.requestAnimationFrame(onNextFrame);
+      boostingSize = true;
+    } else if (boostingSize && !turnOn) {
+      console.warn('stop boosting');
+      window.cancelAnimationFrame(onNextFrame);
+      boostingSize = false;
+    }
+  }
+  
 
   const renderRect = (width, height) => {
     const { box, complexText, layer} = konvaElements.current;
@@ -47,19 +79,25 @@ const IndexPage = () => {
       width,
       height
     });
-    complexText.text(`${width}x${height}`);
+    complexText.text(`${imgWidth}x${height}`);
     layer.clear();
     layer.draw();
   }
 
   const getDataUrl = () => {
     const { stage, box } = konvaElements.current;
-    return stage.toDataURL({
+    const origWidth = box.width();
+    const origHeight = box.height();
+    console.log('imgWidth', imgWidth);
+    renderRect(Math.round(imgWidth), origHeight);
+    const res = stage.toDataURL({
       x: box.x(),
       y: box.y(),
       width: box.width(),
       height: box.height()
     });
+    renderRect(origWidth, origHeight);
+    return res;
   };
 
   useEffect(() => {
@@ -70,6 +108,8 @@ const IndexPage = () => {
   
   useEffect(() => {
     console.warn('SETTING UP KONVA');
+
+    const konvaStuff = new KonvaWrapper();
 
     const stage = new Konva.Stage({
       container: 'container',
@@ -123,8 +163,13 @@ const IndexPage = () => {
     renderRect(initialState.width, initialState.height);
 
     stage.on('click', ({ evt }) => {
-      if (!dragging) return;
-      setSettings(settings => ({ ...settings, width: evt.layerX - OFFSET, height: evt.layerY - OFFSET }));
+      // qif (!dragging) return;
+      boostSize(false);
+      let newWidth = evt.layerX - OFFSET;
+      if (newWidth > 1200) {
+        newWidth = 1200;
+      }
+      setSettings(settings => ({ ...settings, width: newWidth, height: evt.layerY - OFFSET }));
       // downloadWrapper.current();
     });
 
@@ -134,10 +179,20 @@ const IndexPage = () => {
     });
     stage.on('mouseup mouseleave', () => {
       dragging = false;
+      boostSize(false);
     });
     stage.on('mousemove', ({ evt }) => {
       if (!dragging) return;
-      setSettings(settings => ({ ...settings, width: evt.layerX - OFFSET, height: evt.layerY - OFFSET }));
+      let newWidth = evt.layerX - OFFSET;
+      if (newWidth > 1200) {
+        speed = Math.pow((evt.layerX - OFFSET - 1200), 2) / 150;
+        boostSize(true);
+        newWidth = 1200;
+      } else {
+        boostSize(false);
+        imgWidth = newWidth;
+      }
+      setSettings(settings => ({ ...settings, width: newWidth, height: evt.layerY - OFFSET }));
     });
   }, []);
 
