@@ -14,8 +14,12 @@ const Header = ({ siteTitle, settings, onSettingsChange, onSave}) => {
   }
 
   function handleWidthChange(e) {
-    const width = +e.target.value;
-    onSettingsChange({...settings, width});
+    let width = +e.target.value;
+    const imgWidth = width;
+    if (width >= 1200) {
+      width = 1200;
+    }
+    onSettingsChange({ ...settings, width, imgWidth });
   }
 
   function handleHeightChange(e) {
@@ -40,7 +44,7 @@ const Header = ({ siteTitle, settings, onSettingsChange, onSave}) => {
           </div>
         </div>
         <div className="navbar-text">Width:</div>
-        <input type="number" name="num" min="1" max="9999" onChange={handleWidthChange} value={settings.width}></input>
+        <input type="number" name="num" min="1" max="9999" onChange={handleWidthChange} value={settings.imgWidth}></input>
         <div className="navbar-text">Height:</div>
         <input type="number" name="num" min="1" max="9999" onChange={handleHeightChange} value={settings.height}></input>
         <button className="save-btn" onClick={onSave}>Save!</button>

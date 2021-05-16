@@ -12,7 +12,6 @@ export default class KonvaWrapper {
   private boostingSize: boolean = false;
   private animationReqId: number;
   private speed: number = 0;
-  private imgWidth: number = 1200;
 
   create(setSettingsCb: Function) {
     this.setSettingsCb = setSettingsCb;
@@ -67,13 +66,19 @@ export default class KonvaWrapper {
 
   private addListeners() {
     this.stage.on('click', ({ evt }: any) => {
-      // qif (!dragging) return;
       this.boostSize(false);
       let newWidth = evt.layerX - OFFSET;
       if (newWidth > 1200) {
         newWidth = 1200;
       }
-      this.setSettingsCb(settings => ({ ...settings, width: newWidth, height: evt.layerY - OFFSET }));
+      // this.imgWidth = newWidth;
+      console.warn('click');
+      // this.setSettingsCb(settings => ({ 
+      //   ...settings, 
+      //   width: newWidth, 
+      //   height: evt.layerY - OFFSET, 
+      //   imgWidth: newWidth,
+      // }));
       // downloadWrapper.current();
     });
 
@@ -90,18 +95,26 @@ export default class KonvaWrapper {
       let newWidth = evt.layerX - OFFSET;
       if (newWidth > 1200) {
         this.speed = Math.pow((evt.layerX - OFFSET - 1200), 2) / 150;
-        this.boostSize(true);
+        // this.boostSize(true);
         newWidth = 1200;
-      } else {
-        this.boostSize(false);
-        this.imgWidth = newWidth;
       }
-      this.setSettingsCb(settings => ({ ...settings, width: newWidth, height: evt.layerY - OFFSET }));
+
+      this.setSettingsCb(settings => {
+        return { 
+          ...settings, 
+          width: newWidth, 
+          height: evt.layerY - OFFSET,
+          imgWidth: newWidth >= 1200 ? settings.imgWidth : newWidth
+        };
+      });
+
+      this.boostSize(newWidth >= 1200);
+      
     });
   }
 
-  renderRect(width, height) {
-    const { box, complexText, layer, imgWidth} = this;
+  renderRect(width, height, imgWidth) {
+    const { box, complexText, layer } = this;
     if (!box) return;
     box.size({
       width,
@@ -117,31 +130,29 @@ export default class KonvaWrapper {
   }
 
   updateText() {
-    const { complexText, layer } = this;
-    this.imgWidth += this.speed;
-    complexText.text(`${Math.round(this.imgWidth)}`);
-    layer.clear();
-    layer.draw();
+    this.setSettingsCb(settings => ({ 
+      ...settings,
+      imgWidth: Math.min(Math.round(settings.imgWidth + this.speed), 9999)
+    }));
   }
 
-  getDataUrl() {
-    const { stage, box, imgWidth } = this;
+  getDataUrl(imgWidth) {
+    const { stage, box } = this;
     const origWidth = box.width();
     const origHeight = box.height();
     console.log('imgWidth', imgWidth);
-    this.renderRect(Math.round(imgWidth), origHeight);
+    this.renderRect(Math.round(imgWidth), origHeight, imgWidth);
     const res = stage.toDataURL({
       x: box.x(),
       y: box.y(),
       width: box.width(),
       height: box.height()
     });
-    this.renderRect(origWidth, origHeight);
+    this.renderRect(origWidth, origHeight, imgWidth);
     return res;
   };
 
   private onNextFrame = () => {
-    // console.log('onNextFrame', imgWidth);
     this.updateText();
     if (this.boostingSize) {
       window.requestAnimationFrame(this.onNextFrame);

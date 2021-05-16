@@ -24,6 +24,7 @@ function download(filename, dataurl) {
 const initialState = {
   width: 200,
   height: 150,
+  imgWidth: 200,
   format: 'png'
 };
 
@@ -34,18 +35,17 @@ const IndexPage = () => {
   const downloadWrapper = useRef();
 
   const [settings, setSettings] = useState(initialState);
-
-  useEffect(() => {
-    // console.warn('USE EFFECT', settings);
-    konvaStuff.renderRect(settings.width, settings.height);
-    downloadWrapper.current = () => download('img.' + settings.format, konvaStuff.getDataUrl());
-  }, [settings]);
   
   useEffect(() => {
     console.warn('SETTING UP KONVA');
     konvaStuff.create(setSettings);
-    konvaStuff.renderRect(initialState.width, initialState.height);
   }, []);
+
+  useEffect(() => {
+    //console.warn('USE EFFECT', settings);
+    konvaStuff.renderRect(settings.width, settings.height, settings.imgWidth);
+    downloadWrapper.current = () => download('img.' + settings.format, konvaStuff.getDataUrl(settings.imgWidth));
+  }, [settings]);
 
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
