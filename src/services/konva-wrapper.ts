@@ -11,7 +11,8 @@ export default class KonvaWrapper {
   
   private boostingSize: boolean = false;
   private animationReqId: number;
-  private speed: number = 0;
+  private speedX: number = 0;
+  private speedY: number = 0;
 
   create(setSettingsCb: Function) {
     this.setSettingsCb = setSettingsCb;
@@ -30,23 +31,23 @@ export default class KonvaWrapper {
       y: OFFSET,
       width: 300,
       height: 800,
-      fill: '#ffd9d9',
+      fill: '#d9f1ff',
     });
     this.layer.add(rightArea);
 
     const bottomArea = new Konva.Rect({
       x: OFFSET,
-      y: 500,
+      y: 500 + OFFSET,
       width: 1500,
       height: 300,
-      fill: '#ffd9d9',
+      fill: '#d9f1ff',
     });
     this.layer.add(bottomArea);
 
     this.box = new Konva.Rect({
       x: OFFSET,
       y: OFFSET,
-      fill: '#00a2FF',
+      fill: '#33b4ff',
     });
     this.layer.add(this.box);
 
@@ -65,7 +66,7 @@ export default class KonvaWrapper {
 
     var horizontalLine = new Konva.Line({
       points: [OFFSET, OFFSET, window.innerWidth, OFFSET],
-      stroke: 'rgb(0, 161, 0)',
+      stroke: 'black',
       strokeWidth: 1,
       dash: [4, 6],
     });
@@ -73,7 +74,7 @@ export default class KonvaWrapper {
 
     var verticalLine = new Konva.Line({
       points: [OFFSET, OFFSET, OFFSET, window.innerHeight],
-      stroke: 'rgb(0, 161, 0)',
+      stroke: 'black',
       strokeWidth: 1,
       dash: [4, 6],
     });
@@ -111,27 +112,37 @@ export default class KonvaWrapper {
     this.stage.on('mousemove', ({ evt }: any) => {
       if (!dragging) return;
       let newWidth = evt.layerX - OFFSET;
+      let newHeight = evt.layerY - OFFSET;
+      
       if (newWidth > 1200) {
-        this.speed = Math.pow((evt.layerX - OFFSET - 1200), 2) / 150;
-        // this.boostSize(true);
+        this.speedX = Math.pow((evt.layerX - OFFSET - 1200), 2) / 150;
         newWidth = 1200;
+      } else {
+        this.speedX = 0;
+      }
+
+      if (newHeight > 500) {
+        this.speedY = Math.pow((evt.layerY - OFFSET - 500), 2) / 150;
+        newHeight = 500;
+      } else {
+        this.speedY = 0;
       }
 
       this.setSettingsCb(settings => {
         return { 
           ...settings, 
           width: newWidth, 
-          height: evt.layerY - OFFSET,
-          imgWidth: newWidth >= 1200 ? settings.imgWidth : newWidth
+          height: newHeight,
+          imgWidth: newWidth >= 1200 ? settings.imgWidth : newWidth,
+          imgHeight: newHeight >= 500 ? settings.imgHeight : newHeight
         };
       });
 
-      this.boostSize(newWidth >= 1200);
-      
+      this.boostSize(newWidth >= 1200 || newHeight >= 500);
     });
   }
 
-  renderRect(width, height, imgWidth) {
+  renderRect(width, height, imgWidth, imgHeight) {
     const { box, complexText, layer } = this;
     if (!box) return;
     box.size({
@@ -142,7 +153,7 @@ export default class KonvaWrapper {
       width,
       height
     });
-    complexText.text(`${imgWidth}x${height}`);
+    complexText.text(`${imgWidth}x${imgHeight}`);
     layer.clear();
     layer.draw();
   }
@@ -150,23 +161,23 @@ export default class KonvaWrapper {
   updateText() {
     this.setSettingsCb(settings => ({ 
       ...settings,
-      imgWidth: Math.min(Math.round(settings.imgWidth + this.speed), 9999)
+      imgWidth: Math.min(Math.round(settings.imgWidth + this.speedX), 9999),
+      imgHeight: Math.min(Math.round(settings.imgHeight + this.speedY), 9999)
     }));
   }
 
-  getDataUrl(imgWidth) {
+  getDataUrl(imgWidth, imgHeight) {
     const { stage, box } = this;
     const origWidth = box.width();
     const origHeight = box.height();
-    console.log('imgWidth', imgWidth);
-    this.renderRect(Math.round(imgWidth), origHeight, imgWidth);
+    this.renderRect(Math.round(imgWidth), imgHeight, imgWidth, imgHeight);
     const res = stage.toDataURL({
       x: box.x(),
       y: box.y(),
       width: box.width(),
       height: box.height()
     });
-    this.renderRect(origWidth, origHeight, imgWidth);
+    this.renderRect(origWidth, origHeight, imgWidth, imgHeight);
     return res;
   };
 

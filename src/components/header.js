@@ -23,8 +23,12 @@ const Header = ({ siteTitle, settings, onSettingsChange, onSave}) => {
   }
 
   function handleHeightChange(e) {
-    const height = +e.target.value;
-    onSettingsChange({...settings, height});
+    let height = +e.target.value;
+    const imgHeight = height;
+    if (height >= 500) {
+      height = 500;
+    }
+    onSettingsChange({ ...settings, height, imgHeight });
   }
 
   return (
@@ -46,7 +50,7 @@ const Header = ({ siteTitle, settings, onSettingsChange, onSave}) => {
         <div className="navbar-text">Width:</div>
         <input type="number" name="num" min="1" max="9999" onChange={handleWidthChange} value={settings.imgWidth}></input>
         <div className="navbar-text">Height:</div>
-        <input type="number" name="num" min="1" max="9999" onChange={handleHeightChange} value={settings.height}></input>
+        <input type="number" name="num" min="1" max="9999" onChange={handleHeightChange} value={settings.imgHeight}></input>
         <button className="save-btn" onClick={onSave}>Save!</button>
       </div>
     </header>

@@ -25,6 +25,7 @@ const initialState = {
   width: 200,
   height: 150,
   imgWidth: 200,
+  imgHeight: 150,
   format: 'png'
 };
 
@@ -43,8 +44,11 @@ const IndexPage = () => {
 
   useEffect(() => {
     //console.warn('USE EFFECT', settings);
-    konvaStuff.renderRect(settings.width, settings.height, settings.imgWidth);
-    downloadWrapper.current = () => download('img.' + settings.format, konvaStuff.getDataUrl(settings.imgWidth));
+    konvaStuff.renderRect(settings.width, settings.height, settings.imgWidth, settings.imgHeight);
+    downloadWrapper.current = () => download(
+      'img.' + settings.format, 
+      konvaStuff.getDataUrl(settings.imgWidth, settings.imgHeight)
+    );
   }, [settings]);
 
   const data = useStaticQuery(graphql`
