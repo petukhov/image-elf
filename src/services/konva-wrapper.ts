@@ -25,6 +25,24 @@ export default class KonvaWrapper {
     this.layer = new Konva.Layer();
     this.stage.add(this.layer);
 
+    const rightArea = new Konva.Rect({
+      x: 1200 + OFFSET,
+      y: OFFSET,
+      width: 300,
+      height: 800,
+      fill: '#ffd9d9',
+    });
+    this.layer.add(rightArea);
+
+    const bottomArea = new Konva.Rect({
+      x: OFFSET,
+      y: 500,
+      width: 1500,
+      height: 300,
+      fill: '#ffd9d9',
+    });
+    this.layer.add(bottomArea);
+
     this.box = new Konva.Rect({
       x: OFFSET,
       y: OFFSET,
