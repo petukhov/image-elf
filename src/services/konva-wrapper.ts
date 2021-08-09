@@ -1,4 +1,5 @@
 import Konva from 'konva';
+import NiceLabels from './nice-labels';
 
 const OFFSET = 30;
 export default class KonvaWrapper {
@@ -14,8 +15,14 @@ export default class KonvaWrapper {
   private speedX: number = 0;
   private speedY: number = 0;
 
+  private ticks: { tickRect: Konva.Rect, tickText: Konva.Text }[] = [];
+
   create(setSettingsCb: Function) {
     this.setSettingsCb = setSettingsCb;
+
+    const nl = new NiceLabels();
+    // const scale = nl.niceScale(0, 1500);
+    // console.log('scale', scale);
 
     this.stage = new Konva.Stage({
       container: 'container',
@@ -79,6 +86,13 @@ export default class KonvaWrapper {
       dash: [4, 6],
     });
     this.layer.add(verticalLine);
+
+    this.addTicks();
+
+    const niceLabels = new NiceLabels();
+    const scale = niceLabels.niceScale(0, 1200, 1200);
+      
+    this.renderTicks(scale);
      
     this.addListeners();
   }
@@ -137,7 +151,7 @@ export default class KonvaWrapper {
           imgHeight: newHeight >= 500 ? settings.imgHeight : newHeight
         };
       });
-
+      // console.warn('1');
       this.boostSize(newWidth >= 1200 || newHeight >= 500);
     });
   }
@@ -158,12 +172,57 @@ export default class KonvaWrapper {
     layer.draw();
   }
 
+  addTicks() {
+    for (let i = 0; i < 30; i++) {
+      const tickRect = new Konva.Rect({
+        x: OFFSET,
+        y: OFFSET,
+        width: 1,
+        height: 10,
+        fill: '#000',
+      });
+      this.layer.add(tickRect);
+
+      const tickText = new Konva.Text({
+        x: OFFSET,
+        y: OFFSET - 15,
+        fontSize: 12,
+        fontFamily: 'Arial',
+        fontStyle: 'normal',
+        fill: '#333',
+      });
+      this.layer.add(tickText);
+
+      this.ticks.push({
+        tickRect,
+        tickText
+      });
+    }
+  }
+
+  renderTicks(scale) {
+    this.ticks.forEach(({ tickRect, tickText }, i) => {
+      tickRect.x(OFFSET + Math.floor(scale.normalizedTickSpacing * i));
+      tickText.x(OFFSET + Math.floor(scale.normalizedTickSpacing * i - tickText.width() / 2));
+      tickText.text(Math.floor(scale.tickSpacing * i).toString());
+    });
+  }
+
   updateText() {
-    this.setSettingsCb(settings => ({ 
-      ...settings,
-      imgWidth: Math.min(Math.round(settings.imgWidth + this.speedX), 9999),
-      imgHeight: Math.min(Math.round(settings.imgHeight + this.speedY), 9999)
-    }));
+    this.setSettingsCb(settings => {
+      const imgWidth = Math.min(Math.round(settings.imgWidth + this.speedX), 9999);
+      const imgHeight = Math.min(Math.round(settings.imgHeight + this.speedY), 9999);
+      const nl = new NiceLabels();
+      const scale = nl.niceScale(0, imgWidth, settings.width);
+      
+      this.renderTicks(scale);
+      // console.log('scale', scale);
+      return { 
+        ...settings,
+        imgWidth,
+        imgHeight
+      };
+    });
   }
 
   getDataUrl(imgWidth, imgHeight) {
@@ -189,6 +248,7 @@ export default class KonvaWrapper {
   }
   
   private boostSize(turnOn) {
+    // console.log('boost', this.boostingSize, turnOn);
     if (!this.boostingSize && turnOn) {
       console.warn('start boosting');
       this.animationReqId = window.requestAnimationFrame(this.onNextFrame);
