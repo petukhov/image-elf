@@ -13,9 +13,10 @@ export default class NiceLabels {
    *  min the minimum data point on the axis
    *  max the maximum data point on the axis
    */
-  niceScale(min, max, normal) {
+  niceScale(min, max, maxTicks, normal) {
     this.minPoint = min;
     this.maxPoint = max;
+    this.maxTicks = maxTicks;
     this.calculate();
     // console.warn({
     //   tickSpacing: this.tickSpacing,

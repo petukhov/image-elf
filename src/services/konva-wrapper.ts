@@ -15,14 +15,11 @@ export default class KonvaWrapper {
   private speedX: number = 0;
   private speedY: number = 0;
 
-  private ticks: { tickRect: Konva.Rect, tickText: Konva.Text }[] = [];
+  private xAxisTicks: { tickRect: Konva.Rect, tickText: Konva.Text }[] = [];
+  private yAxisTicks: { tickRect: Konva.Rect, tickText: Konva.Text }[] = [];
 
   create(setSettingsCb: Function) {
     this.setSettingsCb = setSettingsCb;
-
-    const nl = new NiceLabels();
-    // const scale = nl.niceScale(0, 1500);
-    // console.log('scale', scale);
 
     this.stage = new Konva.Stage({
       container: 'container',
@@ -87,12 +84,11 @@ export default class KonvaWrapper {
     });
     this.layer.add(verticalLine);
 
-    this.addTicks();
+    this.addXAxisTicks();
+    this.addYAxisTicks();
 
-    const niceLabels = new NiceLabels();
-    const scale = niceLabels.niceScale(0, 1200, 1200);
-      
-    this.renderTicks(scale);
+    this.resetXAxisTicks();
+    this.resetYAxisTicks();
      
     this.addListeners();
   }
@@ -133,6 +129,7 @@ export default class KonvaWrapper {
         newWidth = 1200;
       } else {
         this.speedX = 0;
+        this.resetXAxisTicks();
       }
 
       if (newHeight > 500) {
@@ -140,6 +137,7 @@ export default class KonvaWrapper {
         newHeight = 500;
       } else {
         this.speedY = 0;
+        this.resetYAxisTicks();
       }
 
       this.setSettingsCb(settings => {
@@ -172,8 +170,8 @@ export default class KonvaWrapper {
     layer.draw();
   }
 
-  addTicks() {
-    for (let i = 0; i < 30; i++) {
+  addXAxisTicks() {
+    for (let i = 0; i < 50; i++) {
       const tickRect = new Konva.Rect({
         x: OFFSET,
         y: OFFSET,
@@ -193,29 +191,80 @@ export default class KonvaWrapper {
       });
       this.layer.add(tickText);
 
-      this.ticks.push({
+      this.xAxisTicks.push({
         tickRect,
         tickText
       });
     }
   }
 
-  renderTicks(scale) {
-    this.ticks.forEach(({ tickRect, tickText }, i) => {
-      tickRect.x(OFFSET + Math.floor(scale.normalizedTickSpacing * i));
-      tickText.x(OFFSET + Math.floor(scale.normalizedTickSpacing * i - tickText.width() / 2));
-      tickText.text(Math.floor(scale.tickSpacing * i).toString());
-    });
+  addYAxisTicks() {
+    for (let i = 0; i < 30; i++) {
+      const tickRect = new Konva.Rect({
+        x: OFFSET,
+        y: OFFSET,
+        width: 10,
+        height: 1,
+        fill: '#000',
+      });
+      this.layer.add(tickRect);
+
+      const tickText = new Konva.Text({
+        x: 2,
+        y: OFFSET,
+        fontSize: 12,
+        fontFamily: 'Arial',
+        fontStyle: 'normal',
+        fill: '#333',
+      });
+      this.layer.add(tickText);
+
+      this.yAxisTicks.push({
+        tickRect,
+        tickText
+      });
+    }
+  }
+
+  renderTicks(xScale?, yScale?) {
+    if (xScale) {
+      this.xAxisTicks.forEach(({ tickRect, tickText }, i) => {
+        tickRect.x(OFFSET + Math.floor(xScale.normalizedTickSpacing * i));
+        tickText.x(OFFSET + Math.floor(xScale.normalizedTickSpacing * i - tickText.width() / 2));
+        tickText.text(Math.floor(xScale.tickSpacing * i).toString());
+      });
+    }
+
+    if (yScale) {
+      this.yAxisTicks.forEach(({ tickRect, tickText }, i) => {
+        if (i === 0) { return; }
+        tickRect.y(OFFSET + Math.floor(yScale.normalizedTickSpacing * i));
+        tickText.y(OFFSET + Math.floor(yScale.normalizedTickSpacing * i) - 5);
+        tickText.text(Math.floor(yScale.tickSpacing * i).toString());
+      });
+    }
+  }
+
+  resetXAxisTicks() {
+    const niceLabels = new NiceLabels();
+    this.renderTicks(niceLabels.niceScale(0, 1200, 15, 1200));
+  }
+
+  resetYAxisTicks() {
+    const niceLabels = new NiceLabels();
+    this.renderTicks(null, niceLabels.niceScale(0, 500, 7, 500));
   }
 
   updateText() {
     this.setSettingsCb(settings => {
       const imgWidth = Math.min(Math.round(settings.imgWidth + this.speedX), 9999);
       const imgHeight = Math.min(Math.round(settings.imgHeight + this.speedY), 9999);
-      const nl = new NiceLabels();
-      const scale = nl.niceScale(0, imgWidth, settings.width);
       
-      this.renderTicks(scale);
+      const nl = new NiceLabels();
+      const xScale = imgWidth >= 1200 ? nl.niceScale(0, imgWidth, 15, settings.width) : null;
+      const yScale = imgHeight >= 500 ? nl.niceScale(0, imgHeight, 7, settings.height) : null;
+      
+      this.renderTicks(xScale, yScale);
       // console.log('scale', scale);
       return { 
         ...settings,
