@@ -22,10 +22,10 @@ function download(filename, dataurl) {
 }
 
 const initialState = {
-  width: 200,
-  height: 150,
-  imgWidth: 200,
-  imgHeight: 150,
+  width: 0,
+  height: 0,
+  imgWidth: 0,
+  imgHeight: 0,
   format: 'png'
 };
 
@@ -44,7 +44,9 @@ const IndexPage = () => {
 
   useEffect(() => {
     //console.warn('USE EFFECT', settings);
-    konvaStuff.renderRect(settings.width, settings.height, settings.imgWidth, settings.imgHeight);
+    if (downloadWrapper.current) {
+      konvaStuff.renderRect(settings.width, settings.height, settings.imgWidth, settings.imgHeight, settings.x, settings.y);
+    }
     downloadWrapper.current = () => download(
       'img.' + settings.format, 
       konvaStuff.getDataUrl(settings.imgWidth, settings.imgHeight)
@@ -82,6 +84,7 @@ const IndexPage = () => {
         <main>
           <SEO title="Home" />
           <div id="container"></div>
+          <div id="cover" className="hide"></div>
         </main>
       </div>
     </>

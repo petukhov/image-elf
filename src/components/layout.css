@@ -640,12 +640,11 @@ pre tt:after {
   text-decoration: none;
 }
 
-.navbar .navbar-text {
+.navbar-text {
   display: inline-block;
   font-size: 16px;
   color: white;
   text-align: center;
-  padding: 14px 16px;
   text-decoration: none;
 }
 
@@ -704,7 +703,7 @@ canvas {
 }
 
 .save-btn {
-  margin-left: 30px;
+  margin-left: 0px;
   background: #af2e2ed1;
   color: #efe5e5;
   border: none;
@@ -723,4 +722,24 @@ canvas {
 
 .save-btn:focus {
   outline: none;
+}
+
+#cover {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+#cover.hide {
+  display: none;
+}
+
+.pop-up-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
 }
