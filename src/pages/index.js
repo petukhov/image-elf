@@ -85,6 +85,7 @@ const IndexPage = () => {
           <SEO title="Home" />
           <div id="container"></div>
           <div id="cover" className="hide"></div>
+          <div className="animate-character">Click & drag to produce an image!</div>
         </main>
       </div>
     </>
