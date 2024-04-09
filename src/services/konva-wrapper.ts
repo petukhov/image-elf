@@ -180,7 +180,7 @@ export default class KonvaWrapper {
       dragging = false;
       // this.boostSize(false);
       console.log('mouseup');
-      if (evt.layerX > this.x && evt.layerY > this.y) {
+      if ((evt as any).layerX > this.x && (evt as any).layerY > this.y) {
         this.cover.classList.remove('hide');
         this.setSettingsCb(settings => {
           return { 
