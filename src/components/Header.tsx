@@ -1,5 +1,3 @@
-// import PropTypes from "prop-types";
-
 const Header = ({ settings, onSettingsChange, onSave }) => {
   
   function handleClickPNG(e) {
@@ -15,18 +13,12 @@ const Header = ({ settings, onSettingsChange, onSave }) => {
   function handleWidthChange(e) {
     let width = +e.target.value;
     const imgWidth = width;
-    // if (width >= 1200) {
-    //   width = 1200;
-    // }
     onSettingsChange({ ...settings, width: Math.floor(width / 10), imgWidth });
   }
 
   function handleHeightChange(e) {
     let height = +e.target.value;
     const imgHeight = height;
-    // if (height >= 500) {
-    //   height = 500;
-    // }
     onSettingsChange({ ...settings, height: Math.floor(height / 10), imgHeight });
   }
 
@@ -65,10 +57,6 @@ const Header = ({ settings, onSettingsChange, onSave }) => {
     </section>
   );
 }
-
-// Header.propTypes = {
-//   siteTitle: PropTypes.string,
-// }
 
 Header.defaultProps = {
   siteTitle: ``,

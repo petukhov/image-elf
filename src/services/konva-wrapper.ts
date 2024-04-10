@@ -37,24 +37,6 @@ export default class KonvaWrapper {
     this.layer = new Konva.Layer();
     this.stage.add(this.layer);
 
-    // const rightArea = new Konva.Rect({
-    //   x: 1200 + OFFSET,
-    //   y: OFFSET,
-    //   width: 300,
-    //   height: 800,
-    //   fill: '#d9f1ff',
-    // });
-    // this.layer.add(rightArea);
-
-    // const bottomArea = new Konva.Rect({
-    //   x: OFFSET,
-    //   y: 500 + OFFSET,
-    //   width: 1500,
-    //   height: 300,
-    //   fill: '#d9f1ff',
-    // });
-    // this.layer.add(bottomArea);
-
     this.box = new Konva.Rect({
       x: OFFSET,
       y: OFFSET,
@@ -75,27 +57,8 @@ export default class KonvaWrapper {
     });
     this.layer.add(this.complexText);
 
-    // var horizontalLine = new Konva.Line({
-    //   points: [OFFSET, OFFSET, window.innerWidth, OFFSET],
-    //   stroke: 'black',
-    //   strokeWidth: 1,
-    //   dash: [4, 6],
-    // });
-    // this.layer.add(horizontalLine);
-
-    // var verticalLine = new Konva.Line({
-    //   points: [OFFSET, OFFSET, OFFSET, window.innerHeight],
-    //   stroke: 'black',
-    //   strokeWidth: 1,
-    //   dash: [4, 6],
-    // });
-    // this.layer.add(verticalLine);
-
     this.addXAxisTicks();
     this.addYAxisTicks();
-
-    // this.resetXAxisTicks();
-    // this.resetYAxisTicks();
      
     this.addListeners();
   }
@@ -104,7 +67,6 @@ export default class KonvaWrapper {
     this.cover = document.querySelector('#cover');
     this.cover.addEventListener('click', () => {
       console.log('doc click');
-      // cover.setAttribute('display', 'none');
       if (![...this.cover.classList].includes('hide')) {
         this.cover.classList.add('hide');
         this.renderTicks2(-10, -10);
@@ -119,45 +81,9 @@ export default class KonvaWrapper {
           };
         });
       }
-      // this.setSettingsCb(settings => {
-      //   return { 
-      //     ...settings, 
-      //     menuVisible: false
-      //   };
-      // });
-      // this.setSettingsCb(settings => {
-      //     dragging = false;
-      //     return { 
-      //       ...settings, 
-      //       menuVisible: false
-      //     };
-      //   }
-      // );
     }, { capture: true });
     this.stage.on('click', () => {
-      // this.boostSize(false);
-      // let newWidth = evt.layerX - OFFSET;
-      // if (newWidth > 1200) {
-      //   newWidth = 1200;
-      // }
-      // this.imgWidth = newWidth;
-      console.log('click');
-      // this.setSettingsCb(settings => ({ 
-      //   ...settings, 
-      //   width: newWidth, 
-      //   height: evt.layerY - OFFSET, 
-      //   imgWidth: newWidth,
-      // }));
-      // downloadWrapper.current();
-      // this.setSettingsCb(settings => {
-      //   if (settings.menuVisible) {
-      //     dragging = false;
-      //     return { 
-      //       ...settings, 
-      //       menuVisible: false
-      //     };
-      //   }
-      // });
+        console.log('noop');
     });
 
     let dragging = false;
@@ -176,7 +102,6 @@ export default class KonvaWrapper {
     });
     this.stage.on('mouseup', ({ evt }) => {
       dragging = false;
-      // this.boostSize(false);
       console.log('mouseup');
       if ((evt as any).layerX > this.x && (evt as any).layerY > this.y) {
         this.cover.classList.remove('hide');
@@ -189,30 +114,6 @@ export default class KonvaWrapper {
       }
     });
     this.stage.on('mousemove', ({ evt }: any) => {
-
-      // if (!dragging) {
-      //   this.moveAxis(evt);
-      //   this.render();
-      //   return;
-      // }
-      // let newWidth = evt.layerX - this.x;
-      // let newHeight = evt.layerY - this.y;
-      
-      // if (newWidth > 1200) {
-      //   this.speedX = Math.pow((evt.layerX - OFFSET - 1200), 2) / 150;
-      //   newWidth = 1200;
-      // } else {
-      //   this.speedX = 0;
-      //   this.resetXAxisTicks();
-      // }
-
-      // if (newHeight > 500) {
-      //   this.speedY = Math.pow((evt.layerY - OFFSET - 500), 2) / 150;
-      //   newHeight = 500;
-      // } else {
-      //   this.speedY = 0;
-      //   this.resetYAxisTicks();
-      // }
       evt.stopPropagation();
 
       this.setSettingsCb(settings => {
@@ -240,8 +141,6 @@ export default class KonvaWrapper {
           y: this.y
         };
       });
-      // console.warn('1');
-      // this.boostSize(newWidth >= 1200 || newHeight >= 500);
     });
   }
 
@@ -268,7 +167,6 @@ export default class KonvaWrapper {
     const {  layer } = this;
     layer.clear();
     layer.draw();
-    // console.warn('render');
   }
 
   addXAxisTicks() {
@@ -396,13 +294,6 @@ export default class KonvaWrapper {
     this.setSettingsCb(settings => {
       const imgWidth = Math.min(Math.round(settings.imgWidth + this.speedX), 9999);
       const imgHeight = Math.min(Math.round(settings.imgHeight + this.speedY), 9999);
-      
-    //   const nl = new NiceLabels();
-    //   const xScale = imgWidth >= 1200 ? nl.niceScale(0, imgWidth, 15, settings.width) : null;
-    //   const yScale = imgHeight >= 500 ? nl.niceScale(0, imgHeight, 7, settings.height) : null;
-      
-      // this.renderTicks(xScale, yScale);
-      // console.log('scale', scale);
       return { 
         ...settings,
         imgWidth,

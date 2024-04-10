@@ -1,20 +1,4 @@
-// import KonvaWrapper from '../components/KonvaWrapper';
-
-// const MainPage = () => {
-// 	return (
-// 		<>
-// 			{/* Sidebar? */}
-// 			<KonvaWrapper />
-// 		</>
-// 	);
-// };
-
-// export default MainPage;
-
 import { useState, useRef, useEffect } from 'react';
-// import KonvaWrapper from '../services/konva-wrapper';
-// import Header from '../components/header';
-
 import '../layout.css';
 import Header from '../components/Header';
 import KonvaWrapper from '../services/konva-wrapper';
@@ -55,7 +39,6 @@ const IndexPage = () => {
   }, []);
 
   useEffect(() => {
-    //console.warn('USE EFFECT', settings);
     if (downloadWrapper.current) {
       konvaStuff.renderRect(settings.width, settings.height, settings.imgWidth, settings.imgHeight, (settings as any).x, (settings as any).y);
     }
