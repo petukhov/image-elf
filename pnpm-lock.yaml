@@ -17,9 +17,6 @@ dependencies:
   react-helmet:
     specifier: ^6.1.0
     version: 6.1.0(react@18.2.0)
-  react-konva:
-    specifier: ^18.2.10
-    version: 18.2.10(konva@9.3.6)(react-dom@18.2.0)(react@18.2.0)
   react-router-dom:
     specifier: ^6.22.3
     version: 6.22.3(react-dom@18.2.0)(react@18.2.0)
@@ -812,12 +809,6 @@ packages:
     dependencies:
       '@types/react': 18.2.75
     dev: true
-
-  /@types/react-reconciler@0.28.8:
-    resolution: {integrity: sha512-SN9c4kxXZonFhbX4hJrZy37yw9e7EIxcpHCxQv5JUS18wDE5ovkQKlqQEkufdJCCMfuI9BnjUJvhYeJ9x5Ra7g==}
-    dependencies:
-      '@types/react': 18.2.75
-    dev: false
 
   /@types/react@18.2.75:
     resolution: {integrity: sha512-+DNnF7yc5y0bHkBTiLKqXFe+L4B3nvOphiMY3tuA5X10esmjqk7smyBZzbGTy2vsiy/Bnzj8yFIBL8xhRacoOg==}
@@ -1674,16 +1665,6 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
-  /its-fine@1.2.0(react@18.2.0):
-    resolution: {integrity: sha512-518vLgHK/dgGxyZj4MdLrDRryziqR1M+JbVtjw1tmdgvZQYsJvB2Leoe2qFOHPalZ5KiAOK18wTmIC0XszYc0w==}
-    peerDependencies:
-      react: '>=16.8'
-    dependencies:
-      '@types/react': 18.2.75
-      '@types/react-reconciler': 0.28.8
-      react: 18.2.0
-    dev: false
-
   /jackspeak@2.3.6:
     resolution: {integrity: sha512-N3yCS/NegsOBokc8GAdM8UcmfsKiSS8cipheD/nivzr700H+nsMOxJjQnvwOcRYVuFkdH0wGUvW2WbXGmrZGbQ==}
     engines: {node: '>=14'}
@@ -2092,33 +2073,6 @@ packages:
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-    dev: false
-
-  /react-konva@18.2.10(konva@9.3.6)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-ohcX1BJINL43m4ynjZ24MxFI1syjBdrXhqVxYVDw2rKgr3yuS0x/6m1Y2Z4sl4T/gKhfreBx8KHisd0XC6OT1g==}
-    peerDependencies:
-      konva: ^8.0.1 || ^7.2.5 || ^9.0.0
-      react: '>=18.0.0'
-      react-dom: '>=18.0.0'
-    dependencies:
-      '@types/react-reconciler': 0.28.8
-      its-fine: 1.2.0(react@18.2.0)
-      konva: 9.3.6
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-reconciler: 0.29.0(react@18.2.0)
-      scheduler: 0.23.0
-    dev: false
-
-  /react-reconciler@0.29.0(react@18.2.0):
-    resolution: {integrity: sha512-wa0fGj7Zht1EYMRhKWwoo1H9GApxYLBuhoAuXN0TlltESAjDssB+Apf0T/DngVqaMyPypDmabL37vw/2aRM98Q==}
-    engines: {node: '>=0.10.0'}
-    peerDependencies:
-      react: ^18.2.0
-    dependencies:
-      loose-envify: 1.4.0
-      react: 18.2.0
-      scheduler: 0.23.0
     dev: false
 
   /react-refresh@0.14.0:
