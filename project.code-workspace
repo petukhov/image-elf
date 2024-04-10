@@ -1,0 +1,20 @@
+{
+    "folders": [
+        {
+            "path": ".",
+        },
+    ],
+    "extensions": {
+        "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"],
+    },
+    "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "always",
+            "source.organizeImports": "explicit",
+        },
+        "editor.detectIndentation": false,
+        "files.trimTrailingWhitespace": true,
+    },
+}
