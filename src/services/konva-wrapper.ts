@@ -1,5 +1,4 @@
 import Konva from 'konva';
-import NiceLabels from './nice-labels';
 
 const OFFSET = 30;
 export default class KonvaWrapper {
@@ -11,7 +10,6 @@ export default class KonvaWrapper {
   private setSettingsCb: Function;
   
   private boostingSize: boolean = false;
-  private animationReqId: number;
   private speedX: number = 0;
   private speedY: number = 0;
 
@@ -96,8 +94,8 @@ export default class KonvaWrapper {
     this.addXAxisTicks();
     this.addYAxisTicks();
 
-    this.resetXAxisTicks();
-    this.resetYAxisTicks();
+    // this.resetXAxisTicks();
+    // this.resetYAxisTicks();
      
     this.addListeners();
   }
@@ -136,7 +134,7 @@ export default class KonvaWrapper {
       //   }
       // );
     }, { capture: true });
-    this.stage.on('click', ({ evt }: any) => {
+    this.stage.on('click', () => {
       // this.boostSize(false);
       // let newWidth = evt.layerX - OFFSET;
       // if (newWidth > 1200) {
@@ -390,16 +388,6 @@ export default class KonvaWrapper {
     this.yAxisLine.y(y);
   }
 
-  resetXAxisTicks() {
-    const niceLabels = new NiceLabels();
-    // this.renderTicks(niceLabels.niceScale(0, 1200, 15, 1200));
-  }
-
-  resetYAxisTicks() {
-    const niceLabels = new NiceLabels();
-    // this.renderTicks(null, niceLabels.niceScale(0, 500, 7, 500));
-  }
-
   moveAxis(evt) {
     this.renderTicks2(evt.layerX, evt.layerY);
   }
@@ -409,9 +397,9 @@ export default class KonvaWrapper {
       const imgWidth = Math.min(Math.round(settings.imgWidth + this.speedX), 9999);
       const imgHeight = Math.min(Math.round(settings.imgHeight + this.speedY), 9999);
       
-      const nl = new NiceLabels();
-      const xScale = imgWidth >= 1200 ? nl.niceScale(0, imgWidth, 15, settings.width) : null;
-      const yScale = imgHeight >= 500 ? nl.niceScale(0, imgHeight, 7, settings.height) : null;
+    //   const nl = new NiceLabels();
+    //   const xScale = imgWidth >= 1200 ? nl.niceScale(0, imgWidth, 15, settings.width) : null;
+    //   const yScale = imgHeight >= 500 ? nl.niceScale(0, imgHeight, 7, settings.height) : null;
       
       // this.renderTicks(xScale, yScale);
       // console.log('scale', scale);
@@ -447,19 +435,6 @@ export default class KonvaWrapper {
     this.updateText();
     if (this.boostingSize) {
       window.requestAnimationFrame(this.onNextFrame);
-    }
-  }
-  
-  private boostSize(turnOn) {
-    // console.log('boost', this.boostingSize, turnOn);
-    if (!this.boostingSize && turnOn) {
-      console.warn('start boosting');
-      this.animationReqId = window.requestAnimationFrame(this.onNextFrame);
-      this.boostingSize = true;
-    } else if (this.boostingSize && !turnOn) {
-      console.warn('stop boosting');
-      window.cancelAnimationFrame(this.animationReqId);
-      this.boostingSize = false;
     }
   }
 }

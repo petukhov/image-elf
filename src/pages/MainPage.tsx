@@ -57,7 +57,7 @@ const IndexPage = () => {
   useEffect(() => {
     //console.warn('USE EFFECT', settings);
     if (downloadWrapper.current) {
-      konvaStuff.renderRect(settings.width, settings.height, settings.imgWidth, settings.imgHeight, settings.x, settings.y);
+      konvaStuff.renderRect(settings.width, settings.height, settings.imgWidth, settings.imgHeight, (settings as any).x, (settings as any).y);
     }
     downloadWrapper.current = () => download(
       'img.' + settings.format, 

@@ -1,6 +1,6 @@
 // import PropTypes from "prop-types";
 
-const Header = ({ siteTitle, settings, onSettingsChange, onSave}) => {
+const Header = ({ settings, onSettingsChange, onSave }) => {
   
   function handleClickPNG(e) {
     e.preventDefault();
