@@ -58,10 +58,7 @@ export default class KonvaWrapper2 {
         this.#addYAxisTicks();
     }
 
-    static on(
-        eventName: string,
-        callback: KonvaEventListener<Stage, MouseEvent>,
-    ) {
+    static on(eventName: string, callback: KonvaEventListener<Stage, MouseEvent>) {
         this.#stage.on(eventName, callback);
     }
 
@@ -69,7 +66,7 @@ export default class KonvaWrapper2 {
         // clear the canvas first
         this.#layer.clear();
 
-        // set up the data
+        // set up the rectangle and text data
         this.#box.x(x);
         this.#box.y(y);
         this.#box.size({
@@ -84,8 +81,8 @@ export default class KonvaWrapper2 {
         });
         this.#complexText.text(text);
 
-        // update ticks too
-        this.#renderTicks(x, y);
+        // set ticks data too
+        this.#updateTicks(x, y);
 
         // draw everything
         this.#layer.draw();
@@ -165,7 +162,7 @@ export default class KonvaWrapper2 {
         this.#layer.add(this.#yAxisLine);
     }
 
-    static #renderTicks(x, y) {
+    static #updateTicks(x, y) {
         this.#xAxisTicks.forEach(({ tickRect, tickText }, i) => {
             if (i === 0) {
                 return;
@@ -196,8 +193,4 @@ export default class KonvaWrapper2 {
         this.#yAxisLine.x(x);
         this.#yAxisLine.y(y);
     }
-
-    // static moveAxis(evt) {
-    //     this.#renderTicks(evt.layerX, evt.layerY);
-    // }
 }

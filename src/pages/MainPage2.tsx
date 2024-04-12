@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import MenuWidget from '../components/MenuWidget';
 import '../layout.css';
 import KonvaWrapper2, { CanvasRenderState } from '../services/konva-wrapper2';
 
@@ -13,6 +14,7 @@ const canvasState: CanvasRenderState = {
 const initialState = {
     isDragging: false,
     isMenuWidgetVisible: false,
+    selectedFormat: 'png' as 'png' | 'jpeg',
     canvasState,
 };
 
@@ -62,8 +64,7 @@ const MainPage2 = () => {
         KonvaWrapper2.on('mouseup', ({ evt }) => {
             setAppState(state => {
                 const shouldShowMenu =
-                    evt.layerX > state.canvasState.x &&
-                    evt.layerY > state.canvasState.y;
+                    evt.layerX > state.canvasState.x && evt.layerY > state.canvasState.y;
                 return shouldShowMenu
                     ? {
                           ...state,
@@ -83,7 +84,6 @@ const MainPage2 = () => {
             setAppState(state => {
                 if (!state.isDragging) {
                     if (!state.isMenuWidgetVisible) {
-                        console.log('here');
                         return {
                             ...state,
                             canvasState: {
@@ -123,8 +123,56 @@ const MainPage2 = () => {
         KonvaWrapper2.render(appState.canvasState);
     }, [appState.canvasState]);
 
+    const handleHeightInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const height = +e.target.value;
+        setAppState(state => ({
+            ...state,
+            canvasState: {
+                ...state.canvasState,
+                height,
+            },
+        }));
+    }, []);
+
+    const handleWidthInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const width = +e.target.value;
+        setAppState(state => ({
+            ...state,
+            canvasState: {
+                ...state.canvasState,
+                width,
+            },
+        }));
+    }, []);
+
+    const handleSelectFormat = useCallback((format: 'png' | 'jpeg') => {
+        setAppState(state => ({
+            ...state,
+            selectedFormat: format,
+        }));
+    }, []);
+
+    const handleSave = useCallback(() => {
+        console.log('Saving');
+    }, []);
+
     return (
         <>
+            {appState.isMenuWidgetVisible && (
+                <MenuWidget
+                    top={appState.canvasState.y + appState.canvasState.height - 200}
+                    left={appState.canvasState.x + appState.canvasState.width - 100}
+                    onHeightChange={handleHeightInput}
+                    onWidthChange={handleWidthInput}
+                    onSelectFormat={handleSelectFormat}
+                    onSave={handleSave}
+                    state={{
+                        selectedFormat: appState.selectedFormat,
+                        width: appState.canvasState.width,
+                        height: appState.canvasState.height,
+                    }}
+                />
+            )}
             <div
                 style={{
                     margin: `0 auto`,
@@ -137,10 +185,8 @@ const MainPage2 = () => {
             >
                 <main>
                     <div id={CANVAS_ID}></div>
-                    <div id="cover" className="hide"></div>
-                    <div className="animate-character">
-                        Click & drag to produce an image!
-                    </div>
+                    {/* <div id="cover" className="hide"></div> */}
+                    <div className="animate-character">Click & drag to produce an image!</div>
                 </main>
             </div>
         </>
