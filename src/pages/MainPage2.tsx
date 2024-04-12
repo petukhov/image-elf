@@ -23,17 +23,41 @@ const MainPage2 = () => {
 
     useEffect(() => {
         KonvaWrapper2.create(CANVAS_ID);
-        KonvaWrapper2.on('click', () => {});
+
+        window.document.addEventListener(
+            'click',
+            () => {
+                // setAppState(state => ({
+                //     ...state,
+                //     isMenuWidgetVisible: false,
+                //     canvasState: {
+                //         ...state.canvasState,
+                //         x: 0,
+                //         y: 0,
+                //         width: 0,
+                //         height: 0,
+                //         text: '',
+                //     },
+                // }));
+            },
+            { capture: true },
+        );
+
         KonvaWrapper2.on('mousedown', ({ evt }) => {
-            setAppState(state => ({
-                ...state,
-                isDragging: true,
-                canvasState: {
-                    ...state.canvasState,
-                    x: evt.clientX,
-                    y: evt.clientY,
-                },
-            }));
+            setAppState(state => {
+                return {
+                    ...state,
+                    isDragging: true,
+                    isMenuWidgetVisible: false,
+                    canvasState: {
+                        ...state.canvasState,
+                        x: evt.clientX,
+                        y: evt.clientY,
+                        width: 0,
+                        height: 0,
+                    },
+                };
+            });
         });
         KonvaWrapper2.on('mouseup', ({ evt }) => {
             setAppState(state => {
@@ -46,7 +70,11 @@ const MainPage2 = () => {
                           isDragging: false,
                           isMenuWidgetVisible: true,
                       }
-                    : state;
+                    : {
+                          ...state,
+                          isDragging: false,
+                          isMenuWidgetVisible: false,
+                      };
             });
         });
         KonvaWrapper2.on('mousemove', ({ evt }) => {
@@ -55,6 +83,7 @@ const MainPage2 = () => {
             setAppState(state => {
                 if (!state.isDragging) {
                     if (!state.isMenuWidgetVisible) {
+                        console.log('here');
                         return {
                             ...state,
                             canvasState: {

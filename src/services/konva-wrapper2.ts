@@ -84,6 +84,9 @@ export default class KonvaWrapper2 {
         });
         this.#complexText.text(text);
 
+        // update ticks too
+        this.#renderTicks(x, y);
+
         // draw everything
         this.#layer.draw();
     }
@@ -162,12 +165,39 @@ export default class KonvaWrapper2 {
         this.#layer.add(this.#yAxisLine);
     }
 
-    // static render(konvaState: {
-    //     x: number;
-    //     y: number;
-    //     width: number;
-    //     height: number;
-    // }) {
-    //     throw new Error('Method not implemented.');
+    static #renderTicks(x, y) {
+        this.#xAxisTicks.forEach(({ tickRect, tickText }, i) => {
+            if (i === 0) {
+                return;
+            }
+
+            tickRect.y(y);
+            tickRect.x(x + Math.floor(100 * i));
+
+            tickText.y(y - 15);
+            tickText.x(x + Math.floor(100 * i - tickText.width() / 2));
+            tickText.text(Math.floor(100 * i).toString());
+        });
+        this.#xAxisLine.x(x);
+        this.#xAxisLine.y(y);
+
+        this.#yAxisTicks.forEach(({ tickRect, tickText }, i) => {
+            if (i === 0) {
+                return;
+            }
+            tickRect.x(x);
+            tickRect.y(y + Math.floor(100 * i));
+
+            tickText.x(x - tickText.width() - 3);
+            tickText.y(y + Math.floor(100 * i) - 5);
+            tickText.text(Math.floor(100 * i).toString());
+        });
+
+        this.#yAxisLine.x(x);
+        this.#yAxisLine.y(y);
+    }
+
+    // static moveAxis(evt) {
+    //     this.#renderTicks(evt.layerX, evt.layerY);
     // }
 }
