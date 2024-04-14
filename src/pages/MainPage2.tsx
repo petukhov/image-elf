@@ -155,7 +155,7 @@ const MainPage2 = () => {
         <>
             {appState.isMenuWidgetVisible && (
                 <MenuWidget
-                    top={appState.canvasState.y + appState.canvasState.height - 200}
+                    top={appState.canvasState.y + appState.canvasState.height - 100}
                     left={appState.canvasState.x + appState.canvasState.width - 100}
                     onHeightChange={handleHeightInput}
                     onWidthChange={handleWidthInput}
