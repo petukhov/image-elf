@@ -94,9 +94,7 @@ export default class KonvaWrapper2 {
         this.#layer.draw();
     }
 
-    getDataUrl(width, height) {
-        console.log('getDataUrl', width, height);
-
+    getDataUrl() {
         // hiding the current layer and creating a temporary one
         this.#layer.hide();
         const tempLayer = new Konva.Layer();
@@ -166,7 +164,7 @@ export default class KonvaWrapper2 {
             });
         }
         this.#xAxisLine = new Konva.Line({
-            points: [0, 0, window.innerWidth, 0],
+            points: [-1, -1, window.innerWidth, 0],
             stroke: 'black',
             strokeWidth: 1,
             dash: [4, 6],
@@ -201,7 +199,7 @@ export default class KonvaWrapper2 {
             });
         }
         this.#yAxisLine = new Konva.Line({
-            points: [0, 0, 0, window.innerHeight],
+            points: [-1, -1, 0, window.innerHeight],
             stroke: 'black',
             strokeWidth: 1,
             dash: [4, 6],
@@ -210,6 +208,11 @@ export default class KonvaWrapper2 {
     }
 
     #updateTicks(x, y) {
+        // don't show ticks when the app starts, and the user hasn't hovered over the canvas yet
+        if (x < 0 && y < 0) {
+            return;
+        }
+
         this.#xAxisTicks.forEach(({ tickRect, tickText }, i) => {
             if (i === 0) {
                 return;

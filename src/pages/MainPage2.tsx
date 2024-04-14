@@ -4,8 +4,10 @@ import '../layout.css';
 import KonvaWrapper2, { CanvasRenderState } from '../services/konva-wrapper2';
 
 const canvasState: CanvasRenderState = {
-    x: 0,
-    y: 0,
+    // setting x and y to -1 to avoid showing the axis/ticks
+    // when the app shows up and before the user hovers over the canvas
+    x: -1,
+    y: -1,
     width: 0,
     height: 0,
     text: '',
@@ -146,14 +148,7 @@ const MainPage2 = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        console.log('Saving');
-        downloadImage(
-            'img.' + appState.selectedFormat,
-            konvaWrapperRef.current?.getDataUrl(
-                appState.canvasState.width,
-                appState.canvasState.height,
-            ),
-        );
+        downloadImage('img.' + appState.selectedFormat, konvaWrapperRef.current?.getDataUrl());
     }, [appState]);
 
     return (
