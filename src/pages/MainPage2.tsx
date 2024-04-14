@@ -20,6 +20,16 @@ const initialState = {
 
 const CANVAS_ID = 'canvas-id';
 
+function downloadImage(fileName, dataUrl) {
+    const element = document.createElement('a');
+    element.setAttribute('href', dataUrl);
+    element.setAttribute('download', fileName);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
 const MainPage2 = () => {
     const [appState, setAppState] = useState(initialState);
 
@@ -137,7 +147,14 @@ const MainPage2 = () => {
 
     const handleSave = useCallback(() => {
         console.log('Saving');
-    }, []);
+        downloadImage(
+            'img.' + appState.selectedFormat,
+            konvaWrapperRef.current?.getDataUrl(
+                appState.canvasState.width,
+                appState.canvasState.height,
+            ),
+        );
+    }, [appState]);
 
     return (
         <>

@@ -94,6 +94,47 @@ export default class KonvaWrapper2 {
         this.#layer.draw();
     }
 
+    getDataUrl(width, height) {
+        console.log('getDataUrl', width, height);
+
+        // hiding the current layer and creating a temporary one
+        this.#layer.hide();
+        const tempLayer = new Konva.Layer();
+        this.#stage.add(tempLayer);
+
+        // cloning the box to the temporary layer and updating the size
+        const tempBox = this.#box.clone() as Konva.Rect;
+        tempLayer.add(tempBox);
+        tempBox.size({
+            width: tempBox.width() * 10,
+            height: tempBox.height() * 10,
+        });
+
+        // cloning the text to the temporary layer, updating the size, and centering it
+        const tempText = this.#complexText.clone() as Konva.Text;
+        tempLayer.add(tempText);
+        tempText.fontSize(tempText.fontSize() * 10);
+        tempText.size({
+            width: tempText.width() * 10,
+            height: tempText.height() * 10,
+        });
+        tempText.align('center');
+
+        // rendering the temporary layer to the data url
+        const res = this.#stage.toDataURL({
+            x: tempBox.x(),
+            y: tempBox.y(),
+            width: tempBox.width(),
+            height: tempBox.height(),
+        });
+
+        // destroying the temporary layer and showing the main one again
+        tempLayer.destroy();
+        this.#layer.show();
+
+        return res;
+    }
+
     destroy() {
         this.#stage.destroy();
     }
