@@ -23,36 +23,6 @@ const MenuWidget = ({
     onSelectFormat,
     state,
 }: MenuWidgetProps) => {
-    // function handleClickPNG(e) {
-    //     e.preventDefault();
-    //     onSettingsChange({ ...settings, format: 'png' });
-    // }
-
-    // function handleClickJPEG(e) {
-    //     e.preventDefault();
-    //     onSettingsChange({ ...settings, format: 'jpeg' });
-    // }
-
-    // function handleWidthChange(e) {
-    //     const width = +e.target.value;
-    //     const imgWidth = width;
-    //     onSettingsChange({
-    //         ...settings,
-    //         width: Math.floor(width / 10),
-    //         imgWidth,
-    //     });
-    // }
-
-    // function handleHeightChange(e) {
-    //     const height = +e.target.value;
-    //     const imgHeight = height;
-    //     onSettingsChange({
-    //         ...settings,
-    //         height: Math.floor(height / 10),
-    //         imgHeight,
-    //     });
-    // }
-
     return (
         <section
             style={{
@@ -73,12 +43,8 @@ const MenuWidget = ({
                     <i className="fa fa-caret-down"></i>
                 </button>
                 <div className="dropdown-content">
-                    <a href="#" onClick={() => onSelectFormat('png')}>
-                        PNG
-                    </a>
-                    <a href="#" onClick={() => onSelectFormat('jpeg')}>
-                        JPEG
-                    </a>
+                    <button onClick={() => onSelectFormat('png')}>PNG</button>
+                    <button onClick={() => onSelectFormat('jpeg')}>JPEG</button>
                 </div>
             </div>
             <div className="pop-up-line">

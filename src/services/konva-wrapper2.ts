@@ -90,6 +90,8 @@ export default class KonvaWrapper2 {
 
     static destroy() {
         this.#stage.destroy();
+        this.#xAxisTicks = [];
+        this.#yAxisTicks = [];
     }
 
     static #addXAxisTicks() {

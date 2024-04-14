@@ -25,26 +25,6 @@ const MainPage2 = () => {
 
     useEffect(() => {
         KonvaWrapper2.create(CANVAS_ID);
-
-        window.document.addEventListener(
-            'click',
-            () => {
-                // setAppState(state => ({
-                //     ...state,
-                //     isMenuWidgetVisible: false,
-                //     canvasState: {
-                //         ...state.canvasState,
-                //         x: 0,
-                //         y: 0,
-                //         width: 0,
-                //         height: 0,
-                //         text: '',
-                //     },
-                // }));
-            },
-            { capture: true },
-        );
-
         KonvaWrapper2.on('mousedown', ({ evt }) => {
             setAppState(state => {
                 return {

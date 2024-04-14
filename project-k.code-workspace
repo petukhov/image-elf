@@ -16,5 +16,6 @@
         },
         "editor.detectIndentation": false,
         "files.trimTrailingWhitespace": true,
+        "cSpell.words": ["Konva"],
     },
 }
