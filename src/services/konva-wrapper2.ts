@@ -13,18 +13,24 @@ export interface CanvasRenderState {
 }
 
 export default class KonvaWrapper2 {
-    static #stage: Konva.Stage;
-    static #layer: Konva.Layer;
-    static #box: Konva.Rect;
-    static #complexText: Konva.Text;
+    // the main container for the canvas
+    #stage: Konva.Stage;
+    // the layer that contains all the shapes. it's added to the stage
+    #layer: Konva.Layer;
+    // rectangle that shows the image that can be downloaded
+    #box: Konva.Rect;
+    // text shown in the middle of the box that shows the dimensions
+    #complexText: Konva.Text;
 
-    static #xAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
-    static #yAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
+    // x and y axis lines
+    #xAxisLine: Konva.Line;
+    #yAxisLine: Konva.Line;
 
-    static #xAxisLine: Konva.Line;
-    static #yAxisLine: Konva.Line;
+    // numbers like 100, 200, 300 added on the x and y axis
+    #xAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
+    #yAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
 
-    static create(containerId: string) {
+    constructor(containerId: string) {
         this.#stage = new Konva.Stage({
             container: containerId,
             width: window.innerWidth,
@@ -58,11 +64,11 @@ export default class KonvaWrapper2 {
         this.#addYAxisTicks();
     }
 
-    static on(eventName: string, callback: KonvaEventListener<Stage, MouseEvent>) {
+    on(eventName: string, callback: KonvaEventListener<Stage, MouseEvent>) {
         this.#stage.on(eventName, callback);
     }
 
-    static render({ x, y, width, height, text }: CanvasRenderState) {
+    render({ x, y, width, height, text }: CanvasRenderState) {
         // clear the canvas first
         this.#layer.clear();
 
@@ -88,13 +94,11 @@ export default class KonvaWrapper2 {
         this.#layer.draw();
     }
 
-    static destroy() {
+    destroy() {
         this.#stage.destroy();
-        this.#xAxisTicks = [];
-        this.#yAxisTicks = [];
     }
 
-    static #addXAxisTicks() {
+    #addXAxisTicks() {
         for (let i = 0; i < 50; i++) {
             const tickRect = new Konva.Rect({
                 x: -100,
@@ -129,7 +133,7 @@ export default class KonvaWrapper2 {
         this.#layer.add(this.#xAxisLine);
     }
 
-    static #addYAxisTicks() {
+    #addYAxisTicks() {
         for (let i = 0; i < 30; i++) {
             const tickRect = new Konva.Rect({
                 x: -100,
@@ -164,7 +168,7 @@ export default class KonvaWrapper2 {
         this.#layer.add(this.#yAxisLine);
     }
 
-    static #updateTicks(x, y) {
+    #updateTicks(x, y) {
         this.#xAxisTicks.forEach(({ tickRect, tickText }, i) => {
             if (i === 0) {
                 return;

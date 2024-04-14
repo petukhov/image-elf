@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import MenuWidget from '../components/MenuWidget';
 import '../layout.css';
 import KonvaWrapper2, { CanvasRenderState } from '../services/konva-wrapper2';
@@ -23,9 +23,12 @@ const CANVAS_ID = 'canvas-id';
 const MainPage2 = () => {
     const [appState, setAppState] = useState(initialState);
 
+    const konvaWrapperRef = useRef<KonvaWrapper2>();
+
     useEffect(() => {
-        KonvaWrapper2.create(CANVAS_ID);
-        KonvaWrapper2.on('mousedown', ({ evt }) => {
+        const wrapper = new KonvaWrapper2(CANVAS_ID);
+        konvaWrapperRef.current = wrapper;
+        wrapper.on('mousedown', ({ evt }) => {
             setAppState(state => {
                 return {
                     ...state,
@@ -41,7 +44,7 @@ const MainPage2 = () => {
                 };
             });
         });
-        KonvaWrapper2.on('mouseup', ({ evt }) => {
+        wrapper.on('mouseup', ({ evt }) => {
             setAppState(state => {
                 const shouldShowMenu =
                     evt.layerX > state.canvasState.x && evt.layerY > state.canvasState.y;
@@ -58,7 +61,7 @@ const MainPage2 = () => {
                       };
             });
         });
-        KonvaWrapper2.on('mousemove', ({ evt }) => {
+        wrapper.on('mousemove', ({ evt }) => {
             evt.stopPropagation();
 
             setAppState(state => {
@@ -95,12 +98,12 @@ const MainPage2 = () => {
             });
         });
         return () => {
-            KonvaWrapper2.destroy();
+            konvaWrapperRef.current?.destroy();
         };
     }, []);
 
     useEffect(() => {
-        KonvaWrapper2.render(appState.canvasState);
+        konvaWrapperRef.current?.render(appState.canvasState);
     }, [appState.canvasState]);
 
     const handleHeightInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -165,7 +168,6 @@ const MainPage2 = () => {
             >
                 <main>
                     <div id={CANVAS_ID}></div>
-                    {/* <div id="cover" className="hide"></div> */}
                     <div className="animate-character">Click & drag to produce an image!</div>
                 </main>
             </div>
