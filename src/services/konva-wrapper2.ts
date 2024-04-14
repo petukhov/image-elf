@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import { KonvaEventListener } from 'konva/lib/Node';
 import { Stage } from 'konva/lib/Stage';
+import { toUIVal } from './utils';
 
 const OFFSET = 30;
 
@@ -104,17 +105,17 @@ export default class KonvaWrapper2 {
         const tempBox = this.#box.clone() as Konva.Rect;
         tempLayer.add(tempBox);
         tempBox.size({
-            width: tempBox.width() * 10,
-            height: tempBox.height() * 10,
+            width: toUIVal(tempBox.width()),
+            height: toUIVal(tempBox.height()),
         });
 
         // cloning the text to the temporary layer, updating the size, and centering it
         const tempText = this.#complexText.clone() as Konva.Text;
         tempLayer.add(tempText);
-        tempText.fontSize(tempText.fontSize() * 10);
+        tempText.fontSize(toUIVal(tempText.fontSize()));
         tempText.size({
-            width: tempText.width() * 10,
-            height: tempText.height() * 10,
+            width: toUIVal(tempText.width()),
+            height: toUIVal(tempText.height()),
         });
         tempText.align('center');
 
@@ -223,7 +224,7 @@ export default class KonvaWrapper2 {
 
             tickText.y(y - 15);
             tickText.x(x + Math.floor(100 * i - tickText.width() / 2));
-            tickText.text(Math.floor(100 * i).toString());
+            tickText.text(toUIVal(Math.floor(100 * i)).toString());
         });
         this.#xAxisLine.x(x);
         this.#xAxisLine.y(y);
@@ -237,7 +238,7 @@ export default class KonvaWrapper2 {
 
             tickText.x(x - tickText.width() - 3);
             tickText.y(y + Math.floor(100 * i) - 5);
-            tickText.text(Math.floor(100 * i).toString());
+            tickText.text(toUIVal(Math.floor(100 * i)).toString());
         });
 
         this.#yAxisLine.x(x);

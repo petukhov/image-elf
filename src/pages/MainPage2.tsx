@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import MenuWidget from '../components/MenuWidget';
 import '../layout.css';
 import KonvaWrapper2, { CanvasRenderState } from '../services/konva-wrapper2';
+import { toInternalVal, toUIVal } from '../services/utils';
 
 const canvasState: CanvasRenderState = {
     // setting x and y to -1 to avoid showing the axis/ticks
@@ -30,6 +31,11 @@ function downloadImage(fileName, dataUrl) {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+}
+
+/** The text shown in the middle of the export image. */
+function imageText(width: number, height: number) {
+    return `${toUIVal(width)} x ${toUIVal(height)}`;
 }
 
 const MainPage2 = () => {
@@ -104,7 +110,7 @@ const MainPage2 = () => {
                         ...state.canvasState,
                         width: newWidth,
                         height: newHeight,
-                        text: `(${newWidth}, ${newHeight})`,
+                        text: imageText(newWidth, newHeight),
                     },
                 };
             });
@@ -119,22 +125,24 @@ const MainPage2 = () => {
     }, [appState.canvasState]);
 
     const handleHeightInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        const height = +e.target.value;
+        const height = toInternalVal(+e.target.value);
         setAppState(state => ({
             ...state,
             canvasState: {
                 ...state.canvasState,
+                text: imageText(state.canvasState.width, height),
                 height,
             },
         }));
     }, []);
 
     const handleWidthInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        const width = +e.target.value;
+        const width = toInternalVal(+e.target.value);
         setAppState(state => ({
             ...state,
             canvasState: {
                 ...state.canvasState,
+                text: imageText(width, state.canvasState.height),
                 width,
             },
         }));
@@ -163,8 +171,8 @@ const MainPage2 = () => {
                     onSave={handleSave}
                     state={{
                         selectedFormat: appState.selectedFormat,
-                        width: appState.canvasState.width,
-                        height: appState.canvasState.height,
+                        width: toUIVal(appState.canvasState.width),
+                        height: toUIVal(appState.canvasState.height),
                     }}
                 />
             )}
