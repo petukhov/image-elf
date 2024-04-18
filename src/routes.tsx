@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
+import MainPageOld from './old-code/MainPage';
 import ErrorPage from './pages/ErrorPage';
 import MainPage from './pages/MainPage';
-import MainPage2 from './pages/MainPage2';
 
 const router = createBrowserRouter([
     {
@@ -9,8 +9,8 @@ const router = createBrowserRouter([
         element: <MainPage />,
     },
     {
-        path: '/refactor',
-        element: <MainPage2 />,
+        path: '/old',
+        element: <MainPageOld />,
     },
     {
         path: '*',
