@@ -1,3 +1,6 @@
+import 'tailwindcss/tailwind.css';
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export interface MenuWidgetState {
     width: number;
     height: number;
@@ -26,16 +29,10 @@ const MenuWidget = ({
     return (
         <section
             style={{
-                background: '#333',
-                position: 'absolute',
-                width: '200px',
-                flexDirection: 'column',
-                zIndex: 1,
                 top: top + 'px',
                 left: left + 'px',
-                opacity: 0.8,
-                gap: '14px',
             }}
+            className="opacity-80 absolute z-10 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 w-52"
         >
             <div className="dropdown">
                 <button className="dropbtn">
