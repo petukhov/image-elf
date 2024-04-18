@@ -16,5 +16,13 @@
         },
         "editor.detectIndentation": false,
         "files.trimTrailingWhitespace": true,
+        "cSpell.words": ["Konva"],
+        "tailwindCSS.includeLanguages": {
+            "javascript": "javascript",
+            "html": "HTML",
+        },
+        "editor.quickSuggestions": {
+            "strings": true,
+        },
     },
 }

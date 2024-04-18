@@ -1,52 +1,54 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-types */
-
 import Konva from 'konva';
+import { KonvaEventListener } from 'konva/lib/Node';
+import { Stage } from 'konva/lib/Stage';
+import { toUIVal } from './utils';
 
 const OFFSET = 30;
+
+export interface CanvasRenderState {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    text: string;
+}
+
 export default class KonvaWrapper {
-    private stage: Konva.Stage;
-    private layer: Konva.Layer;
-    private box: Konva.Rect;
-    private complexText: Konva.Text;
+    // the main container for the canvas
+    #stage: Konva.Stage;
+    // the layer that contains all the shapes. it's added to the stage
+    #layer: Konva.Layer;
+    // rectangle that shows the image that can be downloaded
+    #box: Konva.Rect;
+    // text shown in the middle of the box that shows the dimensions
+    #complexText: Konva.Text;
 
-    private setSettingsCb: Function;
+    // x and y axis lines
+    #xAxisLine: Konva.Line;
+    #yAxisLine: Konva.Line;
 
-    private boostingSize: boolean = false;
-    private speedX: number = 0;
-    private speedY: number = 0;
+    // numbers like 100, 200, 300 added on the x and y axis
+    #xAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
+    #yAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
 
-    private xAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
-    private yAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
-
-    private xAxisLine: Konva.Line;
-    private yAxisLine: Konva.Line;
-
-    private x = 0;
-    private y = 0;
-
-    private cover;
-
-    create(setSettingsCb: Function) {
-        this.setSettingsCb = setSettingsCb;
-
-        this.stage = new Konva.Stage({
-            container: 'container',
+    constructor(containerId: string) {
+        this.#stage = new Konva.Stage({
+            container: containerId,
             width: window.innerWidth,
             height: window.innerHeight,
         });
 
-        this.layer = new Konva.Layer();
-        this.stage.add(this.layer);
+        this.#layer = new Konva.Layer();
+        this.#stage.add(this.#layer);
 
-        this.box = new Konva.Rect({
+        this.#box = new Konva.Rect({
             x: OFFSET,
             y: OFFSET,
             fill: '#33b4ff',
         });
-        this.layer.add(this.box);
+        this.#layer.add(this.#box);
 
-        this.complexText = new Konva.Text({
+        this.#complexText = new Konva.Text({
             x: OFFSET,
             y: OFFSET,
             fontSize: 20,
@@ -57,125 +59,86 @@ export default class KonvaWrapper {
             align: 'center',
             verticalAlign: 'middle',
         });
-        this.layer.add(this.complexText);
+        this.#layer.add(this.#complexText);
 
-        this.addXAxisTicks();
-        this.addYAxisTicks();
-
-        this.addListeners();
+        this.#addXAxisTicks();
+        this.#addYAxisTicks();
     }
 
-    private addListeners() {
-        this.cover = document.querySelector('#cover');
-        this.cover.addEventListener(
-            'click',
-            () => {
-                console.log('doc click');
-                if (![...this.cover.classList].includes('hide')) {
-                    this.cover.classList.add('hide');
-                    this.renderTicks2(-10, -10);
-                    this.setSettingsCb(settings => {
-                        return {
-                            ...settings,
-                            width: 0,
-                            height: 0,
-                            imgWidth: 0,
-                            imgHeight: 0,
-                            menuVisible: false,
-                        };
-                    });
-                }
-            },
-            { capture: true },
-        );
-        this.stage.on('click', () => {
-            console.log('noop');
-        });
-
-        let dragging = false;
-
-        this.stage.on('mousedown', ({ evt }: any) => {
-            dragging = true;
-            this.x = evt.layerX;
-            this.y = evt.layerY;
-            console.log('mousedown');
-            this.setSettingsCb(settings => {
-                return {
-                    ...settings,
-                    menuVisible: false,
-                };
-            });
-        });
-        this.stage.on('mouseup', ({ evt }) => {
-            dragging = false;
-            console.log('mouseup');
-            if ((evt as any).layerX > this.x && (evt as any).layerY > this.y) {
-                this.cover.classList.remove('hide');
-                this.setSettingsCb(settings => {
-                    return {
-                        ...settings,
-                        menuVisible: true,
-                    };
-                });
-            }
-        });
-        this.stage.on('mousemove', ({ evt }: any) => {
-            evt.stopPropagation();
-
-            this.setSettingsCb(settings => {
-                if (!dragging) {
-                    if (!settings.menuVisible) {
-                        this.moveAxis(evt);
-                    }
-                    this.render();
-                    return settings;
-                }
-                const newWidth = evt.layerX - this.x;
-                const newHeight = evt.layerY - this.y;
-
-                if (newWidth < 0 || newHeight < 0) {
-                    return settings;
-                }
-
-                return {
-                    ...settings,
-                    width: newWidth,
-                    height: newHeight,
-                    imgWidth: newWidth * 10,
-                    imgHeight: newHeight * 10,
-                    x: this.x,
-                    y: this.y,
-                };
-            });
-        });
+    on(eventName: string, callback: KonvaEventListener<Stage, MouseEvent>) {
+        this.#stage.on(eventName, callback);
     }
 
-    renderRect(width, height, imgWidth, imgHeight, x, y) {
-        const { box, complexText } = this;
-        if (!box) return;
-        box.x(x);
-        box.y(y);
-        box.size({
+    render({ x, y, width, height, text }: CanvasRenderState) {
+        // clear the canvas first
+        this.#layer.clear();
+
+        // set up the rectangle and text data
+        this.#box.x(x);
+        this.#box.y(y);
+        this.#box.size({
             width,
             height,
         });
-        complexText.x(x);
-        complexText.y(y);
-        complexText.size({
+        this.#complexText.x(x);
+        this.#complexText.y(y);
+        this.#complexText.size({
             width,
             height,
         });
-        complexText.text(`${imgWidth}x${imgHeight}`);
-        this.render();
+        this.#complexText.text(text);
+
+        // set ticks data too
+        this.#updateTicks(x, y);
+
+        // draw everything
+        this.#layer.draw();
     }
 
-    render() {
-        const { layer } = this;
-        layer.clear();
-        layer.draw();
+    getDataUrl() {
+        // hiding the current layer and creating a temporary one
+        this.#layer.hide();
+        const tempLayer = new Konva.Layer();
+        this.#stage.add(tempLayer);
+
+        // cloning the box to the temporary layer and updating the size
+        const tempBox = this.#box.clone() as Konva.Rect;
+        tempLayer.add(tempBox);
+        tempBox.size({
+            width: toUIVal(tempBox.width()),
+            height: toUIVal(tempBox.height()),
+        });
+
+        // cloning the text to the temporary layer, updating the size, and centering it
+        const tempText = this.#complexText.clone() as Konva.Text;
+        tempLayer.add(tempText);
+        tempText.fontSize(toUIVal(tempText.fontSize()));
+        tempText.size({
+            width: toUIVal(tempText.width()),
+            height: toUIVal(tempText.height()),
+        });
+        tempText.align('center');
+
+        // rendering the temporary layer to the data url
+        const res = this.#stage.toDataURL({
+            x: tempBox.x(),
+            y: tempBox.y(),
+            width: tempBox.width(),
+            height: tempBox.height(),
+        });
+
+        // destroying the temporary layer and showing the main one again
+        tempLayer.destroy();
+        this.#layer.show();
+
+        return res;
     }
 
-    addXAxisTicks() {
+    destroy() {
+        this.#stage.destroy();
+    }
+
+    #addXAxisTicks() {
         for (let i = 0; i < 50; i++) {
             const tickRect = new Konva.Rect({
                 x: -100,
@@ -184,7 +147,7 @@ export default class KonvaWrapper {
                 height: 10,
                 fill: '#000',
             });
-            this.layer.add(tickRect);
+            this.#layer.add(tickRect);
 
             const tickText = new Konva.Text({
                 x: -100,
@@ -194,23 +157,23 @@ export default class KonvaWrapper {
                 fontStyle: 'normal',
                 fill: '#333',
             });
-            this.layer.add(tickText);
+            this.#layer.add(tickText);
 
-            this.xAxisTicks.push({
+            this.#xAxisTicks.push({
                 tickRect,
                 tickText,
             });
         }
-        this.xAxisLine = new Konva.Line({
-            points: [0, 0, window.innerWidth, 0],
+        this.#xAxisLine = new Konva.Line({
+            points: [-1, -1, window.innerWidth, 0],
             stroke: 'black',
             strokeWidth: 1,
             dash: [4, 6],
         });
-        this.layer.add(this.xAxisLine);
+        this.#layer.add(this.#xAxisLine);
     }
 
-    addYAxisTicks() {
+    #addYAxisTicks() {
         for (let i = 0; i < 30; i++) {
             const tickRect = new Konva.Rect({
                 x: -100,
@@ -219,7 +182,7 @@ export default class KonvaWrapper {
                 height: 1,
                 fill: '#000',
             });
-            this.layer.add(tickRect);
+            this.#layer.add(tickRect);
 
             const tickText = new Konva.Text({
                 x: -100,
@@ -229,57 +192,29 @@ export default class KonvaWrapper {
                 fontStyle: 'normal',
                 fill: '#333',
             });
-            this.layer.add(tickText);
+            this.#layer.add(tickText);
 
-            this.yAxisTicks.push({
+            this.#yAxisTicks.push({
                 tickRect,
                 tickText,
             });
         }
-        this.yAxisLine = new Konva.Line({
-            points: [0, 0, 0, window.innerHeight],
+        this.#yAxisLine = new Konva.Line({
+            points: [-1, -1, 0, window.innerHeight],
             stroke: 'black',
             strokeWidth: 1,
             dash: [4, 6],
         });
-        this.layer.add(this.yAxisLine);
+        this.#layer.add(this.#yAxisLine);
     }
 
-    renderTicks(xScale?, yScale?) {
-        if (xScale) {
-            this.xAxisTicks.forEach(({ tickRect, tickText }, i) => {
-                tickRect.x(
-                    OFFSET + Math.floor(xScale.normalizedTickSpacing * i),
-                );
-                tickText.x(
-                    OFFSET +
-                        Math.floor(
-                            xScale.normalizedTickSpacing * i -
-                                tickText.width() / 2,
-                        ),
-                );
-                tickText.text(Math.floor(xScale.tickSpacing * i).toString());
-            });
+    #updateTicks(x, y) {
+        // don't show ticks when the app starts, and the user hasn't hovered over the canvas yet
+        if (x < 0 && y < 0) {
+            return;
         }
 
-        if (yScale) {
-            this.yAxisTicks.forEach(({ tickRect, tickText }, i) => {
-                if (i === 0) {
-                    return;
-                }
-                tickRect.y(
-                    OFFSET + Math.floor(yScale.normalizedTickSpacing * i),
-                );
-                tickText.y(
-                    OFFSET + Math.floor(yScale.normalizedTickSpacing * i) - 5,
-                );
-                tickText.text(Math.floor(yScale.tickSpacing * i).toString());
-            });
-        }
-    }
-
-    renderTicks2(x, y) {
-        this.xAxisTicks.forEach(({ tickRect, tickText }, i) => {
+        this.#xAxisTicks.forEach(({ tickRect, tickText }, i) => {
             if (i === 0) {
                 return;
             }
@@ -289,12 +224,12 @@ export default class KonvaWrapper {
 
             tickText.y(y - 15);
             tickText.x(x + Math.floor(100 * i - tickText.width() / 2));
-            tickText.text(Math.floor(100 * i).toString());
+            tickText.text(toUIVal(Math.floor(100 * i)).toString());
         });
-        this.xAxisLine.x(x);
-        this.xAxisLine.y(y);
+        this.#xAxisLine.x(x);
+        this.#xAxisLine.y(y);
 
-        this.yAxisTicks.forEach(({ tickRect, tickText }, i) => {
+        this.#yAxisTicks.forEach(({ tickRect, tickText }, i) => {
             if (i === 0) {
                 return;
             }
@@ -303,73 +238,10 @@ export default class KonvaWrapper {
 
             tickText.x(x - tickText.width() - 3);
             tickText.y(y + Math.floor(100 * i) - 5);
-            tickText.text(Math.floor(100 * i).toString());
+            tickText.text(toUIVal(Math.floor(100 * i)).toString());
         });
 
-        this.yAxisLine.x(x);
-        this.yAxisLine.y(y);
+        this.#yAxisLine.x(x);
+        this.#yAxisLine.y(y);
     }
-
-    moveAxis(evt) {
-        this.renderTicks2(evt.layerX, evt.layerY);
-    }
-
-    updateText() {
-        this.setSettingsCb(settings => {
-            const imgWidth = Math.min(
-                Math.round(settings.imgWidth + this.speedX),
-                9999,
-            );
-            const imgHeight = Math.min(
-                Math.round(settings.imgHeight + this.speedY),
-                9999,
-            );
-            return {
-                ...settings,
-                imgWidth,
-                imgHeight,
-            };
-        });
-    }
-
-    getDataUrl(imgWidth, imgHeight) {
-        const { stage, box } = this;
-        const origWidth = box.width();
-        const origHeight = box.height();
-        this.layer.clear();
-
-        const originalX = box.x();
-        const originalY = box.y();
-
-        this.renderRect(
-            Math.round(imgWidth),
-            imgHeight,
-            imgWidth,
-            imgHeight,
-            originalX,
-            originalY,
-        );
-        const res = stage.toDataURL({
-            x: originalX,
-            y: originalY,
-            width: box.width(),
-            height: box.height(),
-        });
-        this.renderRect(
-            origWidth,
-            origHeight,
-            imgWidth,
-            imgHeight,
-            originalX,
-            originalY,
-        );
-        return res;
-    }
-
-    private onNextFrame = () => {
-        this.updateText();
-        if (this.boostingSize) {
-            window.requestAnimationFrame(this.onNextFrame);
-        }
-    };
 }
