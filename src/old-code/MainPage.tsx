@@ -77,7 +77,7 @@ const IndexPage = () => {
                 <main>
                     <div id="container"></div>
                     <div id="cover" className="hide"></div>
-                    <div className="animate-character">Click & drag to produce an image!</div>
+                    <div className="animate-character">THIS IS OLD CODE! THIS IS OLD CODE!</div>
                 </main>
             </div>
         </>
