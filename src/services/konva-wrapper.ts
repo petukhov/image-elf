@@ -11,6 +11,8 @@ export interface CanvasRenderState {
     width: number;
     height: number;
     text: string;
+    canvasWidth: number;
+    canvasHeight: number;
 }
 
 export default class KonvaWrapper {
@@ -31,11 +33,11 @@ export default class KonvaWrapper {
     #xAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
     #yAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
 
-    constructor(containerId: string) {
+    constructor(containerId: string, width: number, height: number) {
         this.#stage = new Konva.Stage({
             container: containerId,
-            width: window.innerWidth,
-            height: window.innerHeight,
+            width,
+            height,
         });
 
         this.#layer = new Konva.Layer();
@@ -69,7 +71,7 @@ export default class KonvaWrapper {
         this.#stage.on(eventName, callback);
     }
 
-    render({ x, y, width, height, text }: CanvasRenderState) {
+    render({ x, y, width, height, text, canvasWidth, canvasHeight }: CanvasRenderState) {
         // clear the canvas first
         this.#layer.clear();
 
@@ -91,8 +93,11 @@ export default class KonvaWrapper {
         // set ticks data too
         this.#updateTicks(x, y);
 
+        // updates the canvas stage size
+        this.#stage.size({ width: canvasWidth, height: canvasHeight });
+
         // draw everything
-        this.#layer.draw();
+        this.#stage.batchDraw();
     }
 
     getDataUrl() {
@@ -134,14 +139,6 @@ export default class KonvaWrapper {
         return res;
     }
 
-    resizeStage() {
-        this.#stage.setAttrs({
-            width: window.innerWidth,
-            height: window.innerHeight,
-        });
-        this.#stage.batchDraw();
-    }
-
     destroy() {
         this.#stage.destroy();
     }
@@ -173,7 +170,7 @@ export default class KonvaWrapper {
             });
         }
         this.#xAxisLine = new Konva.Line({
-            points: [-1, -1, window.innerWidth, 0],
+            points: [-1, -1, this.#stage.size().width, 0],
             stroke: 'black',
             strokeWidth: 1,
             dash: [4, 6],
@@ -208,7 +205,7 @@ export default class KonvaWrapper {
             });
         }
         this.#yAxisLine = new Konva.Line({
-            points: [-1, -1, 0, window.innerHeight],
+            points: [-1, -1, 0, this.#stage.size().height],
             stroke: 'black',
             strokeWidth: 1,
             dash: [4, 6],

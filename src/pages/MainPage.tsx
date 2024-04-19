@@ -12,6 +12,8 @@ const canvasState: CanvasRenderState = {
     width: 0,
     height: 0,
     text: '',
+    canvasWidth: window.innerWidth,
+    canvasHeight: window.innerHeight,
 };
 
 const initialState = {
@@ -43,7 +45,7 @@ const MainPage = () => {
     const konvaWrapperRef = useRef<KonvaWrapper>();
 
     useEffect(() => {
-        const wrapper = new KonvaWrapper(CANVAS_ID);
+        const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
         konvaWrapperRef.current = wrapper;
         wrapper.on('mousedown', ({ evt }) => {
             setAppState(state => {
@@ -125,7 +127,18 @@ const MainPage = () => {
 
     useEffect(() => {
         const handleResize = () => {
-            konvaWrapperRef.current?.resizeStage();
+            setAppState(state => {
+                return {
+                    ...state,
+                    isDragging: true,
+                    isMenuWidgetVisible: false,
+                    canvasState: {
+                        ...state.canvasState,
+                        canvasWidth: window.innerWidth,
+                        canvasHeight: window.innerHeight,
+                    },
+                };
+            });
         };
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
