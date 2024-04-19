@@ -12,6 +12,8 @@ const canvasState: CanvasRenderState = {
     width: 0,
     height: 0,
     text: '',
+    canvasWidth: window.innerWidth,
+    canvasHeight: window.innerHeight,
 };
 
 const initialState = {
@@ -40,11 +42,10 @@ function imageText(width: number, height: number) {
 
 const MainPage = () => {
     const [appState, setAppState] = useState(initialState);
-
     const konvaWrapperRef = useRef<KonvaWrapper>();
 
     useEffect(() => {
-        const wrapper = new KonvaWrapper(CANVAS_ID);
+        const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
         konvaWrapperRef.current = wrapper;
         wrapper.on('mousedown', ({ evt }) => {
             setAppState(state => {
@@ -123,6 +124,25 @@ const MainPage = () => {
     useEffect(() => {
         konvaWrapperRef.current?.render(appState.canvasState);
     }, [appState.canvasState]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setAppState(state => {
+                return {
+                    ...state,
+                    isDragging: true,
+                    isMenuWidgetVisible: false,
+                    canvasState: {
+                        ...state.canvasState,
+                        canvasWidth: window.innerWidth,
+                        canvasHeight: window.innerHeight,
+                    },
+                };
+            });
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleHeightInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const height = toInternalVal(+e.target.value);
