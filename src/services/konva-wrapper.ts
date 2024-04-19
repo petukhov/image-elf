@@ -134,6 +134,14 @@ export default class KonvaWrapper {
         return res;
     }
 
+    resizeStage() {
+        this.#stage.setAttrs({
+            width: window.innerWidth,
+            height: window.innerHeight,
+        });
+        this.#stage.batchDraw();
+    }
+
     destroy() {
         this.#stage.destroy();
     }

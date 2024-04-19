@@ -40,7 +40,6 @@ function imageText(width: number, height: number) {
 
 const MainPage = () => {
     const [appState, setAppState] = useState(initialState);
-
     const konvaWrapperRef = useRef<KonvaWrapper>();
 
     useEffect(() => {
@@ -123,6 +122,14 @@ const MainPage = () => {
     useEffect(() => {
         konvaWrapperRef.current?.render(appState.canvasState);
     }, [appState.canvasState]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            konvaWrapperRef.current?.resizeStage();
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleHeightInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const height = toInternalVal(+e.target.value);
