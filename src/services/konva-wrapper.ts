@@ -54,7 +54,6 @@ export default class KonvaWrapper {
         this.#complexText = new Konva.Text({
             x: 0,
             y: 0,
-            fontSize: 20,
             fontFamily: 'Arial',
             fontStyle: 'bold',
             fill: 'black',
@@ -102,6 +101,10 @@ export default class KonvaWrapper {
             height,
         });
         this.#complexText.text(text);
+
+        // automatically adjust the font size so that it always fits in
+        const fontSize = Math.min(width, height) / 10;
+        this.#complexText.fontSize(fontSize);
 
         // set ticks data too
         this.#updateTicks(x, y);
