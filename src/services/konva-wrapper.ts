@@ -3,8 +3,6 @@ import { KonvaEventListener } from 'konva/lib/Node';
 import { Stage } from 'konva/lib/Stage';
 import { toUIVal } from './utils';
 
-const OFFSET = 30;
-
 export interface CanvasRenderState {
     x: number;
     y: number;
@@ -40,19 +38,22 @@ export default class KonvaWrapper {
             height,
         });
 
-        this.#layer = new Konva.Layer();
+        this.#layer = new Konva.Layer({
+            listening: false,
+        });
         this.#stage.add(this.#layer);
 
         this.#box = new Konva.Rect({
-            x: OFFSET,
-            y: OFFSET,
+            x: 0,
+            y: 0,
             fill: '#33b4ff',
+            listening: false,
         });
         this.#layer.add(this.#box);
 
         this.#complexText = new Konva.Text({
-            x: OFFSET,
-            y: OFFSET,
+            x: 0,
+            y: 0,
             fontSize: 20,
             fontFamily: 'Arial',
             fontStyle: 'bold',
@@ -60,6 +61,7 @@ export default class KonvaWrapper {
             padding: 20,
             align: 'center',
             verticalAlign: 'middle',
+            listening: false,
         });
         this.#layer.add(this.#complexText);
 
@@ -160,6 +162,7 @@ export default class KonvaWrapper {
                 width: 1,
                 height: 10,
                 fill: '#000',
+                listening: false,
             });
             this.#layer.add(tickRect);
 
@@ -170,6 +173,7 @@ export default class KonvaWrapper {
                 fontFamily: 'Arial',
                 fontStyle: 'normal',
                 fill: '#333',
+                listening: false,
             });
             this.#layer.add(tickText);
 
@@ -183,6 +187,7 @@ export default class KonvaWrapper {
             stroke: 'black',
             strokeWidth: 1,
             dash: [4, 6],
+            listening: false,
         });
         this.#layer.add(this.#xAxisLine);
     }
@@ -195,6 +200,7 @@ export default class KonvaWrapper {
                 width: 10,
                 height: 1,
                 fill: '#000',
+                listening: false,
             });
             this.#layer.add(tickRect);
 
@@ -205,6 +211,7 @@ export default class KonvaWrapper {
                 fontFamily: 'Arial',
                 fontStyle: 'normal',
                 fill: '#333',
+                listening: false,
             });
             this.#layer.add(tickText);
 
@@ -218,6 +225,7 @@ export default class KonvaWrapper {
             stroke: 'black',
             strokeWidth: 1,
             dash: [4, 6],
+            listening: false,
         });
         this.#layer.add(this.#yAxisLine);
     }
