@@ -31,11 +31,11 @@ export default class KonvaWrapper {
     #xAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
     #yAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
 
-    constructor(containerId: string, width: number, height: number) {
+    constructor(containerId: string, canvasWidth: number, canvasHeight: number) {
         this.#stage = new Konva.Stage({
             container: containerId,
-            width,
-            height,
+            width: canvasWidth,
+            height: canvasHeight,
         });
 
         this.#layer = new Konva.Layer({
@@ -58,7 +58,6 @@ export default class KonvaWrapper {
             fontFamily: 'Arial',
             fontStyle: 'bold',
             fill: 'black',
-            padding: 20,
             align: 'center',
             verticalAlign: 'middle',
             listening: false,
