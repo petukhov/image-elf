@@ -208,13 +208,13 @@ const MainPage = () => {
         <>
             {appState.isMenuWidgetVisible && (
                 <MenuWidget
-                    top={appState.canvasState.y + appState.canvasState.height - 100}
-                    left={appState.canvasState.x + appState.canvasState.width - 100}
                     onHeightChange={handleHeightInput}
                     onWidthChange={handleWidthInput}
                     onSelectFormat={handleSelectFormat}
                     onSave={handleSave}
                     state={{
+                        x: appState.canvasState.y + appState.canvasState.height - 100,
+                        y: appState.canvasState.x + appState.canvasState.width - 100,
                         selectedFormat: appState.selectedFormat,
                         width: toUIVal(appState.canvasState.width),
                         height: toUIVal(appState.canvasState.height),

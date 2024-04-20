@@ -2,14 +2,14 @@ import 'tailwindcss/tailwind.css';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export interface MenuWidgetState {
+    x: number;
+    y: number;
     width: number;
     height: number;
     selectedFormat: 'png' | 'jpeg';
 }
 
 export interface MenuWidgetProps {
-    top: number;
-    left: number;
     onWidthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onHeightChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onSave: () => void;
@@ -18,8 +18,6 @@ export interface MenuWidgetProps {
 }
 
 const MenuWidget = ({
-    top,
-    left,
     onWidthChange,
     onHeightChange,
     onSave,
@@ -29,8 +27,8 @@ const MenuWidget = ({
     return (
         <section
             style={{
-                top: top + 'px',
-                left: left + 'px',
+                top: state.x + 'px',
+                left: state.y + 'px',
             }}
             className="opacity-80 absolute z-10 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 w-52"
         >
