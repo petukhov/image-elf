@@ -73,7 +73,19 @@ export default class KonvaWrapper {
 
     render({ x, y, width, height, text, canvasWidth, canvasHeight }: CanvasRenderState) {
         // clear the canvas first
-        this.#layer.clear();
+        this.#stage.clear();
+
+        // updates the canvas stage size
+        this.#stage.size({ width: canvasWidth, height: canvasHeight });
+
+        if (x < 0 && y < 0) {
+            // clearing the stage again asynchronously because sometimes not everything is cleared.
+            // this might be a bug in KonvaJs.
+            requestAnimationFrame(() => {
+                this.#stage.clear();
+            });
+            return;
+        }
 
         // set up the rectangle and text data
         this.#box.x(x);
@@ -92,9 +104,6 @@ export default class KonvaWrapper {
 
         // set ticks data too
         this.#updateTicks(x, y);
-
-        // updates the canvas stage size
-        this.#stage.size({ width: canvasWidth, height: canvasHeight });
 
         // draw everything
         this.#stage.batchDraw();
@@ -214,11 +223,6 @@ export default class KonvaWrapper {
     }
 
     #updateTicks(x, y) {
-        // don't show ticks when the app starts, and the user hasn't hovered over the canvas yet
-        if (x < 0 && y < 0) {
-            return;
-        }
-
         this.#xAxisTicks.forEach(({ tickRect, tickText }, i) => {
             if (i === 0) {
                 return;
