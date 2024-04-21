@@ -4,23 +4,34 @@ import '../layout.css';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import { toInternalVal, toUIVal } from '../services/utils';
 
-const canvasState: CanvasRenderState = {
+/** The default state is when the canvas is empty and it's the same size as the browser window. */
+const getDefaultCanvasState = (): CanvasRenderState => ({
     // setting x and y to -1 to avoid showing the axis/ticks
     // when the app shows up and before the user hovers over the canvas
+
+    /** x and y are the top left corner of the rectangle */
     x: -1,
     y: -1,
+    /** width and height are the dimensions of the rectangle */
     width: 0,
     height: 0,
+    /** the text shown in the middle of the rectangle */
     text: '',
+    /** the width of the canvas */
     canvasWidth: window.innerWidth,
+    /** the height of the canvas */
     canvasHeight: window.innerHeight,
-};
+});
 
 const initialState = {
+    /** whether the user is dragging over the canvas the mouse down, making the rectangle larger or smaller. */
     isDragging: false,
+    /** whether the Menu widget with the save button and other settings visible */
     isMenuWidgetVisible: false,
+    /** the currently selected image format for the generated image */
     selectedFormat: 'png' as 'png' | 'jpeg',
-    canvasState,
+    /** the state of the HTML5 Canvas passed to KonvaWrapper's render() method. */
+    canvasState: getDefaultCanvasState(),
 };
 
 const CANVAS_ID = 'canvas-id';
@@ -116,16 +127,21 @@ const MainPage = () => {
                 };
             });
         });
-        return () => {
-            konvaWrapperRef.current?.destroy();
+
+        // we want to hide all the items on the canvas if the user's mouse leaves the window.
+        const handleMouseLeave = () => {
+            setAppState(state => {
+                return {
+                    ...state,
+                    isDragging: false,
+                    isMenuWidgetVisible: false,
+                    canvasState: getDefaultCanvasState(),
+                };
+            });
         };
-    }, []);
+        document.addEventListener('mouseleave', handleMouseLeave);
 
-    useEffect(() => {
-        konvaWrapperRef.current?.render(appState.canvasState);
-    }, [appState.canvasState]);
-
-    useEffect(() => {
+        // update the canvas size if the window size changes
         const handleResize = () => {
             setAppState(state => {
                 return {
@@ -141,8 +157,17 @@ const MainPage = () => {
             });
         };
         window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+
+        return () => {
+            document.removeEventListener('mouseleave', handleMouseLeave);
+            window.removeEventListener('resize', handleResize);
+            konvaWrapperRef.current?.destroy();
+        };
     }, []);
+
+    useEffect(() => {
+        konvaWrapperRef.current?.render(appState.canvasState);
+    }, [appState.canvasState]);
 
     const handleHeightInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const height = toInternalVal(+e.target.value);
@@ -183,13 +208,13 @@ const MainPage = () => {
         <>
             {appState.isMenuWidgetVisible && (
                 <MenuWidget
-                    top={appState.canvasState.y + appState.canvasState.height - 100}
-                    left={appState.canvasState.x + appState.canvasState.width - 100}
                     onHeightChange={handleHeightInput}
                     onWidthChange={handleWidthInput}
                     onSelectFormat={handleSelectFormat}
                     onSave={handleSave}
                     state={{
+                        x: appState.canvasState.y + appState.canvasState.height - 100,
+                        y: appState.canvasState.x + appState.canvasState.width - 100,
                         selectedFormat: appState.selectedFormat,
                         width: toUIVal(appState.canvasState.width),
                         height: toUIVal(appState.canvasState.height),

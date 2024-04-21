@@ -3,8 +3,6 @@ import { KonvaEventListener } from 'konva/lib/Node';
 import { Stage } from 'konva/lib/Stage';
 import { toUIVal } from './utils';
 
-const OFFSET = 30;
-
 export interface CanvasRenderState {
     x: number;
     y: number;
@@ -33,33 +31,35 @@ export default class KonvaWrapper {
     #xAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
     #yAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
 
-    constructor(containerId: string, width: number, height: number) {
+    constructor(containerId: string, canvasWidth: number, canvasHeight: number) {
         this.#stage = new Konva.Stage({
             container: containerId,
-            width,
-            height,
+            width: canvasWidth,
+            height: canvasHeight,
         });
 
-        this.#layer = new Konva.Layer();
+        this.#layer = new Konva.Layer({
+            listening: false,
+        });
         this.#stage.add(this.#layer);
 
         this.#box = new Konva.Rect({
-            x: OFFSET,
-            y: OFFSET,
+            x: 0,
+            y: 0,
             fill: '#33b4ff',
+            listening: false,
         });
         this.#layer.add(this.#box);
 
         this.#complexText = new Konva.Text({
-            x: OFFSET,
-            y: OFFSET,
-            fontSize: 20,
+            x: 0,
+            y: 0,
             fontFamily: 'Arial',
             fontStyle: 'bold',
             fill: 'black',
-            padding: 20,
             align: 'center',
             verticalAlign: 'middle',
+            listening: false,
         });
         this.#layer.add(this.#complexText);
 
@@ -73,7 +73,19 @@ export default class KonvaWrapper {
 
     render({ x, y, width, height, text, canvasWidth, canvasHeight }: CanvasRenderState) {
         // clear the canvas first
-        this.#layer.clear();
+        this.#stage.clear();
+
+        // updates the canvas stage size
+        this.#stage.size({ width: canvasWidth, height: canvasHeight });
+
+        if (x < 0 && y < 0) {
+            // clearing the stage again asynchronously because sometimes not everything is cleared.
+            // this might be a bug in KonvaJs.
+            requestAnimationFrame(() => {
+                this.#stage.clear();
+            });
+            return;
+        }
 
         // set up the rectangle and text data
         this.#box.x(x);
@@ -90,11 +102,12 @@ export default class KonvaWrapper {
         });
         this.#complexText.text(text);
 
+        // automatically adjust the font size so that it always fits in
+        const fontSize = Math.min(width, height) / 10;
+        this.#complexText.fontSize(fontSize);
+
         // set ticks data too
         this.#updateTicks(x, y);
-
-        // updates the canvas stage size
-        this.#stage.size({ width: canvasWidth, height: canvasHeight });
 
         // draw everything
         this.#stage.batchDraw();
@@ -151,6 +164,7 @@ export default class KonvaWrapper {
                 width: 1,
                 height: 10,
                 fill: '#000',
+                listening: false,
             });
             this.#layer.add(tickRect);
 
@@ -161,6 +175,7 @@ export default class KonvaWrapper {
                 fontFamily: 'Arial',
                 fontStyle: 'normal',
                 fill: '#333',
+                listening: false,
             });
             this.#layer.add(tickText);
 
@@ -174,6 +189,7 @@ export default class KonvaWrapper {
             stroke: 'black',
             strokeWidth: 1,
             dash: [4, 6],
+            listening: false,
         });
         this.#layer.add(this.#xAxisLine);
     }
@@ -186,6 +202,7 @@ export default class KonvaWrapper {
                 width: 10,
                 height: 1,
                 fill: '#000',
+                listening: false,
             });
             this.#layer.add(tickRect);
 
@@ -196,6 +213,7 @@ export default class KonvaWrapper {
                 fontFamily: 'Arial',
                 fontStyle: 'normal',
                 fill: '#333',
+                listening: false,
             });
             this.#layer.add(tickText);
 
@@ -209,16 +227,12 @@ export default class KonvaWrapper {
             stroke: 'black',
             strokeWidth: 1,
             dash: [4, 6],
+            listening: false,
         });
         this.#layer.add(this.#yAxisLine);
     }
 
     #updateTicks(x, y) {
-        // don't show ticks when the app starts, and the user hasn't hovered over the canvas yet
-        if (x < 0 && y < 0) {
-            return;
-        }
-
         this.#xAxisTicks.forEach(({ tickRect, tickText }, i) => {
             if (i === 0) {
                 return;
