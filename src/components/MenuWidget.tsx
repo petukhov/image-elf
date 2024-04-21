@@ -33,7 +33,6 @@ const MenuWidget = ({
             className="absolute z-10 bg-white rounded-lg shadow-lg p-6 "
         >
             <form className="space-y-4">
-                <h3 className="text-xl font-medium text-gray-900">Create an Image</h3>
                 <div>
                     <label
                         htmlFor="format"
@@ -98,7 +97,7 @@ const MenuWidget = ({
                     onClick={onSave}
                     className="w-full text-white bg-primary hover:bg-secondary font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent"
                 >
-                    Save
+                    Create Image
                 </button>
             </form>
         </section>
