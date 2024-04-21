@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import MenuWidget from '../components/MenuWidget';
-import '../layout.css';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import { toInternalVal, toUIVal } from '../services/utils';
 
@@ -249,7 +248,6 @@ const MainPage = () => {
             >
                 <main>
                     <div id={CANVAS_ID}></div>
-                    <div className="animate-character">Click & drag to produce an image!</div>
                 </main>
             </div>
         </>
