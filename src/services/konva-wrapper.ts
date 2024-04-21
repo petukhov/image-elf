@@ -115,6 +115,10 @@ export default class KonvaWrapper {
         // set ticks data too
         this.#updateTicks(x, y);
 
+        // update tick points on stage resize
+        this.#yAxisLine.points([-1, -1, 0, this.#stage.size().height]);
+        this.#xAxisLine.points([-1, -1, this.#stage.size().width, 0]);
+
         // draw everything
         this.#stage.batchDraw();
     }
