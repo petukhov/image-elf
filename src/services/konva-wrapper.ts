@@ -56,7 +56,7 @@ export default class KonvaWrapper {
             y: 0,
             fontFamily: 'Arial',
             fontStyle: 'bold',
-            fill: 'black',
+            fill: 'white',
             align: 'center',
             verticalAlign: 'middle',
             listening: false,
@@ -131,6 +131,13 @@ export default class KonvaWrapper {
         tempBox.size({
             width: toUIVal(tempBox.width()),
             height: toUIVal(tempBox.height()),
+        });
+
+        // update box gradient
+        tempBox.fillLinearGradientStartPoint({ x: tempBox.x(), y: tempBox.y() });
+        tempBox.fillLinearGradientEndPoint({
+            x: tempBox.x() + tempBox.width(),
+            y: tempBox.y() + tempBox.height(),
         });
 
         // cloning the text to the temporary layer, updating the size, and centering it
