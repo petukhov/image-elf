@@ -236,20 +236,7 @@ const MainPage = () => {
                     }}
                 />
             )}
-            <div
-                style={{
-                    margin: `0 auto`,
-                    maxWidth: 960,
-                    padding: `0 1.0875rem 1.45rem`,
-                    paddingBottom: 0,
-                    marginLeft: 0,
-                    paddingLeft: 0,
-                }}
-            >
-                <main>
-                    <div id={CANVAS_ID}></div>
-                </main>
-            </div>
+            <div id={CANVAS_ID}></div>
         </>
     );
 };
