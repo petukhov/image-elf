@@ -17,6 +17,9 @@ export interface MenuWidgetProps {
     state: MenuWidgetState;
 }
 
+const inputBaseClass =
+    'block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-accent focus:border-accent focus-visible:ring-accent';
+
 const MenuWidget = ({
     onWidthChange,
     onHeightChange,
@@ -26,47 +29,78 @@ const MenuWidget = ({
 }: MenuWidgetProps) => {
     return (
         <section
-            style={{
-                top: state.x + 'px',
-                left: state.y + 'px',
-            }}
-            className="opacity-80 absolute z-10 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 w-52"
+            style={{ top: `${state.x}px`, left: `${state.y}px` }}
+            className="absolute z-10 bg-white rounded-lg shadow-lg p-6 "
         >
-            <div className="dropdown">
-                <button className="dropbtn">
-                    Format: {state.selectedFormat}
-                    <i className="fa fa-caret-down"></i>
-                </button>
-                <div className="dropdown-content">
-                    <button onClick={() => onSelectFormat('png')}>PNG</button>
-                    <button onClick={() => onSelectFormat('jpeg')}>JPEG</button>
+            <form className="space-y-4">
+                <h3 className="text-xl font-medium text-gray-900">Create an Image</h3>
+                <div>
+                    <label
+                        htmlFor="format"
+                        className="block mb-2 text-sm font-medium text-gray-900 "
+                    >
+                        Image Format
+                    </label>
+                    <select
+                        id="format"
+                        value={state.selectedFormat}
+                        onChange={e =>
+                            onSelectFormat(e.target.value as MenuWidgetState['selectedFormat'])
+                        }
+                        className={inputBaseClass}
+                    >
+                        <option value="png">PNG</option>
+                        <option value="jpeg">JPEG</option>
+                    </select>
                 </div>
-            </div>
-            <div className="pop-up-line">
-                <div className="navbar-text">Width:</div>
-                <input
-                    type="number"
-                    name="num"
-                    min="1"
-                    max="9999"
-                    onChange={onWidthChange}
-                    value={state.width}
-                ></input>
-            </div>
-            <div className="pop-up-line">
-                <div className="navbar-text">Height:</div>
-                <input
-                    type="number"
-                    name="num"
-                    min="1"
-                    max="9999"
-                    onChange={onHeightChange}
-                    value={state.height}
-                ></input>
-            </div>
-            <button className="save-btn" onClick={onSave}>
-                Save!
-            </button>
+                <div className="flex gap-4">
+                    <div>
+                        <label
+                            htmlFor="width"
+                            className="block mb-2 text-sm font-medium text-gray-900"
+                        >
+                            Width (px)
+                        </label>
+                        <input
+                            type="number"
+                            name="width"
+                            id="width"
+                            min="1"
+                            max="9999"
+                            onChange={onWidthChange}
+                            value={state.width}
+                            className={inputBaseClass}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label
+                            htmlFor="height"
+                            className="block mb-2 text-sm font-medium text-gray-900"
+                        >
+                            Height (px)
+                        </label>
+                        <input
+                            type="number"
+                            name="height"
+                            id="height"
+                            min="1"
+                            max="9999"
+                            onChange={onHeightChange}
+                            value={state.height}
+                            className={inputBaseClass}
+                            required
+                        />
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    onClick={onSave}
+                    className="w-full text-white bg-primary hover:bg-secondary font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent"
+                >
+                    Save
+                </button>
+            </form>
         </section>
     );
 };
