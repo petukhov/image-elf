@@ -129,7 +129,7 @@ const MainPage = () => {
         });
 
         // we want to hide all the items on the canvas if the user's mouse leaves the window.
-        const callback = () => {
+        const handleMouseLeave = () => {
             setAppState(state => {
                 return {
                     ...state,
@@ -139,18 +139,9 @@ const MainPage = () => {
                 };
             });
         };
-        document.addEventListener('mouseleave', callback);
-        return () => {
-            document.removeEventListener('mouseleave', callback);
-            konvaWrapperRef.current?.destroy();
-        };
-    }, []);
+        document.addEventListener('mouseleave', handleMouseLeave);
 
-    useEffect(() => {
-        konvaWrapperRef.current?.render(appState.canvasState);
-    }, [appState.canvasState]);
-
-    useEffect(() => {
+        // update the canvas size if the window size changes
         const handleResize = () => {
             setAppState(state => {
                 return {
@@ -166,8 +157,17 @@ const MainPage = () => {
             });
         };
         window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+
+        return () => {
+            document.removeEventListener('mouseleave', handleMouseLeave);
+            window.removeEventListener('resize', handleResize);
+            konvaWrapperRef.current?.destroy();
+        };
     }, []);
+
+    useEffect(() => {
+        konvaWrapperRef.current?.render(appState.canvasState);
+    }, [appState.canvasState]);
 
     const handleHeightInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const height = toInternalVal(+e.target.value);
