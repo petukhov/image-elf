@@ -46,7 +46,7 @@ export default class KonvaWrapper {
         this.#box = new Konva.Rect({
             x: 0,
             y: 0,
-            fill: '#33b4ff',
+            fillLinearGradientColorStops: [0, '#2AE5BC', 0.5, '#5BD8BD', 1, '#99E0D1'],
             listening: false,
         });
         this.#layer.add(this.#box);
@@ -90,10 +90,16 @@ export default class KonvaWrapper {
         // set up the rectangle and text data
         this.#box.x(x);
         this.#box.y(y);
+
         this.#box.size({
             width,
             height,
         });
+
+        // update box gradient
+        this.#box.fillLinearGradientStartPoint({ x: x, y: y });
+        this.#box.fillLinearGradientEndPoint({ x: x + width, y: y + height });
+
         this.#complexText.x(x);
         this.#complexText.y(y);
         this.#complexText.size({
