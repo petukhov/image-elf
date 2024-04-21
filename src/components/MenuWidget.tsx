@@ -29,8 +29,8 @@ const MenuWidget = ({
 }: MenuWidgetProps) => {
     return (
         <section
-            style={{ top: `${state.x}px`, left: `${state.y}px` }}
-            className="absolute z-10 bg-white rounded-lg shadow-lg p-6 "
+            style={{ left: `${state.x}px`, top: `${state.y}px` }}
+            className="absolute z-10 bg-white rounded-lg shadow-lg p-6 bg-opacity-90"
         >
             <form className="space-y-4">
                 <div>
