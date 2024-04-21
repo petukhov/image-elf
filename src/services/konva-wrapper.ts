@@ -46,7 +46,7 @@ export default class KonvaWrapper {
         this.#box = new Konva.Rect({
             x: 0,
             y: 0,
-            fill: '#33b4ff',
+            fillLinearGradientColorStops: [0, '#2AE5BC', 0.5, '#5BD8BD', 1, '#99E0D1'],
             listening: false,
         });
         this.#layer.add(this.#box);
@@ -56,7 +56,7 @@ export default class KonvaWrapper {
             y: 0,
             fontFamily: 'Arial',
             fontStyle: 'bold',
-            fill: 'black',
+            fill: 'white',
             align: 'center',
             verticalAlign: 'middle',
             listening: false,
@@ -90,10 +90,16 @@ export default class KonvaWrapper {
         // set up the rectangle and text data
         this.#box.x(x);
         this.#box.y(y);
+
         this.#box.size({
             width,
             height,
         });
+
+        // update box gradient
+        this.#box.fillLinearGradientStartPoint({ x: x, y: y });
+        this.#box.fillLinearGradientEndPoint({ x: x + width, y: y + height });
+
         this.#complexText.x(x);
         this.#complexText.y(y);
         this.#complexText.size({
@@ -108,6 +114,10 @@ export default class KonvaWrapper {
 
         // set ticks data too
         this.#updateTicks(x, y);
+
+        // update tick points on stage resize
+        this.#yAxisLine.points([-1, -1, 0, this.#stage.size().height]);
+        this.#xAxisLine.points([-1, -1, this.#stage.size().width, 0]);
 
         // draw everything
         this.#stage.batchDraw();
@@ -125,6 +135,13 @@ export default class KonvaWrapper {
         tempBox.size({
             width: toUIVal(tempBox.width()),
             height: toUIVal(tempBox.height()),
+        });
+
+        // update box gradient
+        tempBox.fillLinearGradientStartPoint({ x: tempBox.x(), y: tempBox.y() });
+        tempBox.fillLinearGradientEndPoint({
+            x: tempBox.x() + tempBox.width(),
+            y: tempBox.y() + tempBox.height(),
         });
 
         // cloning the text to the temporary layer, updating the size, and centering it

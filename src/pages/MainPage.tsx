@@ -51,6 +51,8 @@ function imageText(width: number, height: number) {
     return `${toUIVal(width)} x ${toUIVal(height)}`;
 }
 
+const WIDGET_OFFSET = 100;
+
 const MainPage = () => {
     const [appState, setAppState] = useState(initialState);
     const konvaWrapperRef = useRef<KonvaWrapper>();
@@ -213,8 +215,22 @@ const MainPage = () => {
                     onSelectFormat={handleSelectFormat}
                     onSave={handleSave}
                     state={{
-                        x: appState.canvasState.y + appState.canvasState.height - 100,
-                        y: appState.canvasState.x + appState.canvasState.width - 100,
+                        x: Math.max(
+                            0,
+                            Math.min(
+                                appState.canvasState.y +
+                                    appState.canvasState.height -
+                                    WIDGET_OFFSET,
+                                appState.canvasState.canvasHeight - WIDGET_OFFSET * 4,
+                            ),
+                        ),
+                        y: Math.max(
+                            0,
+                            Math.min(
+                                appState.canvasState.x + appState.canvasState.width - WIDGET_OFFSET,
+                                appState.canvasState.canvasWidth - WIDGET_OFFSET * 3,
+                            ),
+                        ),
                         selectedFormat: appState.selectedFormat,
                         width: toUIVal(appState.canvasState.width),
                         height: toUIVal(appState.canvasState.height),
