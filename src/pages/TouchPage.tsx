@@ -5,60 +5,57 @@ import Konva from 'konva';
 import { toUIVal } from '../services/utils';
 import downloadImage from '../services/download-image';
 
+const CANVAS_ID = 'canvas-id';
 const inputBaseClass =
     'text-center block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-accent focus:border-accent focus-visible:ring-accent';
 
+/** The text shown in the middle of the export image. */
+function imageText(width: number, height: number) {
+    return `${toUIVal(width)} x ${toUIVal(height)}`;
+}
+
 const createImageDataUrl = (width: number, height: number) => {
     // creating a temporary konva stage and layer
-    const tempStage = new Konva.Stage({ container: 'temp-canvas', width: 0, height: 0 });
+    const tempStage = new Konva.Stage({ container: CANVAS_ID, width: 0, height: 0 });
     const tempLayer = new Konva.Layer();
     tempStage.add(tempLayer);
 
     // creating the tempBox based on the image state
     const tempBox = new Konva.Rect({
+        fillLinearGradientColorStops: [0, '#2AE5BC', 0.5, '#5BD8BD', 1, '#99E0D1'],
+        fillLinearGradientEndPoint: { x: toUIVal(width), y: toUIVal(height) },
+        fillLinearGradientStartPoint: { x: 0, y: 0 },
+        height: toUIVal(height),
+        listening: false,
+        width: toUIVal(width),
         x: 0,
         y: 0,
-        fillLinearGradientColorStops: [0, '#2AE5BC', 0.5, '#5BD8BD', 1, '#99E0D1'],
-        listening: false,
     });
     tempLayer.add(tempBox);
-    tempBox.size({
-        width: toUIVal(width),
-        height: toUIVal(height),
-    });
 
-    // update box gradient
-    tempBox.fillLinearGradientStartPoint({ x: tempBox.x(), y: tempBox.y() });
-    tempBox.fillLinearGradientEndPoint({
-        x: tempBox.x() + tempBox.width(),
-        y: tempBox.y() + tempBox.height(),
-    });
-
-    // cloning the text to the temporary layer, updating the size, and centering it
+    // add a temporary text to the temporary layer, updating the size, and centering it
     const tempText = new Konva.Text({
-        x: 0,
-        y: 0,
-        fontFamily: 'Arial',
-        fontStyle: 'bold',
-        fill: 'white',
         align: 'center',
-        verticalAlign: 'middle',
+        fill: 'white',
+        fontFamily: 'Arial',
+        fontSize: toUIVal(Math.min(width, height) / 10),
+        fontStyle: 'bold',
+        height: toUIVal(height),
         listening: false,
+        text: imageText(width, height),
+        verticalAlign: 'middle',
+        width: toUIVal(width),
+        x: tempBox.x(),
+        y: tempBox.y(),
     });
     tempLayer.add(tempText);
-    tempText.fontSize(toUIVal(tempText.fontSize()));
-    tempText.size({
-        width: toUIVal(width),
-        height: toUIVal(height),
-    });
-    tempText.align('center');
 
     // rendering the temporary layer to the data url
     const res = tempStage.toDataURL({
+        height: tempBox.height(),
+        width: tempBox.width(),
         x: tempBox.x(),
         y: tempBox.y(),
-        width: tempBox.width(),
-        height: tempBox.height(),
     });
 
     // destroying the temporary layer and showing the main one again
@@ -180,7 +177,7 @@ const TouchPage = () => {
                     </footer>
                 </div>
             </div>
-            <div id="temp-canvas"></div>
+            <div id={CANVAS_ID}></div>
         </>
     );
 };

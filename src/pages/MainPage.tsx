@@ -211,7 +211,10 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        downloadImage('img.' + appState.selectedFormat, konvaWrapperRef.current?.getDataUrl());
+        downloadImage(
+            'img.' + appState.selectedFormat,
+            konvaWrapperRef.current?.getDataUrl() || '',
+        );
     }, [appState]);
 
     return (
