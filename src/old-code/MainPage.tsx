@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useEffect, useRef, useState } from 'react';
-import '../layout.css';
 import Header from './Header';
 import KonvaWrapper from './konva-wrapper';
 

@@ -1,8 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import MenuWidget from '../components/MenuWidget';
-import '../layout.css';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import { toInternalVal, toUIVal } from '../services/utils';
+
+const WIDGET_WIDTH = 200; // approximately
+const WIDGET_HEIGHT = 260; // approximately
+const MOUSE_UP_PLACEMENT_X = 40;
+const MOUSE_UP_PLACEMENT_Y = 210;
+
+/** limit the position so widget never goes outside the borders of the window  */
+const limitMenuWidgetXPos = (newX: number) => {
+    return Math.max(0, Math.min(window.innerWidth - WIDGET_WIDTH, newX));
+};
+const limitMenuWidgetYPos = (newY: number) => {
+    return Math.max(0, Math.min(window.innerHeight - WIDGET_HEIGHT, newY));
+};
 
 /** The default state is when the canvas is empty and it's the same size as the browser window. */
 const getDefaultCanvasState = (): CanvasRenderState => ({
@@ -28,6 +40,10 @@ const initialState = {
     isDragging: false,
     /** whether the Menu widget with the save button and other settings visible */
     isMenuWidgetVisible: false,
+    /** the x position of the Menu widget */
+    menuX: 0,
+    /** the y position of the Menu widget */
+    menuY: 0,
     /** the currently selected image format for the generated image */
     selectedFormat: 'png' as 'png' | 'jpeg',
     /** the state of the HTML5 Canvas passed to KonvaWrapper's render() method. */
@@ -50,8 +66,6 @@ function downloadImage(fileName, dataUrl) {
 function imageText(width: number, height: number) {
     return `${toUIVal(width)} x ${toUIVal(height)}`;
 }
-
-const WIDGET_OFFSET = 100;
 
 const MainPage = () => {
     const [appState, setAppState] = useState(initialState);
@@ -80,11 +94,14 @@ const MainPage = () => {
             setAppState(state => {
                 const shouldShowMenu =
                     evt.layerX > state.canvasState.x && evt.layerY > state.canvasState.y;
+
                 return shouldShowMenu
                     ? {
                           ...state,
                           isDragging: false,
                           isMenuWidgetVisible: true,
+                          menuX: limitMenuWidgetXPos(evt.layerX - MOUSE_UP_PLACEMENT_X),
+                          menuY: limitMenuWidgetYPos(evt.layerY - MOUSE_UP_PLACEMENT_Y),
                       }
                     : {
                           ...state,
@@ -215,43 +232,15 @@ const MainPage = () => {
                     onSelectFormat={handleSelectFormat}
                     onSave={handleSave}
                     state={{
-                        x: Math.max(
-                            0,
-                            Math.min(
-                                appState.canvasState.y +
-                                    appState.canvasState.height -
-                                    WIDGET_OFFSET,
-                                appState.canvasState.canvasHeight - WIDGET_OFFSET * 4,
-                            ),
-                        ),
-                        y: Math.max(
-                            0,
-                            Math.min(
-                                appState.canvasState.x + appState.canvasState.width - WIDGET_OFFSET,
-                                appState.canvasState.canvasWidth - WIDGET_OFFSET * 3,
-                            ),
-                        ),
+                        x: appState.menuX,
+                        y: appState.menuY,
                         selectedFormat: appState.selectedFormat,
                         width: toUIVal(appState.canvasState.width),
                         height: toUIVal(appState.canvasState.height),
                     }}
                 />
             )}
-            <div
-                style={{
-                    margin: `0 auto`,
-                    maxWidth: 960,
-                    padding: `0 1.0875rem 1.45rem`,
-                    paddingBottom: 0,
-                    marginLeft: 0,
-                    paddingLeft: 0,
-                }}
-            >
-                <main>
-                    <div id={CANVAS_ID}></div>
-                    <div className="animate-character">Click & drag to produce an image!</div>
-                </main>
-            </div>
+            <div id={CANVAS_ID}></div>
         </>
     );
 };
