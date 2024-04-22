@@ -1,7 +1,7 @@
 /// <reference types="vite-plugin-svgr/client" />
 import { ImageFormat } from '../types';
 import { imageText } from '../services/utils';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import downloadImage from '../services/download-image';
 import Konva from 'konva';
 import Logo from '../assets/logo-white.svg?react';
@@ -78,13 +78,9 @@ const TouchPage = () => {
         downloadImage('img.' + state.selectedFormat, dataUrl);
     };
 
-    const handleStateChange = evt => {
-        const name = evt.target.name;
-        const value = evt.target.value;
-        setState({
-            ...state,
-            [name]: value,
-        });
+    const handleStateChange = (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value, type } = evt.target;
+        setState({ ...state, [name]: type === 'number' ? parseInt(value, 10) : value });
     };
 
     return (
