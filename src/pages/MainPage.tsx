@@ -3,8 +3,8 @@ import MenuWidget from '../components/MenuWidget';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import { toInternalVal, toUIVal } from '../services/utils';
 
-const WIDGET_WIDTH = 200; // approximately
-const WIDGET_HEIGHT = 260; // approximately
+const WIDGET_WIDTH = 250; // approximately
+const WIDGET_HEIGHT = 270; // approximately
 const MOUSE_UP_PLACEMENT_X = 40;
 const MOUSE_UP_PLACEMENT_Y = 210;
 

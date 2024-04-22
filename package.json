@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "detect-touch-device": "^1.1.6",
     "konva": "^9.3.6",
     "react": "^18.2.0",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^6.22.3"
