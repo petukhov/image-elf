@@ -1,19 +1,19 @@
 /// <reference types="vite-plugin-svgr/client" />
-import { useState } from 'react';
-import Logo from '../assets/logo-white.svg?react';
-import Konva from 'konva';
-import { toUIVal } from '../services/utils';
-import downloadImage from '../services/download-image';
 import { ImageFormat } from '../types';
+import { toUIVal } from '../services/utils';
+import { useState } from 'react';
+import downloadImage from '../services/download-image';
+import Konva from 'konva';
+import Logo from '../assets/logo-white.svg?react';
 
 const CANVAS_ID = 'canvas-id';
 const inputBaseClass =
     'text-center block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-accent focus:border-accent focus-visible:ring-accent';
 
 /** The text shown in the middle of the export image. */
-function imageText(width: number, height: number) {
+const imageText = (width: number, height: number) => {
     return `${toUIVal(width)} x ${toUIVal(height)}`;
-}
+};
 
 const createImageDataUrl = (width: number, height: number) => {
     // creating a temporary konva stage and layer

@@ -54,9 +54,9 @@ const initialState = {
 };
 
 /** The text shown in the middle of the export image. */
-function imageText(width: number, height: number) {
+const imageText = (width: number, height: number) => {
     return `${toUIVal(width)} x ${toUIVal(height)}`;
-}
+};
 
 const MainPage = () => {
     const [appState, setAppState] = useState(initialState);
