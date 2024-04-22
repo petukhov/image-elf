@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import MenuWidget from '../components/MenuWidget';
-import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
-import { toInternalVal, toUIVal } from '../services/utils';
-import downloadImage from '../services/download-image';
 import { ImageFormat } from '../types';
+import { imageText, toInternalVal, toUIVal } from '../services/utils';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import downloadImage from '../services/download-image';
+import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
+import MenuWidget from '../components/MenuWidget';
 
 const CANVAS_ID = 'canvas-id';
 const WIDGET_WIDTH = 250; // approximately
@@ -51,11 +51,6 @@ const initialState = {
     selectedFormat: 'png' as ImageFormat,
     /** the state of the HTML5 Canvas passed to KonvaWrapper's render() method. */
     canvasState: getDefaultCanvasState(),
-};
-
-/** The text shown in the middle of the export image. */
-const imageText = (width: number, height: number) => {
-    return `${toUIVal(width)} x ${toUIVal(height)}`;
 };
 
 const MainPage = () => {
@@ -132,7 +127,7 @@ const MainPage = () => {
                         ...state.canvasState,
                         width: newWidth,
                         height: newHeight,
-                        text: imageText(newWidth, newHeight),
+                        text: imageText(toUIVal(newWidth), toUIVal(newHeight)),
                     },
                 };
             });

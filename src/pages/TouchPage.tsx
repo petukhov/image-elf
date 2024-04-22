@@ -1,6 +1,6 @@
 /// <reference types="vite-plugin-svgr/client" />
 import { ImageFormat } from '../types';
-import { toUIVal } from '../services/utils';
+import { imageText } from '../services/utils';
 import { useState } from 'react';
 import downloadImage from '../services/download-image';
 import Konva from 'konva';
@@ -9,11 +9,6 @@ import Logo from '../assets/logo-white.svg?react';
 const CANVAS_ID = 'canvas-id';
 const inputBaseClass =
     'text-center block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-accent focus:border-accent focus-visible:ring-accent';
-
-/** The text shown in the middle of the export image. */
-const imageText = (width: number, height: number) => {
-    return `${toUIVal(width)} x ${toUIVal(height)}`;
-};
 
 const createImageDataUrl = (width: number, height: number) => {
     // creating a temporary konva stage and layer
@@ -24,11 +19,11 @@ const createImageDataUrl = (width: number, height: number) => {
     // creating the tempBox based on the image state
     const tempBox = new Konva.Rect({
         fillLinearGradientColorStops: [0, '#2AE5BC', 0.5, '#5BD8BD', 1, '#99E0D1'],
-        fillLinearGradientEndPoint: { x: toUIVal(width), y: toUIVal(height) },
+        fillLinearGradientEndPoint: { x: width, y: height },
         fillLinearGradientStartPoint: { x: 0, y: 0 },
-        height: toUIVal(height),
+        height: height,
         listening: false,
-        width: toUIVal(width),
+        width: width,
         x: 0,
         y: 0,
     });
@@ -39,13 +34,13 @@ const createImageDataUrl = (width: number, height: number) => {
         align: 'center',
         fill: 'white',
         fontFamily: 'Arial',
-        fontSize: toUIVal(Math.min(width, height) / 10),
+        fontSize: Math.min(width, height) / 10,
         fontStyle: 'bold',
-        height: toUIVal(height),
+        height: height,
         listening: false,
         text: imageText(width, height),
         verticalAlign: 'middle',
-        width: toUIVal(width),
+        width: width,
         x: tempBox.x(),
         y: tempBox.y(),
     });
@@ -78,13 +73,18 @@ const TouchPage = () => {
         height: 100,
     });
 
-    const handleSelectFormat = (format: ImageFormat) => {
-        setState({ ...state, selectedFormat: format });
-    };
-
     const handleSave = () => {
         const dataUrl = createImageDataUrl(state.width, state.height);
         downloadImage('img.' + state.selectedFormat, dataUrl);
+    };
+
+    const handleStateChange = evt => {
+        const name = evt.target.name;
+        const value = evt.target.value;
+        setState({
+            ...state,
+            [name]: value,
+        });
     };
 
     return (
@@ -104,17 +104,16 @@ const TouchPage = () => {
                         <form className="space-y-4">
                             <div>
                                 <label
-                                    htmlFor="format"
+                                    htmlFor="selectedFormat"
                                     className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Image Format
                                 </label>
                                 <select
-                                    id="format"
+                                    name="selectedFormat"
+                                    id="selectedFormat"
                                     value={state.selectedFormat}
-                                    onChange={e =>
-                                        handleSelectFormat(e.target.value as ImageFormat)
-                                    }
+                                    onChange={handleStateChange}
                                     className={inputBaseClass}
                                 >
                                     <option value="png">PNG</option>
@@ -134,9 +133,7 @@ const TouchPage = () => {
                                         name="width"
                                         id="width"
                                         min="1"
-                                        onChange={e =>
-                                            setState({ ...state, width: parseInt(e.target.value) })
-                                        }
+                                        onChange={handleStateChange}
                                         value={state.width}
                                         className={inputBaseClass}
                                         required
@@ -154,9 +151,7 @@ const TouchPage = () => {
                                         name="height"
                                         id="height"
                                         min="1"
-                                        onChange={e =>
-                                            setState({ ...state, height: parseInt(e.target.value) })
-                                        }
+                                        onChange={handleStateChange}
                                         value={state.height}
                                         className={inputBaseClass}
                                         required

@@ -12,3 +12,8 @@ export const toUIVal = (value: number): number => {
 export const toInternalVal = (value: number): number => {
     return value / 10;
 };
+
+/** The text shown in the middle of the export image. */
+export const imageText = (width: number, height: number) => {
+    return `${width} x ${height}`;
+};
