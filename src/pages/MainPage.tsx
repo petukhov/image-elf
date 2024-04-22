@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import MenuWidget from '../components/MenuWidget';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import { toInternalVal, toUIVal } from '../services/utils';
+import downloadImage from '../services/download-image';
 
 const WIDGET_WIDTH = 250; // approximately
 const WIDGET_HEIGHT = 270; // approximately
@@ -51,16 +52,6 @@ const initialState = {
 };
 
 const CANVAS_ID = 'canvas-id';
-
-function downloadImage(fileName, dataUrl) {
-    const element = document.createElement('a');
-    element.setAttribute('href', dataUrl);
-    element.setAttribute('download', fileName);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-}
 
 /** The text shown in the middle of the export image. */
 function imageText(width: number, height: number) {

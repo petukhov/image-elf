@@ -1,14 +1,16 @@
 /// <reference types="vite-plugin-svgr/client" />
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Logo from '../assets/logo-white.svg?react';
 import Konva from 'konva';
 import { toUIVal } from '../services/utils';
+import downloadImage from '../services/download-image';
 
 const inputBaseClass =
     'text-center block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-accent focus:border-accent focus-visible:ring-accent';
 
-const createImageDataUrl = (tempStage: Konva.Stage, width: number, height: number) => {
+const createImageDataUrl = (width: number, height: number) => {
     // creating a temporary konva stage and layer
+    const tempStage = new Konva.Stage({ container: 'temp-canvas', width: 0, height: 0 });
     const tempLayer = new Konva.Layer();
     tempStage.add(tempLayer);
 
@@ -60,21 +62,10 @@ const createImageDataUrl = (tempStage: Konva.Stage, width: number, height: numbe
     });
 
     // destroying the temporary layer and showing the main one again
-    tempLayer.destroy();
     tempStage.destroy();
 
     return res;
 };
-
-function downloadImage(fileName, dataUrl) {
-    const element = document.createElement('a');
-    element.setAttribute('href', dataUrl);
-    element.setAttribute('download', fileName);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-}
 
 interface CreateImageType {
     selectedFormat: 'png' | 'jpeg';
@@ -89,24 +80,13 @@ const TouchPage = () => {
         height: 100,
     });
 
-    const [count, setCount] = useState(0);
-
-    const konvaStageRef = useRef<Konva.Stage>();
-
-    useEffect(() => {
-        const konvaStage = new Konva.Stage({ container: 'temp-canvas', width: 0, height: 0 });
-        konvaStageRef.current = konvaStage;
-    }, []);
-
-    const handleSelectFormat = useCallback((format: 'png' | 'jpeg') => {
+    const handleSelectFormat = (format: 'png' | 'jpeg') => {
         setState({ ...state, selectedFormat: format });
-    }, []);
+    };
 
     const handleSave = () => {
-        if (!konvaStageRef.current) return;
-        const dataUrl = createImageDataUrl(konvaStageRef.current, state.width, state.height);
-        downloadImage(count + 'img.' + state.selectedFormat, dataUrl);
-        setCount(count + 1);
+        const dataUrl = createImageDataUrl(state.width, state.height);
+        downloadImage('img.' + state.selectedFormat, dataUrl);
     };
 
     return (
