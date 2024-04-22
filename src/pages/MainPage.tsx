@@ -3,7 +3,9 @@ import MenuWidget from '../components/MenuWidget';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import { toInternalVal, toUIVal } from '../services/utils';
 import downloadImage from '../services/download-image';
+import { ImageFormat } from '../types';
 
+const CANVAS_ID = 'canvas-id';
 const WIDGET_WIDTH = 250; // approximately
 const WIDGET_HEIGHT = 270; // approximately
 const MOUSE_UP_PLACEMENT_X = 40;
@@ -46,12 +48,10 @@ const initialState = {
     /** the y position of the Menu widget */
     menuY: 0,
     /** the currently selected image format for the generated image */
-    selectedFormat: 'png' as 'png' | 'jpeg',
+    selectedFormat: 'png' as ImageFormat,
     /** the state of the HTML5 Canvas passed to KonvaWrapper's render() method. */
     canvasState: getDefaultCanvasState(),
 };
-
-const CANVAS_ID = 'canvas-id';
 
 /** The text shown in the middle of the export image. */
 function imageText(width: number, height: number) {
@@ -203,7 +203,7 @@ const MainPage = () => {
         }));
     }, []);
 
-    const handleSelectFormat = useCallback((format: 'png' | 'jpeg') => {
+    const handleSelectFormat = useCallback((format: ImageFormat) => {
         setAppState(state => ({
             ...state,
             selectedFormat: format,

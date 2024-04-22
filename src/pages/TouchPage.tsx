@@ -4,6 +4,7 @@ import Logo from '../assets/logo-white.svg?react';
 import Konva from 'konva';
 import { toUIVal } from '../services/utils';
 import downloadImage from '../services/download-image';
+import { ImageFormat } from '../types';
 
 const CANVAS_ID = 'canvas-id';
 const inputBaseClass =
@@ -65,7 +66,7 @@ const createImageDataUrl = (width: number, height: number) => {
 };
 
 interface CreateImageType {
-    selectedFormat: 'png' | 'jpeg';
+    selectedFormat: ImageFormat;
     width: number;
     height: number;
 }
@@ -77,7 +78,7 @@ const TouchPage = () => {
         height: 100,
     });
 
-    const handleSelectFormat = (format: 'png' | 'jpeg') => {
+    const handleSelectFormat = (format: ImageFormat) => {
         setState({ ...state, selectedFormat: format });
     };
 
@@ -112,7 +113,7 @@ const TouchPage = () => {
                                     id="format"
                                     value={state.selectedFormat}
                                     onChange={e =>
-                                        handleSelectFormat(e.target.value as 'png' | 'jpeg')
+                                        handleSelectFormat(e.target.value as ImageFormat)
                                     }
                                     className={inputBaseClass}
                                 >

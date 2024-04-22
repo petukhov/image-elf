@@ -1,4 +1,5 @@
 import 'tailwindcss/tailwind.css';
+import { ImageFormat } from '../types';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export interface MenuWidgetState {
@@ -6,14 +7,14 @@ export interface MenuWidgetState {
     y: number;
     width: number;
     height: number;
-    selectedFormat: 'png' | 'jpeg';
+    selectedFormat: ImageFormat;
 }
 
 export interface MenuWidgetProps {
     onWidthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onHeightChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onSave: () => void;
-    onSelectFormat: (format: 'png' | 'jpeg') => void;
+    onSelectFormat: (format: ImageFormat) => void;
     state: MenuWidgetState;
 }
 
