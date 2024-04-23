@@ -11,8 +11,12 @@ import {
 import { ImageFormat } from '../types';
 
 const CANVAS_ID = 'canvas-id';
+
 const WIDGET_WIDTH = 250; // approximately
 const WIDGET_HEIGHT = 270; // approximately
+
+// We want to place the menu widget "Create Image" button exactly under
+// the mouse cursor when the user releases the mouse button.
 const MOUSE_UP_PLACEMENT_X = 40;
 const MOUSE_UP_PLACEMENT_Y = 210;
 
