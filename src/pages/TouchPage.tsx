@@ -2,8 +2,7 @@
 import Konva from 'konva';
 import { ChangeEvent, useState } from 'react';
 import Logo from '../assets/logo-white.svg?react';
-import downloadImage from '../services/download-image';
-import { imageText } from '../services/utils';
+import { downloadFile, imageText } from '../services/utils';
 import { ImageFormat } from '../types';
 
 const CANVAS_ID = 'canvas-id';
@@ -75,7 +74,7 @@ const TouchPage = () => {
 
     const handleSave = () => {
         const dataUrl = createImageDataUrl(state.width, state.height);
-        downloadImage('img.' + state.selectedFormat, dataUrl);
+        downloadFile('img.' + state.selectedFormat, dataUrl);
     };
 
     const handleStateChange = (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

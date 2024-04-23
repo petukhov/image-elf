@@ -1,9 +1,8 @@
-import { ImageFormat } from '../types';
-import { imageText, toInternalVal, toUIVal } from '../services/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import downloadImage from '../services/download-image';
-import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import MenuWidget from '../components/MenuWidget';
+import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
+import { downloadFile, imageText, toInternalVal, toUIVal } from '../services/utils';
+import { ImageFormat } from '../types';
 
 const CANVAS_ID = 'canvas-id';
 const WIDGET_WIDTH = 250; // approximately
@@ -206,10 +205,7 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        downloadImage(
-            'img.' + appState.selectedFormat,
-            konvaWrapperRef.current?.getDataUrl() || '',
-        );
+        downloadFile('img.' + appState.selectedFormat, konvaWrapperRef.current?.getDataUrl() || '');
     }, [appState]);
 
     return (

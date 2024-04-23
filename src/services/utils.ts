@@ -17,3 +17,14 @@ export const toInternalVal = (value: number): number => {
 export const imageText = (width: number, height: number) => {
     return `${width} x ${height}`;
 };
+
+/** Creates a temporary element to download a dataUrl as a specific filename */
+export const downloadFile = (fileName: string, dataUrl: string) => {
+    const element = document.createElement('a');
+    element.setAttribute('href', dataUrl);
+    element.setAttribute('download', fileName);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+};
