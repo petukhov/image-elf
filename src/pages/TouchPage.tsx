@@ -1,4 +1,3 @@
-/// <reference types="vite-plugin-svgr/client" />
 import Konva from 'konva';
 import { useCallback, useState } from 'react';
 import Logo from '../assets/logo-white.svg?react';
@@ -136,9 +135,7 @@ const TouchPage = () => {
                                         type="number"
                                         name="width"
                                         min="1"
-                                        onChange={evt =>
-                                            handleWidthInput(parseInt(evt.target.value, 10))
-                                        }
+                                        onChange={evt => handleWidthInput(+evt.target.value)}
                                         value={state.width}
                                         required
                                     />
@@ -155,9 +152,7 @@ const TouchPage = () => {
                                         type="number"
                                         name="height"
                                         min="1"
-                                        onChange={evt =>
-                                            handleHeightInput(parseInt(evt.target.value, 10))
-                                        }
+                                        onChange={evt => handleHeightInput(+evt.target.value)}
                                         value={state.height}
                                         required
                                     />

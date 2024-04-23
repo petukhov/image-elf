@@ -179,7 +179,7 @@ const MainPage = () => {
             ...state,
             canvasState: {
                 ...state.canvasState,
-                text: imageText(state.canvasState.width, height),
+                text: imageText(toUIVal(state.canvasState.width), toUIVal(height)),
                 height,
             },
         }));
@@ -191,7 +191,7 @@ const MainPage = () => {
             ...state,
             canvasState: {
                 ...state.canvasState,
-                text: imageText(width, state.canvasState.height),
+                text: imageText(toUIVal(width), toUIVal(state.canvasState.height)),
                 width,
             },
         }));

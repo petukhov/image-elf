@@ -1,4 +1,3 @@
-import 'tailwindcss/tailwind.css';
 import { ImageFormat } from '../types';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */

@@ -1,9 +1,9 @@
+import { isMobile } from 'react-device-detect';
 import { Route, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import MainPageOld from './old-code/MainPage';
 import ErrorPage from './pages/ErrorPage';
 import MainPage from './pages/MainPage';
 import TouchPage from './pages/TouchPage';
-import { isMobile } from 'react-device-detect';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
