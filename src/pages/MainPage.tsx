@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import MenuWidget from '../components/MenuWidget';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
-import { toInternalVal, toUIVal } from '../services/utils';
+import { downloadFile, imageText, toInternalVal, toUIVal } from '../services/utils';
+import { ImageFormat } from '../types';
 
-const WIDGET_WIDTH = 200; // approximately
-const WIDGET_HEIGHT = 260; // approximately
+const CANVAS_ID = 'canvas-id';
+const WIDGET_WIDTH = 250; // approximately
+const WIDGET_HEIGHT = 270; // approximately
 const MOUSE_UP_PLACEMENT_X = 40;
 const MOUSE_UP_PLACEMENT_Y = 210;
 
@@ -45,27 +47,10 @@ const initialState = {
     /** the y position of the Menu widget */
     menuY: 0,
     /** the currently selected image format for the generated image */
-    selectedFormat: 'png' as 'png' | 'jpeg',
+    selectedFormat: 'png' as ImageFormat,
     /** the state of the HTML5 Canvas passed to KonvaWrapper's render() method. */
     canvasState: getDefaultCanvasState(),
 };
-
-const CANVAS_ID = 'canvas-id';
-
-function downloadImage(fileName, dataUrl) {
-    const element = document.createElement('a');
-    element.setAttribute('href', dataUrl);
-    element.setAttribute('download', fileName);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-}
-
-/** The text shown in the middle of the export image. */
-function imageText(width: number, height: number) {
-    return `${toUIVal(width)} x ${toUIVal(height)}`;
-}
 
 const MainPage = () => {
     const [appState, setAppState] = useState(initialState);
@@ -141,7 +126,7 @@ const MainPage = () => {
                         ...state.canvasState,
                         width: newWidth,
                         height: newHeight,
-                        text: imageText(newWidth, newHeight),
+                        text: imageText(toUIVal(newWidth), toUIVal(newHeight)),
                     },
                 };
             });
@@ -194,7 +179,7 @@ const MainPage = () => {
             ...state,
             canvasState: {
                 ...state.canvasState,
-                text: imageText(state.canvasState.width, height),
+                text: imageText(toUIVal(state.canvasState.width), toUIVal(height)),
                 height,
             },
         }));
@@ -206,13 +191,13 @@ const MainPage = () => {
             ...state,
             canvasState: {
                 ...state.canvasState,
-                text: imageText(width, state.canvasState.height),
+                text: imageText(toUIVal(width), toUIVal(state.canvasState.height)),
                 width,
             },
         }));
     }, []);
 
-    const handleSelectFormat = useCallback((format: 'png' | 'jpeg') => {
+    const handleSelectFormat = useCallback((format: ImageFormat) => {
         setAppState(state => ({
             ...state,
             selectedFormat: format,
@@ -220,7 +205,7 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        downloadImage('img.' + appState.selectedFormat, konvaWrapperRef.current?.getDataUrl());
+        downloadFile('img.' + appState.selectedFormat, konvaWrapperRef.current?.getDataUrl() || '');
     }, [appState]);
 
     return (

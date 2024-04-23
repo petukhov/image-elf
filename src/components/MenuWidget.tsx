@@ -1,4 +1,4 @@
-import 'tailwindcss/tailwind.css';
+import { ImageFormat } from '../types';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export interface MenuWidgetState {
@@ -6,14 +6,14 @@ export interface MenuWidgetState {
     y: number;
     width: number;
     height: number;
-    selectedFormat: 'png' | 'jpeg';
+    selectedFormat: ImageFormat;
 }
 
 export interface MenuWidgetProps {
     onWidthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onHeightChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onSave: () => void;
-    onSelectFormat: (format: 'png' | 'jpeg') => void;
+    onSelectFormat: (format: ImageFormat) => void;
     state: MenuWidgetState;
 }
 
@@ -29,24 +29,22 @@ const MenuWidget = ({
 }: MenuWidgetProps) => {
     return (
         <section
-            style={{ left: `${state.x}px`, top: `${state.y}px` }}
             className="absolute z-10 bg-white rounded-lg shadow-lg p-6 bg-opacity-90"
+            style={{ left: `${state.x}px`, top: `${state.y}px` }}
         >
             <form className="space-y-4">
                 <div>
                     <label
+                        className="block mb-2 text-sm font-medium text-gray-900"
                         htmlFor="format"
-                        className="block mb-2 text-sm font-medium text-gray-900 "
                     >
                         Image Format
                     </label>
                     <select
-                        id="format"
-                        value={state.selectedFormat}
-                        onChange={e =>
-                            onSelectFormat(e.target.value as MenuWidgetState['selectedFormat'])
-                        }
                         className={inputBaseClass}
+                        name="format"
+                        onChange={e => onSelectFormat(e.target.value as ImageFormat)}
+                        value={state.selectedFormat}
                     >
                         <option value="png">PNG</option>
                         <option value="jpeg">JPEG</option>
@@ -55,20 +53,19 @@ const MenuWidget = ({
                 <div className="flex gap-4">
                     <div>
                         <label
-                            htmlFor="width"
                             className="block mb-2 text-sm font-medium text-gray-900"
+                            htmlFor="width"
                         >
                             Width (px)
                         </label>
                         <input
-                            type="number"
-                            name="width"
-                            id="width"
-                            min="1"
-                            max="9999"
-                            onChange={onWidthChange}
-                            value={state.width}
                             className={inputBaseClass}
+                            max="9999"
+                            min="1"
+                            name="width"
+                            onChange={onWidthChange}
+                            type="number"
+                            value={state.width}
                             required
                         />
                     </div>
@@ -80,22 +77,21 @@ const MenuWidget = ({
                             Height (px)
                         </label>
                         <input
-                            type="number"
-                            name="height"
-                            id="height"
-                            min="1"
-                            max="9999"
-                            onChange={onHeightChange}
-                            value={state.height}
                             className={inputBaseClass}
+                            max="9999"
+                            min="1"
+                            name="height"
+                            onChange={onHeightChange}
+                            type="number"
+                            value={state.height}
                             required
                         />
                     </div>
                 </div>
                 <button
-                    type="button"
-                    onClick={onSave}
                     className="w-full text-white bg-primary hover:bg-secondary font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent"
+                    onClick={onSave}
+                    type="button"
                 >
                     Create Image
                 </button>
