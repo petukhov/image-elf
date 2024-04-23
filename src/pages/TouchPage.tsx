@@ -106,19 +106,18 @@ const TouchPage = () => {
                         <form className="space-y-4">
                             <div>
                                 <label
+                                    className="block mb-2 text-sm font-medium text-gray-900"
                                     htmlFor="selectedFormat"
-                                    className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Image Format
                                 </label>
                                 <select
+                                    className={inputBaseClass}
                                     name="selectedFormat"
-                                    id="selectedFormat"
                                     value={state.selectedFormat}
                                     onChange={evt =>
                                         handleSelectFormat(evt.target.value as ImageFormat)
                                     }
-                                    className={inputBaseClass}
                                 >
                                     <option value="png">PNG</option>
                                     <option value="jpeg">JPEG</option>
@@ -127,49 +126,47 @@ const TouchPage = () => {
                             <div className="flex gap-4">
                                 <div>
                                     <label
-                                        htmlFor="width"
                                         className="block mb-2 text-sm font-medium text-gray-900"
+                                        htmlFor="width"
                                     >
                                         Width (px)
                                     </label>
                                     <input
+                                        className={inputBaseClass}
                                         type="number"
                                         name="width"
-                                        id="width"
                                         min="1"
                                         onChange={evt =>
                                             handleWidthInput(parseInt(evt.target.value, 10))
                                         }
                                         value={state.width}
-                                        className={inputBaseClass}
                                         required
                                     />
                                 </div>
                                 <div>
                                     <label
-                                        htmlFor="height"
                                         className="block mb-2 text-sm font-medium text-gray-900"
+                                        htmlFor="height"
                                     >
                                         Height (px)
                                     </label>
                                     <input
+                                        className={inputBaseClass}
                                         type="number"
                                         name="height"
-                                        id="height"
                                         min="1"
                                         onChange={evt =>
                                             handleHeightInput(parseInt(evt.target.value, 10))
                                         }
                                         value={state.height}
-                                        className={inputBaseClass}
                                         required
                                     />
                                 </div>
                             </div>
                             <button
+                                className="w-full text-white bg-primary hover:bg-secondary font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent"
                                 type="button"
                                 onClick={handleSave}
-                                className="w-full text-white bg-primary hover:bg-secondary font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent"
                             >
                                 Create Image
                             </button>
