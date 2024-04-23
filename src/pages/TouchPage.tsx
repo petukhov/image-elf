@@ -1,10 +1,10 @@
 /// <reference types="vite-plugin-svgr/client" />
-import { ImageFormat } from '../types';
-import { imageText } from '../services/utils';
-import { ChangeEvent, useState } from 'react';
-import downloadImage from '../services/download-image';
 import Konva from 'konva';
+import { ChangeEvent, useState } from 'react';
 import Logo from '../assets/logo-white.svg?react';
+import downloadImage from '../services/download-image';
+import { imageText } from '../services/utils';
+import { ImageFormat } from '../types';
 
 const CANVAS_ID = 'canvas-id';
 const inputBaseClass =
@@ -164,8 +164,11 @@ const TouchPage = () => {
                         </form>
                     </main>
                     <footer className="flex flex-col justify-end gap-4 mx-4">
-                        <p>Unfortunately, touch devices are not supported at this time</p>
-                        <p>Please use a desktop browser to access the full feature of Image Elf</p>
+                        <p>
+                            Set your desired dimensions, select from multiple image formats, and
+                            download your creation instantly!
+                        </p>
+                        <small>image-elf &copy; 2024</small>
                     </footer>
                 </div>
             </div>
