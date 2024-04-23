@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import MenuWidget from '../components/MenuWidget';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
-import { downloadFile, imageText, toInternalVal, toUIVal } from '../services/utils';
+import {
+    createImageDataUrl,
+    downloadFile,
+    imageText,
+    toInternalVal,
+    toUIVal,
+} from '../services/utils';
 import { ImageFormat } from '../types';
 
 const CANVAS_ID = 'canvas-id';
@@ -205,7 +211,13 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        downloadFile('img.' + appState.selectedFormat, konvaWrapperRef.current?.getDataUrl() || '');
+        downloadFile(
+            'img.' + appState.selectedFormat,
+            createImageDataUrl(
+                toUIVal(appState.canvasState.width),
+                toUIVal(appState.canvasState.height),
+            ),
+        );
     }, [appState]);
 
     return (
