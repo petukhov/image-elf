@@ -78,23 +78,14 @@ const TouchPage = () => {
     }, [state]);
 
     const handleSelectFormat = useCallback(
-        (selectedFormat: ImageFormat) => {
-            setState({ ...state, selectedFormat });
-        },
+        (selectedFormat: ImageFormat) => setState({ ...state, selectedFormat }),
         [state],
     );
 
-    const handleWidthInput = useCallback(
-        (width: number) => {
-            setState({ ...state, width });
-        },
-        [state],
-    );
+    const handleWidthInput = useCallback((width: number) => setState({ ...state, width }), [state]);
 
     const handleHeightInput = useCallback(
-        (height: number) => {
-            setState({ ...state, height });
-        },
+        (height: number) => setState({ ...state, height }),
         [state],
     );
 
