@@ -241,7 +241,7 @@ const MainPage = () => {
                     }}
                 />
             )}
-            <div id={CANVAS_ID}></div>
+            <div className="bg-gray-50" id={CANVAS_ID}></div>
         </>
     );
 };
