@@ -44,9 +44,7 @@ const MenuWidget = ({
                     <select
                         id="format"
                         value={state.selectedFormat}
-                        onChange={e =>
-                            onSelectFormat(e.target.value as MenuWidgetState['selectedFormat'])
-                        }
+                        onChange={e => onSelectFormat(e.target.value as ImageFormat)}
                         className={inputBaseClass}
                     >
                         <option value="png">PNG</option>

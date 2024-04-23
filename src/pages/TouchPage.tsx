@@ -1,6 +1,6 @@
 /// <reference types="vite-plugin-svgr/client" />
 import Konva from 'konva';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import Logo from '../assets/logo-white.svg?react';
 import { downloadFile, imageText } from '../services/utils';
 import { ImageFormat } from '../types';
@@ -77,10 +77,26 @@ const TouchPage = () => {
         downloadFile('img.' + state.selectedFormat, dataUrl);
     }, [state]);
 
-    const handleStateChange = (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value, type } = evt.target;
-        setState({ ...state, [name]: type === 'number' ? parseInt(value, 10) : value });
-    };
+    const handleSelectFormat = useCallback(
+        (selectedFormat: ImageFormat) => {
+            setState({ ...state, selectedFormat });
+        },
+        [state],
+    );
+
+    const handleWidthInput = useCallback(
+        (width: number) => {
+            setState({ ...state, width });
+        },
+        [state],
+    );
+
+    const handleHeightInput = useCallback(
+        (height: number) => {
+            setState({ ...state, height });
+        },
+        [state],
+    );
 
     return (
         <>
@@ -108,7 +124,9 @@ const TouchPage = () => {
                                     name="selectedFormat"
                                     id="selectedFormat"
                                     value={state.selectedFormat}
-                                    onChange={handleStateChange}
+                                    onChange={evt =>
+                                        handleSelectFormat(evt.target.value as ImageFormat)
+                                    }
                                     className={inputBaseClass}
                                 >
                                     <option value="png">PNG</option>
@@ -128,7 +146,9 @@ const TouchPage = () => {
                                         name="width"
                                         id="width"
                                         min="1"
-                                        onChange={handleStateChange}
+                                        onChange={evt =>
+                                            handleWidthInput(parseInt(evt.target.value, 10))
+                                        }
                                         value={state.width}
                                         className={inputBaseClass}
                                         required
@@ -146,7 +166,9 @@ const TouchPage = () => {
                                         name="height"
                                         id="height"
                                         min="1"
-                                        onChange={handleStateChange}
+                                        onChange={evt =>
+                                            handleHeightInput(parseInt(evt.target.value, 10))
+                                        }
                                         value={state.height}
                                         className={inputBaseClass}
                                         required
