@@ -1,12 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import MenuWidget from '../components/MenuWidget';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
-import { downloadFile, imageText, toInternalVal, toUIVal } from '../services/utils';
+import {
+    createImageDataUrl,
+    downloadFile,
+    imageText,
+    toInternalVal,
+    toUIVal,
+} from '../services/utils';
 import { ImageFormat } from '../types';
 
 const CANVAS_ID = 'canvas-id';
+
 const WIDGET_WIDTH = 250; // approximately
 const WIDGET_HEIGHT = 270; // approximately
+
+// We want to place the menu widget "Create Image" button exactly under
+// the mouse cursor when the user releases the mouse button.
 const MOUSE_UP_PLACEMENT_X = 40;
 const MOUSE_UP_PLACEMENT_Y = 210;
 
@@ -205,7 +215,13 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        downloadFile('img.' + appState.selectedFormat, konvaWrapperRef.current?.getDataUrl() || '');
+        downloadFile(
+            'img.' + appState.selectedFormat,
+            createImageDataUrl(
+                toUIVal(appState.canvasState.width),
+                toUIVal(appState.canvasState.height),
+            ),
+        );
     }, [appState]);
 
     return (
@@ -225,7 +241,7 @@ const MainPage = () => {
                     }}
                 />
             )}
-            <div id={CANVAS_ID}></div>
+            <div className="bg-gray-50" id={CANVAS_ID}></div>
         </>
     );
 };

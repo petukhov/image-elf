@@ -123,52 +123,6 @@ export default class KonvaWrapper {
         this.#stage.batchDraw();
     }
 
-    getDataUrl() {
-        // hiding the current layer and creating a temporary one
-        this.#layer.hide();
-        const tempLayer = new Konva.Layer();
-        this.#stage.add(tempLayer);
-
-        // cloning the box to the temporary layer and updating the size
-        const tempBox = this.#box.clone() as Konva.Rect;
-        tempLayer.add(tempBox);
-        tempBox.size({
-            width: toUIVal(tempBox.width()),
-            height: toUIVal(tempBox.height()),
-        });
-
-        // update box gradient
-        tempBox.fillLinearGradientStartPoint({ x: tempBox.x(), y: tempBox.y() });
-        tempBox.fillLinearGradientEndPoint({
-            x: tempBox.x() + tempBox.width(),
-            y: tempBox.y() + tempBox.height(),
-        });
-
-        // cloning the text to the temporary layer, updating the size, and centering it
-        const tempText = this.#complexText.clone() as Konva.Text;
-        tempLayer.add(tempText);
-        tempText.fontSize(toUIVal(tempText.fontSize()));
-        tempText.size({
-            width: toUIVal(tempText.width()),
-            height: toUIVal(tempText.height()),
-        });
-        tempText.align('center');
-
-        // rendering the temporary layer to the data url
-        const res = this.#stage.toDataURL({
-            x: tempBox.x(),
-            y: tempBox.y(),
-            width: tempBox.width(),
-            height: tempBox.height(),
-        });
-
-        // destroying the temporary layer and showing the main one again
-        tempLayer.destroy();
-        this.#layer.show();
-
-        return res;
-    }
-
     destroy() {
         this.#stage.destroy();
     }
