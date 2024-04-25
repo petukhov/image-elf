@@ -3,11 +3,12 @@ import { ImageFormat } from '../types';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export interface MenuWidgetState {
-    x: number;
-    y: number;
     width: number;
     height: number;
     selectedFormat: ImageFormat;
+
+    // if position is defined, widget will be placed with absolute position
+    position?: { x: number; y: number };
 }
 
 export interface MenuWidgetProps {
@@ -20,6 +21,8 @@ export interface MenuWidgetProps {
 
 const inputBaseClass =
     'block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-accent focus:border-accent focus-visible:ring-accent';
+
+const widgetClass = 'bg-white rounded-lg shadow-lg p-6';
 
 const MenuWidget = ({
     onWidthChange,
@@ -39,15 +42,17 @@ const MenuWidget = ({
     }, [onSave]);
 
     return (
-        <section
-            className="absolute z-10 bg-white rounded-lg shadow-lg p-6 bg-opacity-90"
-            style={{ left: `${state.x}px`, top: `${state.y}px` }}
+        <article
+            className={state.position ? `absolute z-10 bg-opacity-90 ${widgetClass}` : widgetClass}
+            style={
+                state.position && { left: `${state.position.x}px`, top: `${state.position.y}px` }
+            }
         >
             <form className="space-y-4">
                 <div>
                     <label
                         className="block mb-2 text-sm font-medium text-gray-900"
-                        htmlFor="format"
+                        htmlFor="selectedFormat"
                     >
                         Image Format
                     </label>
@@ -71,7 +76,6 @@ const MenuWidget = ({
                         </label>
                         <input
                             className={inputBaseClass}
-                            max="9999"
                             min="1"
                             name="width"
                             onChange={onWidthChange}
@@ -89,7 +93,6 @@ const MenuWidget = ({
                         </label>
                         <input
                             className={inputBaseClass}
-                            max="9999"
                             min="1"
                             name="height"
                             onChange={onHeightChange}
@@ -107,7 +110,7 @@ const MenuWidget = ({
                     {isCreatingImg ? 'Creating...' : 'Create Image'}
                 </button>
             </form>
-        </section>
+        </article>
     );
 };
 

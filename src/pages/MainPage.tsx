@@ -233,8 +233,7 @@ const MainPage = () => {
                     onSelectFormat={handleSelectFormat}
                     onSave={handleSave}
                     state={{
-                        x: appState.menuX,
-                        y: appState.menuY,
+                        position: { x: appState.menuX, y: appState.menuY },
                         selectedFormat: appState.selectedFormat,
                         width: toUIVal(appState.canvasState.width),
                         height: toUIVal(appState.canvasState.height),
