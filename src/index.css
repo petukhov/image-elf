@@ -2,14 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-._fix-height-safe-area {
-    /* equivalent to 100dvh in major browsers */
-    min-height: calc(100vh - env(safe-area-inset-bottom, 0) - env(safe-area-inset-top, 0));
+._h-screen-safe {
+    min-height: 100vh;
 }
 
 @supports (-webkit-touch-callout: none) {
     ._fix-height-safe-area {
         /* for ios safari 15, safe-area-inset-bottom is 0, so a special fix apply here */
+        min-height: -webkit-fill-available;
+    }
+
+    ._h-screen-safe {
         min-height: -webkit-fill-available;
     }
 }
