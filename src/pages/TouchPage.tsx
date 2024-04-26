@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import Logo from '../assets/logo-white.svg?react';
 import { createImageDataUrl, downloadFile } from '../services/utils';
 import { ImageFormat } from '../types';
-import MenuWidget, { MenuWidgetState } from '../components/MenuWidget';
+import ImageEditor, { MenuWidgetState } from '../components/ImageEditor';
 
 const TouchPage = () => {
     const [state, setState] = useState<MenuWidgetState>({
@@ -51,7 +51,7 @@ const TouchPage = () => {
                 </header>
                 <main className="m-6">
                     <section className="bg-white rounded-lg shadow-lg p-6">
-                        <MenuWidget
+                        <ImageEditor
                             onHeightChange={handleHeightInput}
                             onWidthChange={handleWidthInput}
                             onSelectFormat={handleSelectFormat}

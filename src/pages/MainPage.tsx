@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import MenuWidget from '../components/MenuWidget';
+import ImageEditor from '../components/ImageEditor';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import {
     createImageDataUrl,
@@ -231,7 +231,7 @@ const MainPage = () => {
                     className="absolute z-10 bg-white bg-opacity-90 rounded-lg shadow-lg p-6"
                     style={{ left: `${appState.menuX}px`, top: `${appState.menuY}px` }}
                 >
-                    <MenuWidget
+                    <ImageEditor
                         onHeightChange={handleHeightInput}
                         onWidthChange={handleWidthInput}
                         onSelectFormat={handleSelectFormat}
