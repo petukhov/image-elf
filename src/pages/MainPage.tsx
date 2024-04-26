@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import MenuWidget from '../components/MenuWidget';
+import ImageEditor from '../components/ImageEditor';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import {
     createImageDataUrl,
@@ -227,19 +227,22 @@ const MainPage = () => {
     return (
         <>
             {appState.isMenuWidgetVisible && (
-                <MenuWidget
-                    onHeightChange={handleHeightInput}
-                    onWidthChange={handleWidthInput}
-                    onSelectFormat={handleSelectFormat}
-                    onSave={handleSave}
-                    state={{
-                        x: appState.menuX,
-                        y: appState.menuY,
-                        selectedFormat: appState.selectedFormat,
-                        width: toUIVal(appState.canvasState.width),
-                        height: toUIVal(appState.canvasState.height),
-                    }}
-                />
+                <article
+                    className="absolute z-10 max-w-64 bg-white bg-opacity-90 rounded-lg shadow-lg p-6"
+                    style={{ left: `${appState.menuX}px`, top: `${appState.menuY}px` }}
+                >
+                    <ImageEditor
+                        onHeightChange={handleHeightInput}
+                        onWidthChange={handleWidthInput}
+                        onSelectFormat={handleSelectFormat}
+                        onSave={handleSave}
+                        state={{
+                            selectedFormat: appState.selectedFormat,
+                            width: toUIVal(appState.canvasState.width),
+                            height: toUIVal(appState.canvasState.height),
+                        }}
+                    />
+                </article>
             )}
             <div className="bg-gray-50" id={CANVAS_ID}></div>
         </>
