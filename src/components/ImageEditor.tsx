@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
 import { ImageFormat } from '../types';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -32,20 +32,24 @@ const MenuWidget = ({
 }: MenuWidgetProps) => {
     const [isCreatingImg, setIsCreatingImg] = useState(false);
 
-    const saveWrapper = useCallback(() => {
-        setIsCreatingImg(true);
-        setTimeout(() => {
-            onSave();
-            setIsCreatingImg(false);
-        }, 30);
-    }, [onSave]);
+    const saveWrapper = useCallback(
+        (event: FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+            setIsCreatingImg(true);
+            setTimeout(() => {
+                onSave();
+                setIsCreatingImg(false);
+            }, 30);
+        },
+        [onSave],
+    );
 
     const textAlignClass = `text-${textAlign}`;
     const labelClass = `${textAlignClass} ${labelBaseClass}`;
     const inputClass = `${textAlignClass} ${inputBaseClass}`;
 
     return (
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={saveWrapper}>
             <div>
                 <label className={labelClass} htmlFor="selectedFormat">
                     Image Format
@@ -92,8 +96,7 @@ const MenuWidget = ({
             </div>
             <button
                 className="w-full text-white bg-primary hover:bg-secondary font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent"
-                onClick={saveWrapper}
-                type="button"
+                type="submit"
             >
                 {isCreatingImg ? 'Creating...' : 'Create Image'}
             </button>
