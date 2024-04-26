@@ -71,7 +71,7 @@ const MenuWidget = ({
                         name="width"
                         onChange={onWidthChange}
                         type="number"
-                        value={state.width}
+                        value={state.width > 0 ? state.width : ''}
                         required
                     />
                 </div>
@@ -85,7 +85,7 @@ const MenuWidget = ({
                         name="height"
                         onChange={onHeightChange}
                         type="number"
-                        value={state.height}
+                        value={state.height > 0 ? state.height : ''}
                         required
                     />
                 </div>
