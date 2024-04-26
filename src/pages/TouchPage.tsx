@@ -52,6 +52,7 @@ const TouchPage = () => {
                 <main className="m-6">
                     <section className="bg-white rounded-lg shadow-lg p-6">
                         <ImageEditor
+                            textAlign="center"
                             onHeightChange={handleHeightInput}
                             onWidthChange={handleWidthInput}
                             onSelectFormat={handleSelectFormat}
