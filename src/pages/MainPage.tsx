@@ -227,18 +227,22 @@ const MainPage = () => {
     return (
         <>
             {appState.isMenuWidgetVisible && (
-                <MenuWidget
-                    onHeightChange={handleHeightInput}
-                    onWidthChange={handleWidthInput}
-                    onSelectFormat={handleSelectFormat}
-                    onSave={handleSave}
-                    state={{
-                        position: { x: appState.menuX, y: appState.menuY },
-                        selectedFormat: appState.selectedFormat,
-                        width: toUIVal(appState.canvasState.width),
-                        height: toUIVal(appState.canvasState.height),
-                    }}
-                />
+                <article
+                    className="absolute z-10 bg-white bg-opacity-90 rounded-lg shadow-lg p-6"
+                    style={{ left: `${appState.menuX}px`, top: `${appState.menuY}px` }}
+                >
+                    <MenuWidget
+                        onHeightChange={handleHeightInput}
+                        onWidthChange={handleWidthInput}
+                        onSelectFormat={handleSelectFormat}
+                        onSave={handleSave}
+                        state={{
+                            selectedFormat: appState.selectedFormat,
+                            width: toUIVal(appState.canvasState.width),
+                            height: toUIVal(appState.canvasState.height),
+                        }}
+                    />
+                </article>
             )}
             <div className="bg-gray-50" id={CANVAS_ID}></div>
         </>

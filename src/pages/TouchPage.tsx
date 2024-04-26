@@ -50,17 +50,19 @@ const TouchPage = () => {
                     </h2>
                 </header>
                 <main className="m-6">
-                    <MenuWidget
-                        onHeightChange={handleHeightInput}
-                        onWidthChange={handleWidthInput}
-                        onSelectFormat={handleSelectFormat}
-                        onSave={handleSave}
-                        state={{
-                            width: state.width,
-                            height: state.height,
-                            selectedFormat: state.selectedFormat,
-                        }}
-                    />
+                    <section className="bg-white rounded-lg shadow-lg p-6">
+                        <MenuWidget
+                            onHeightChange={handleHeightInput}
+                            onWidthChange={handleWidthInput}
+                            onSelectFormat={handleSelectFormat}
+                            onSave={handleSave}
+                            state={{
+                                width: state.width,
+                                height: state.height,
+                                selectedFormat: state.selectedFormat,
+                            }}
+                        />
+                    </section>
                 </main>
                 <footer className="flex flex-col justify-end gap-4 mx-4">
                     <p>
