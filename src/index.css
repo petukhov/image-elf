@@ -9,6 +9,7 @@
 /**
 Handling the iOS bug where the container set to 100vh is taking too much space, causing unneeded scrolling.
 This @supports rule detects if the browser supports the -webkit-touch-callout property, which is only supported by iOS devices.
+Relevant discussion: https://tailwindlabs/tailwindcss#4515
 */
 @supports (-webkit-touch-callout: none) {
     ._fix-height-safe-area {
