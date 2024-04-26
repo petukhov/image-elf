@@ -37,7 +37,7 @@ const TouchPage = () => {
     );
 
     return (
-        <div className="w-screen _h-screen-safe bg-gradient-to-br text-white from-primary via-secondary to-accent p-6">
+        <div className="_h-screen-safe w-screen bg-gradient-to-br text-white from-primary via-secondary to-accent p-6">
             <div className="_fix-height-safe-area flex flex-col items-center text-center h-full">
                 <header className="flex flex-col gap-4 mt-6">
                     <div className="flex flex-row gap-2 justify-center align-middle items-center">

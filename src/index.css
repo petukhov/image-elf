@@ -6,9 +6,12 @@
     min-height: 100vh;
 }
 
+/**
+Handling the iOS bug where the container set to 100vh is taking too much space, causing unneeded scrolling.
+This @supports rule detects if the browser supports the -webkit-touch-callout property, which is only supported by iOS devices.
+*/
 @supports (-webkit-touch-callout: none) {
     ._fix-height-safe-area {
-        /* for ios safari 15, safe-area-inset-bottom is 0, so a special fix apply here */
         min-height: -webkit-fill-available;
     }
 
