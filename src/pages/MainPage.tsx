@@ -220,6 +220,7 @@ const MainPage = () => {
             createImageDataUrl(
                 toUIVal(appState.canvasState.width),
                 toUIVal(appState.canvasState.height),
+                appState.selectedFormat,
             ),
         );
     }, [appState]);

@@ -1,1 +1,1 @@
-export type ImageFormat = 'png' | 'jpeg' | 'webp' | 'gif';
+export type ImageFormat = 'png' | 'jpeg';

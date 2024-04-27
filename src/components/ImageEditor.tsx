@@ -62,8 +62,6 @@ const MenuWidget = ({
                 >
                     <option value="png">PNG</option>
                     <option value="jpeg">JPEG</option>
-                    <option value="webp">WebP</option>
-                    <option value="gif">GIF</option>
                 </select>
             </div>
             <div className="flex gap-4">
