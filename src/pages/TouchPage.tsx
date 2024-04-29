@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import Logo from '../assets/logo-white.svg?react';
+import ImageEditor, { MenuWidgetState } from '../components/ImageEditor';
 import { createImageDataUrl, downloadFile } from '../services/utils';
 import { ImageFormat } from '../types';
-import ImageEditor, { MenuWidgetState } from '../components/ImageEditor';
 
 const TouchPage = () => {
     const [state, setState] = useState<MenuWidgetState>({
@@ -12,7 +12,7 @@ const TouchPage = () => {
     });
 
     const handleSave = useCallback(() => {
-        const dataUrl = createImageDataUrl(state.width, state.height);
+        const dataUrl = createImageDataUrl(state.width, state.height, state.selectedFormat);
         downloadFile('img.' + state.selectedFormat, dataUrl);
     }, [state]);
 

@@ -1,4 +1,5 @@
 import Konva from 'konva';
+import { ImageFormat } from '../types';
 
 /**
  * The text values shown in the UI and the exported image size are calculated by multiplying the internal values by 10.
@@ -32,7 +33,7 @@ export const downloadFile = (fileName: string, dataUrl: string) => {
 };
 
 /** Creates the data url for the image to download */
-export const createImageDataUrl = (width: number, height: number) => {
+export const createImageDataUrl = (width: number, height: number, format: ImageFormat) => {
     const container = document.createElement('div');
     document.body.appendChild(container);
 
@@ -77,6 +78,7 @@ export const createImageDataUrl = (width: number, height: number) => {
         width: tempBox.width(),
         x: tempBox.x(),
         y: tempBox.y(),
+        mimeType: `image/${format}`,
     });
 
     // destroying the temporary stage and the container
