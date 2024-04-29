@@ -6,6 +6,7 @@ export interface MenuWidgetState {
     width: number;
     height: number;
     selectedFormat: ImageFormat;
+    staticChecked?: boolean;
 }
 
 export interface MenuWidgetProps {
@@ -13,6 +14,7 @@ export interface MenuWidgetProps {
     onHeightChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onSave: () => void;
     onSelectFormat: (format: ImageFormat) => void;
+    onToggleStatic?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     state: MenuWidgetState;
     textAlign?: 'left' | 'center' | 'right';
 }
@@ -27,6 +29,7 @@ const MenuWidget = ({
     onHeightChange,
     onSave,
     onSelectFormat,
+    onToggleStatic,
     state,
     textAlign = 'left',
 }: MenuWidgetProps) => {
@@ -50,6 +53,17 @@ const MenuWidget = ({
 
     return (
         <form className="space-y-4" onSubmit={saveWrapper}>
+            {onToggleStatic && (
+                <div className="flex gap-2 justify-end">
+                    <label htmlFor="staticToggle">static</label>
+                    <input
+                        name="staticToggle"
+                        type="checkbox"
+                        onChange={onToggleStatic}
+                        checked={state.staticChecked}
+                    />
+                </div>
+            )}
             <div>
                 <label className={labelClass} htmlFor="selectedFormat">
                     Image Format

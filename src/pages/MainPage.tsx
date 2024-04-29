@@ -213,6 +213,13 @@ const MainPage = () => {
         }));
     }, []);
 
+    const handleToggleStatic = useCallback(() => {
+        setAppState(state => ({
+            ...state,
+            isMenuWidgetStatic: !state.isMenuWidgetStatic,
+        }));
+    }, []);
+
     const handleSave = useCallback(() => {
         downloadFile(
             'img.' + appState.selectedFormat,
@@ -234,11 +241,13 @@ const MainPage = () => {
                     onHeightChange={handleHeightInput}
                     onWidthChange={handleWidthInput}
                     onSelectFormat={handleSelectFormat}
+                    onToggleStatic={handleToggleStatic}
                     onSave={handleSave}
                     state={{
                         selectedFormat: appState.selectedFormat,
                         width: toUIVal(appState.canvasState.width),
                         height: toUIVal(appState.canvasState.height),
+                        staticChecked: appState.isMenuWidgetStatic,
                     }}
                 />
             </article>
