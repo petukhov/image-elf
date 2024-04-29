@@ -12,8 +12,12 @@ import { ImageFormat } from '../types';
 
 const CANVAS_ID = 'canvas-id';
 
-const WIDGET_WIDTH = 250; // approximately
-const WIDGET_HEIGHT = 270; // approximately
+const WIDGET_WIDTH = 260; // approximately
+const WIDGET_HEIGHT = 260; // approximately
+
+// adds extra padding on the sides of the Editor widget so it doesn't touch the walls of the window
+const X_PADDING = 10;
+const Y_PADDING = 10;
 
 // We want to place the menu widget "Create Image" button exactly under
 // the mouse cursor when the user releases the mouse button.
@@ -22,10 +26,10 @@ const MOUSE_UP_PLACEMENT_Y = 210;
 
 /** limit the position so widget never goes outside the borders of the window  */
 const limitMenuWidgetXPos = (newX: number) => {
-    return Math.max(0, Math.min(window.innerWidth - WIDGET_WIDTH, newX));
+    return Math.max(X_PADDING, Math.min(window.innerWidth - WIDGET_WIDTH - X_PADDING, newX));
 };
 const limitMenuWidgetYPos = (newY: number) => {
-    return Math.max(0, Math.min(window.innerHeight - WIDGET_HEIGHT, newY));
+    return Math.max(Y_PADDING, Math.min(window.innerHeight - WIDGET_HEIGHT - Y_PADDING, newY));
 };
 
 /** The default state is when the canvas is empty and it's the same size as the browser window. */
@@ -50,12 +54,12 @@ const getDefaultCanvasState = (): CanvasRenderState => ({
 const initialState = {
     /** whether the user is dragging over the canvas the mouse down, making the rectangle larger or smaller. */
     isDragging: false,
-    /** whether the Menu widget with the save button and other settings visible */
-    isMenuWidgetVisible: false,
+    /** whether the Menu widget with the save button and other settings static on the page */
+    isMenuWidgetStatic: true,
     /** the x position of the Menu widget */
-    menuX: 0,
+    menuX: limitMenuWidgetXPos(Number.POSITIVE_INFINITY),
     /** the y position of the Menu widget */
-    menuY: 0,
+    menuY: limitMenuWidgetYPos(0),
     /** the currently selected image format for the generated image */
     selectedFormat: 'png' as ImageFormat,
     /** the state of the HTML5 Canvas passed to KonvaWrapper's render() method. */
@@ -74,7 +78,6 @@ const MainPage = () => {
                 return {
                     ...state,
                     isDragging: true,
-                    isMenuWidgetVisible: false,
                     canvasState: {
                         ...state.canvasState,
                         x: evt.clientX,
@@ -87,22 +90,18 @@ const MainPage = () => {
         });
         wrapper.on('mouseup', ({ evt }) => {
             setAppState(state => {
-                const shouldShowMenu =
-                    evt.layerX > state.canvasState.x && evt.layerY > state.canvasState.y;
-
-                return shouldShowMenu
-                    ? {
-                          ...state,
-                          isDragging: false,
-                          isMenuWidgetVisible: true,
+                const menuPos = state.isMenuWidgetStatic
+                    ? {}
+                    : {
                           menuX: limitMenuWidgetXPos(evt.layerX - MOUSE_UP_PLACEMENT_X),
                           menuY: limitMenuWidgetYPos(evt.layerY - MOUSE_UP_PLACEMENT_Y),
-                      }
-                    : {
-                          ...state,
-                          isDragging: false,
-                          isMenuWidgetVisible: false,
                       };
+
+                return {
+                    ...state,
+                    ...menuPos,
+                    isDragging: false,
+                };
             });
         });
         wrapper.on('mousemove', ({ evt }) => {
@@ -110,17 +109,19 @@ const MainPage = () => {
 
             setAppState(state => {
                 if (!state.isDragging) {
-                    if (!state.isMenuWidgetVisible) {
-                        return {
-                            ...state,
-                            canvasState: {
-                                ...state.canvasState,
-                                x: evt.clientX,
-                                y: evt.clientY,
-                            },
-                        };
+                    // if image exists and not dragged, don't update the axis position when dragging
+                    if (state.canvasState.width > 0 || state.canvasState.height > 0) {
+                        return state;
                     }
-                    return state;
+
+                    return {
+                        ...state,
+                        canvasState: {
+                            ...state.canvasState,
+                            x: evt.clientX,
+                            y: evt.clientY,
+                        },
+                    };
                 }
 
                 const newWidth = evt.layerX - state.canvasState.x;
@@ -148,7 +149,6 @@ const MainPage = () => {
                 return {
                     ...state,
                     isDragging: false,
-                    isMenuWidgetVisible: false,
                     canvasState: getDefaultCanvasState(),
                 };
             });
@@ -161,7 +161,6 @@ const MainPage = () => {
                 return {
                     ...state,
                     isDragging: true,
-                    isMenuWidgetVisible: false,
                     canvasState: {
                         ...state.canvasState,
                         canvasWidth: window.innerWidth,
@@ -227,24 +226,22 @@ const MainPage = () => {
 
     return (
         <>
-            {appState.isMenuWidgetVisible && (
-                <article
-                    className="absolute z-10 max-w-64 bg-white bg-opacity-90 rounded-lg shadow-lg p-6"
-                    style={{ left: `${appState.menuX}px`, top: `${appState.menuY}px` }}
-                >
-                    <ImageEditor
-                        onHeightChange={handleHeightInput}
-                        onWidthChange={handleWidthInput}
-                        onSelectFormat={handleSelectFormat}
-                        onSave={handleSave}
-                        state={{
-                            selectedFormat: appState.selectedFormat,
-                            width: toUIVal(appState.canvasState.width),
-                            height: toUIVal(appState.canvasState.height),
-                        }}
-                    />
-                </article>
-            )}
+            <article
+                className="absolute z-10 max-w-64 bg-white bg-opacity-90 rounded-lg shadow-lg p-6"
+                style={{ left: `${appState.menuX}px`, top: `${appState.menuY}px` }}
+            >
+                <ImageEditor
+                    onHeightChange={handleHeightInput}
+                    onWidthChange={handleWidthInput}
+                    onSelectFormat={handleSelectFormat}
+                    onSave={handleSave}
+                    state={{
+                        selectedFormat: appState.selectedFormat,
+                        width: toUIVal(appState.canvasState.width),
+                        height: toUIVal(appState.canvasState.height),
+                    }}
+                />
+            </article>
             <div className="bg-gray-50" id={CANVAS_ID}></div>
         </>
     );
