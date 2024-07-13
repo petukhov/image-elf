@@ -89,6 +89,8 @@ const MainPage = () => {
         const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
         konvaWrapperRef.current = wrapper;
         wrapper.on('mousedown', ({ evt }) => {
+            showHelpTextDebounced();
+            setShouldShowHelpText(false);
             setAppState(state => {
                 return {
                     ...state,
@@ -126,9 +128,6 @@ const MainPage = () => {
         });
         wrapper.on('mousemove', ({ evt }) => {
             evt.stopPropagation();
-
-            showHelpTextDebounced();
-            setShouldShowHelpText(false);
 
             setAppState(state => {
                 if (!state.isDragging) {
@@ -250,7 +249,7 @@ const MainPage = () => {
     return (
         <>
             {shouldShowHelpText && !appState.isDragging && !appState.isMenuWidgetVisible && (
-                <div className="absolute animate-fadeIn top-0 left-0 w-screen flex justify-center m-10 font-normal text-2xl text-gray-400">
+                <div className="absolute animate-fadeIn top-0 left-0 w-screen flex justify-center m-10 font-normal text-2xl text-gray-300">
                     <div className="flex flex-col gap-3">
                         <p>press and drag the mouse</p>
                     </div>
