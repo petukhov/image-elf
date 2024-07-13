@@ -83,7 +83,7 @@ const MainPage = () => {
 
     const showHelpTextDebounced = useDebounce(() => {
         setShouldShowHelpText(true);
-    }, 3000);
+    }, 1000);
 
     useEffect(() => {
         const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
@@ -252,9 +252,7 @@ const MainPage = () => {
             {shouldShowHelpText && !appState.isDragging && !appState.isMenuWidgetVisible && (
                 <div className="absolute animate-fadeIn top-0 left-0 w-screen flex justify-center m-10 font-normal text-2xl text-gray-400">
                     <div className="flex flex-col gap-3">
-                        <p>1. Drag and drop to create a rectangle</p>
-                        <p>2. Adjust the size and format</p>
-                        <p>3. Click "Save"!</p>
+                        <p>press and drag the mouse</p>
                     </div>
                 </div>
             )}
