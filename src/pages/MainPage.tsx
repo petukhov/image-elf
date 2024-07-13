@@ -62,9 +62,28 @@ const initialState = {
     canvasState: getDefaultCanvasState(),
 };
 
+const useDebounce = (fn: Function, delay: number) => {
+    const timeoutRef = useRef<number | null>(null);
+
+    return useCallback((...args: any[]) => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+        timeoutRef.current = window.setTimeout(() => {
+            fn(...args);
+        }, delay);
+    }, []);
+};
+
 const MainPage = () => {
     const [appState, setAppState] = useState(initialState);
     const konvaWrapperRef = useRef<KonvaWrapper>();
+
+    const [shouldShowHelpText, setShouldShowHelpText] = useState(true);
+
+    const showHelpTextDebounced = useDebounce(() => {
+        setShouldShowHelpText(true);
+    }, 3000);
 
     useEffect(() => {
         const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
@@ -107,6 +126,9 @@ const MainPage = () => {
         });
         wrapper.on('mousemove', ({ evt }) => {
             evt.stopPropagation();
+
+            showHelpTextDebounced();
+            setShouldShowHelpText(false);
 
             setAppState(state => {
                 if (!state.isDragging) {
@@ -227,6 +249,15 @@ const MainPage = () => {
 
     return (
         <>
+            {shouldShowHelpText && !appState.isDragging && !appState.isMenuWidgetVisible && (
+                <div className="absolute animate-fadeIn top-0 left-0 w-screen flex justify-center m-10 font-normal text-2xl text-gray-400">
+                    <div className="flex flex-col gap-3">
+                        <p>1. Drag and drop to create a rectangle</p>
+                        <p>2. Adjust the size and format</p>
+                        <p>3. Click "Save"!</p>
+                    </div>
+                </div>
+            )}
             {appState.isMenuWidgetVisible && (
                 <article
                     className="absolute z-10 max-w-64 bg-white bg-opacity-90 rounded-lg shadow-lg p-6"
