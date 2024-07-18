@@ -276,17 +276,17 @@ const MainPage = () => {
                 </article>
             )}
             <div
-                className="absolute z-[9] bottom-0 right-0 m-4"
+                className="absolute z-[9] bottom-0 left-0 m-4"
                 onMouseMove={() => {
                     if (!appState.isMenuWidgetVisible) handleMouseLeave();
                 }}
             >
                 <a
-                    className="w-full text-slate-800 hover:text-secondary duration-500"
+                    className="w-full text-slate-800 hover:text-slate-600 duration-150"
                     target="_blank"
                     href="https://github.com/petukhov/project-k"
                 >
-                    <GithubLogo width={30} height={30} />
+                    <GithubLogo width={25} height={25} />
                 </a>
             </div>
             <div className="bg-gray-50" id={CANVAS_ID}></div>
