@@ -276,7 +276,7 @@ const MainPage = () => {
                 </article>
             )}
             <div
-                className="absolute z-20 bottom-0 right-0 m-4"
+                className="absolute z-[9] bottom-0 right-0 m-4"
                 onMouseMove={() => {
                     if (!appState.isMenuWidgetVisible) handleMouseLeave();
                 }}
