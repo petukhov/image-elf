@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import GithubLogo from '../assets/github-logo.svg?react';
 import ImageEditor from '../components/ImageEditor';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import {
@@ -273,7 +274,15 @@ const MainPage = () => {
                     />
                 </article>
             )}
-            <div className="absolute z-10 right-0 bottom-0">Logo</div>
+            <div className="absolute z-20 bottom-0 right-0 p-4">
+                <a
+                    className="w-full text-slate-800 hover:text-secondary duration-500"
+                    target="_blank"
+                    href="https://github.com/petukhov/project-k"
+                >
+                    <GithubLogo width={30} height={30} />
+                </a>
+            </div>
             <div className="bg-gray-50" id={CANVAS_ID}></div>
         </>
     );
