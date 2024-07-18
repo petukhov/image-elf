@@ -86,6 +86,18 @@ const MainPage = () => {
         setShouldShowHelpText(true);
     }, 1000);
 
+    // we want to hide all the items on the canvas if the user's mouse leaves the window.
+    const handleMouseLeave = () => {
+        setAppState(state => {
+            return {
+                ...state,
+                isDragging: false,
+                isMenuWidgetVisible: false,
+                canvasState: getDefaultCanvasState(),
+            };
+        });
+    };
+
     useEffect(() => {
         const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
         konvaWrapperRef.current = wrapper;
@@ -164,17 +176,6 @@ const MainPage = () => {
             });
         });
 
-        // we want to hide all the items on the canvas if the user's mouse leaves the window.
-        const handleMouseLeave = () => {
-            setAppState(state => {
-                return {
-                    ...state,
-                    isDragging: false,
-                    isMenuWidgetVisible: false,
-                    canvasState: getDefaultCanvasState(),
-                };
-            });
-        };
         document.addEventListener('mouseleave', handleMouseLeave);
 
         // update the canvas size if the window size changes
@@ -274,7 +275,12 @@ const MainPage = () => {
                     />
                 </article>
             )}
-            <div className="absolute z-20 bottom-0 right-0 p-4">
+            <div
+                className="absolute z-20 bottom-0 right-0 m-4"
+                onMouseMove={() => {
+                    if (!appState.isMenuWidgetVisible) handleMouseLeave();
+                }}
+            >
                 <a
                     className="w-full text-slate-800 hover:text-secondary duration-500"
                     target="_blank"
