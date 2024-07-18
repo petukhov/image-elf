@@ -73,7 +73,7 @@ const TouchPage = () => {
                     </p>
                     <div className="flex justify-center">
                         <a
-                            className="text-white hover:text-slate-100 duration-500"
+                            className="text-white"
                             target="_blank"
                             href="https://github.com/petukhov/project-k"
                         >
