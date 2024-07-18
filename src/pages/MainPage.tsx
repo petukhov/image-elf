@@ -86,17 +86,17 @@ const MainPage = () => {
         setShouldShowHelpText(true);
     }, 1000);
 
-    // we want to hide all the items on the canvas if the user's mouse leaves the window.
-    const handleMouseLeave = () => {
-        setAppState(state => {
-            return {
-                ...state,
-                isDragging: false,
-                isMenuWidgetVisible: false,
-                canvasState: getDefaultCanvasState(),
-            };
-        });
-    };
+    const handleLogoHover = useCallback(() => {
+        if (!appState.isMenuWidgetVisible)
+            setAppState(state => {
+                return {
+                    ...state,
+                    isDragging: false,
+                    isMenuWidgetVisible: false,
+                    canvasState: getDefaultCanvasState(),
+                };
+            });
+    }, [appState.isMenuWidgetVisible]);
 
     useEffect(() => {
         const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
@@ -176,6 +176,17 @@ const MainPage = () => {
             });
         });
 
+        // we want to hide all the items on the canvas if the user's mouse leaves the window.
+        const handleMouseLeave = () => {
+            setAppState(state => {
+                return {
+                    ...state,
+                    isDragging: false,
+                    isMenuWidgetVisible: false,
+                    canvasState: getDefaultCanvasState(),
+                };
+            });
+        };
         document.addEventListener('mouseleave', handleMouseLeave);
 
         // update the canvas size if the window size changes
@@ -275,12 +286,7 @@ const MainPage = () => {
                     />
                 </article>
             )}
-            <div
-                className="absolute z-[9] bottom-0 left-0 m-4"
-                onMouseMove={() => {
-                    if (!appState.isMenuWidgetVisible) handleMouseLeave();
-                }}
-            >
+            <div className="absolute z-[9] bottom-0 left-0 m-4" onMouseMove={handleLogoHover}>
                 <a
                     className="w-full text-slate-800 hover:text-slate-600 duration-150"
                     target="_blank"
