@@ -249,7 +249,7 @@ const MainPage = () => {
     return (
         <>
             {shouldShowHelpText && !appState.isDragging && !appState.isMenuWidgetVisible && (
-                <div className="absolute animate-fadeIn top-0 left-0 w-screen flex justify-center m-10 font-normal text-2xl text-gray-300">
+                <div className="absolute animate-fadeIn top-0 left-0 w-screen flex justify-center p-10 font-normal text-2xl text-gray-300">
                     <div className="flex flex-col gap-3">
                         <p>press and drag the mouse</p>
                     </div>
@@ -273,6 +273,7 @@ const MainPage = () => {
                     />
                 </article>
             )}
+            <div className="absolute z-10 right-0 bottom-0">Logo</div>
             <div className="bg-gray-50" id={CANVAS_ID}></div>
         </>
     );
