@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import GithubLogo from '../assets/github-logo.svg?react';
 import ImageEditor from '../components/ImageEditor';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import {
@@ -84,6 +85,18 @@ const MainPage = () => {
     const showHelpTextDebounced = useDebounce(() => {
         setShouldShowHelpText(true);
     }, 1000);
+
+    const handleLogoHover = useCallback(() => {
+        if (!appState.isMenuWidgetVisible)
+            setAppState(state => {
+                return {
+                    ...state,
+                    isDragging: false,
+                    isMenuWidgetVisible: false,
+                    canvasState: getDefaultCanvasState(),
+                };
+            });
+    }, [appState.isMenuWidgetVisible]);
 
     useEffect(() => {
         const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
@@ -249,7 +262,7 @@ const MainPage = () => {
     return (
         <>
             {shouldShowHelpText && !appState.isDragging && !appState.isMenuWidgetVisible && (
-                <div className="absolute animate-fadeIn top-0 left-0 w-screen flex justify-center m-10 font-normal text-2xl text-gray-300">
+                <div className="absolute animate-fadeIn top-0 left-0 w-screen flex justify-center p-10 font-normal text-2xl text-gray-300">
                     <div className="flex flex-col gap-3">
                         <p>press and drag the mouse</p>
                     </div>
@@ -273,6 +286,15 @@ const MainPage = () => {
                     />
                 </article>
             )}
+            <div className="absolute z-[9] bottom-0 left-0 m-4" onMouseMove={handleLogoHover}>
+                <a
+                    className="w-full text-slate-800 hover:text-slate-600 duration-150"
+                    target="_blank"
+                    href="https://github.com/petukhov/project-k"
+                >
+                    <GithubLogo width={25} height={25} />
+                </a>
+            </div>
             <div className="bg-gray-50" id={CANVAS_ID}></div>
         </>
     );
