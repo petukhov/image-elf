@@ -13,8 +13,14 @@ const TouchPage = () => {
     });
 
     const handleSave = useCallback(() => {
-        const dataUrl = createImageDataUrl(state.width, state.height, state.selectedFormat);
-        downloadFile('img.' + state.selectedFormat, dataUrl);
+        createImageDataUrl(state.width, state.height, state.selectedFormat)
+        .then(blob => {
+            downloadFile('img.' + state.selectedFormat, blob);
+        })
+        .catch(error => {
+            console.error('Error generating image:', error);
+        })
+        .finally(() => console.log("Operation completed"));
     }, [state]);
 
     const handleSelectFormat = useCallback(

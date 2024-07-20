@@ -63,9 +63,11 @@ const initialState = {
     canvasState: getDefaultCanvasState(),
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 const useDebounce = (fn: Function, delay: number) => {
     const timeoutRef = useRef<number | null>(null);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return useCallback((...args: any[]) => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
@@ -249,17 +251,15 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        console.log('handleSave called'); // Confirm function call
         createImageDataUrl(toUIVal(appState.canvasState.width), toUIVal(appState.canvasState.height), appState.selectedFormat)
-    .then(blob => {
-        console.log('Blob created', blob);
-        downloadFile('img.' + appState.selectedFormat, blob);
-    })
-    .catch(error => {
-        console.error('Error generating image:', error);
-    })
-    .finally(() => console.log("Operation completed"));
-    }, [appState]);
+        .then(blob => {
+            downloadFile('img.' + appState.selectedFormat, blob);
+        })
+        .catch(error => {
+            console.error('Error generating image:', error);
+        })
+        .finally(() => console.log("Operation completed"));
+        }, [appState]);
 
     return (
         <>

@@ -79,7 +79,7 @@ export const createImageDataUrl = async (width: number, height: number, format: 
         x: tempBox.x(),
         y: tempBox.y(),
         mimeType: `image/${format}`,
-    });
+    }) as Promise<Blob>;
 
     // destroying the temporary stage and the container
     tempStage.destroy();
