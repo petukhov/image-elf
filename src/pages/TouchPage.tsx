@@ -10,9 +10,11 @@ const TouchPage = () => {
         selectedFormat: 'png',
         width: 100,
         height: 100,
+        creating: false,
     });
 
     const handleSave = useCallback(() => {
+        setState({ ...state, creating: true });
         createImageBlob(state.width, state.height, state.selectedFormat)
         .then(blob => {
             downloadFile('img.' + state.selectedFormat, blob);
@@ -20,7 +22,10 @@ const TouchPage = () => {
         .catch(error => {
             console.error('Error generating image:', error);
         })
-        .finally(() => console.log("Operation completed"));
+        .finally(() => {
+            console.log("Operation completed");
+            setState({ ...state, creating: false });
+        });
     }, [state]);
 
     const handleSelectFormat = useCallback(
@@ -68,6 +73,7 @@ const TouchPage = () => {
                                 width: state.width,
                                 height: state.height,
                                 selectedFormat: state.selectedFormat,
+                                creating: state.creating,
                             }}
                         />
                     </section>

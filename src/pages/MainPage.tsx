@@ -86,6 +86,7 @@ const MainPage = () => {
     const konvaWrapperRef = useRef<KonvaWrapper>();
 
     const [shouldShowHelpText, setShouldShowHelpText] = useState(true);
+    const [isCreatingImg, setIsCreatingImg] = useState(false);
 
     const showHelpTextDebounced = useDebounce(() => {
         setShouldShowHelpText(true);
@@ -261,6 +262,7 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
+        setIsCreatingImg(true)
         createImageBlob(toUIVal(appState.canvasState.width), toUIVal(appState.canvasState.height), appState.selectedFormat)
         .then(blob => {
             downloadFile('img.' + appState.selectedFormat, blob);
@@ -268,7 +270,10 @@ const MainPage = () => {
         .catch(error => {
             console.error('Error generating image:', error);
         })
-        .finally(() => console.log("Operation completed"));
+        .finally(() => {
+            console.log("Operation completed")
+            setIsCreatingImg(false);
+        });
         }, [appState]);
 
     return (
@@ -294,6 +299,7 @@ const MainPage = () => {
                             selectedFormat: appState.selectedFormat,
                             width: toUIVal(appState.canvasState.width),
                             height: toUIVal(appState.canvasState.height),
+                            creating: isCreatingImg,
                         }}
                     />
                 </article>
