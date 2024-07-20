@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback } from 'react';
 import { ImageFormat } from '../types';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -30,15 +30,12 @@ const MenuWidget = ({
     state,
     textAlign = 'left',
 }: MenuWidgetProps) => {
-    const [isCreatingImg, setIsCreatingImg] = useState(false);
 
     const saveWrapper = useCallback(
         (event: FormEvent<HTMLFormElement>) => {
             event.preventDefault();
-            setIsCreatingImg(true);
             setTimeout(() => {
                 onSave();
-                setIsCreatingImg(false);
             }, 30);
         },
         [onSave],
@@ -98,7 +95,7 @@ const MenuWidget = ({
                 className="w-full text-white bg-primary hover:bg-secondary font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent"
                 type="submit"
             >
-                {isCreatingImg ? 'Creating...' : 'Create Image'}
+                Create Image
             </button>
         </form>
     );

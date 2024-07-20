@@ -3,13 +3,16 @@ import GithubLogo from '../assets/github-logo.svg?react';
 import ImageEditor from '../components/ImageEditor';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import {
-    createImageDataUrl,
+    createImageBlob,
     downloadFile,
     imageText,
     toInternalVal,
     toUIVal,
 } from '../services/utils';
 import { ImageFormat } from '../types';
+import worker_script from '../worker/worker';
+
+let worker: Worker;
 
 const CANVAS_ID = 'canvas-id';
 
@@ -99,6 +102,13 @@ const MainPage = () => {
                 };
             });
     }, [appState.isMenuWidgetVisible]);
+
+    if (window.Worker)
+        worker = new Worker(worker_script)
+
+    useEffect(() => {
+        worker.postMessage("Buenos Dias!");
+    }, [])
 
     useEffect(() => {
         const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
@@ -251,7 +261,7 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        createImageDataUrl(toUIVal(appState.canvasState.width), toUIVal(appState.canvasState.height), appState.selectedFormat)
+        createImageBlob(toUIVal(appState.canvasState.width), toUIVal(appState.canvasState.height), appState.selectedFormat)
         .then(blob => {
             downloadFile('img.' + appState.selectedFormat, blob);
         })

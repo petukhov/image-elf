@@ -1,5 +1,6 @@
-import Konva from 'konva';
+
 import { ImageFormat } from '../types';
+import worker_script from '../worker/worker';
 
 /**
  * The text values shown in the UI and the exported image size are calculated by multiplying the internal values by 10.
@@ -33,56 +34,31 @@ export const downloadFile = (fileName: string, blob: Blob) => {
     URL.revokeObjectURL(url);
 };
 
-/** Creates the data url for the image to download */
-export const createImageDataUrl = async (width: number, height: number, format: ImageFormat) => {
-    const container = document.createElement('div');
 
-    // creating a temporary konva stage and layer
-    const tempStage = new Konva.Stage({ container, width: 0, height: 0 });
-    const tempLayer = new Konva.Layer();
-    tempStage.add(tempLayer);
+/** Creates the blob for the image to download using a worker */
+export const createImageBlob = async (width: number, height: number, format: ImageFormat): Promise<Blob> => {
+    
+    // Create a new Worker instance
+    const worker = new Worker(worker_script);
 
-    // creating the tempBox based on the image state
-    const tempBox = new Konva.Rect({
-        fillLinearGradientColorStops: [0, '#2AE5BC', 0.5, '#5BD8BD', 1, '#99E0D1'],
-        fillLinearGradientEndPoint: { x: width, y: height },
-        fillLinearGradientStartPoint: { x: 0, y: 0 },
-        height: height,
-        listening: false,
-        width: width,
-        x: 0,
-        y: 0,
+    // Create a promise that resolves when the worker sends back the blob
+    const blobPromise = new Promise<Blob>((resolve, reject) => {
+        worker.onmessage = (event) => {
+            resolve(event.data);
+        };
+        worker.onerror = (error) => {
+            reject(error);
+        };
     });
-    tempLayer.add(tempBox);
 
-    // add a temporary text to the temporary layer, updating the size, and centering it
-    const tempText = new Konva.Text({
-        align: 'center',
-        fill: 'white',
-        fontFamily: 'Arial',
-        fontSize: Math.min(width, height) / 10,
-        fontStyle: 'bold',
-        height: height,
-        listening: false,
-        text: imageText(width, height),
-        verticalAlign: 'middle',
+    // Send data to the worker
+    worker.postMessage({
         width: width,
-        x: tempBox.x(),
-        y: tempBox.y(),
+        height: height,
+        format: format,
+        imageText: imageText(width, height)
     });
-    tempLayer.add(tempText);
 
-    // rendering the temporary layer to the data url
-    const blob = await tempStage.toBlob({
-        height: tempBox.height(),
-        width: tempBox.width(),
-        x: tempBox.x(),
-        y: tempBox.y(),
-        mimeType: `image/${format}`,
-    }) as Promise<Blob>;
-
-    // destroying the temporary stage and the container
-    tempStage.destroy();
-
-    return blob;
+    // Wait for the worker to process and send back the blob
+    return blobPromise;
 };
