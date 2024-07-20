@@ -21,21 +21,21 @@ export const imageText = (width: number, height: number) => {
     return `${width} x ${height}`;
 };
 
-/** Creates a temporary element to download a dataUrl as a specific filename */
-export const downloadFile = (fileName: string, dataUrl: string) => {
+export const downloadFile = (fileName: string, blob: Blob) => {
+    const url = URL.createObjectURL(blob);
     const element = document.createElement('a');
-    element.setAttribute('href', dataUrl);
-    element.setAttribute('download', fileName);
     element.style.display = 'none';
+    element.href = url;
+    element.download = fileName;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+    URL.revokeObjectURL(url);
 };
 
 /** Creates the data url for the image to download */
-export const createImageDataUrl = (width: number, height: number, format: ImageFormat) => {
+export const createImageDataUrl = async (width: number, height: number, format: ImageFormat) => {
     const container = document.createElement('div');
-    document.body.appendChild(container);
 
     // creating a temporary konva stage and layer
     const tempStage = new Konva.Stage({ container, width: 0, height: 0 });
@@ -73,7 +73,7 @@ export const createImageDataUrl = (width: number, height: number, format: ImageF
     tempLayer.add(tempText);
 
     // rendering the temporary layer to the data url
-    const res = tempStage.toDataURL({
+    const blob = await tempStage.toBlob({
         height: tempBox.height(),
         width: tempBox.width(),
         x: tempBox.x(),
@@ -83,7 +83,6 @@ export const createImageDataUrl = (width: number, height: number, format: ImageF
 
     // destroying the temporary stage and the container
     tempStage.destroy();
-    document.body.removeChild(container);
 
-    return res;
+    return blob;
 };

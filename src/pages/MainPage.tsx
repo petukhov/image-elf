@@ -249,14 +249,16 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        downloadFile(
-            'img.' + appState.selectedFormat,
-            createImageDataUrl(
-                toUIVal(appState.canvasState.width),
-                toUIVal(appState.canvasState.height),
-                appState.selectedFormat,
-            ),
-        );
+        console.log('handleSave called'); // Confirm function call
+        createImageDataUrl(toUIVal(appState.canvasState.width), toUIVal(appState.canvasState.height), appState.selectedFormat)
+    .then(blob => {
+        console.log('Blob created', blob);
+        downloadFile('img.' + appState.selectedFormat, blob);
+    })
+    .catch(error => {
+        console.error('Error generating image:', error);
+    })
+    .finally(() => console.log("Operation completed"));
     }, [appState]);
 
     return (
