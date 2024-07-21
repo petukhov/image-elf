@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import GithubLogo from '../assets/github-logo.svg?react';
 import Logo from '../assets/logo-white.svg?react';
 import ImageEditor, { MenuWidgetState } from '../components/ImageEditor';
-import { createImageBlob, downloadFile } from '../services/utils';
+import { saveAsImage } from '../services/utils';
 import { ImageFormat } from '../types';
 
 const TouchPage = () => {
@@ -15,16 +15,9 @@ const TouchPage = () => {
 
     const handleSave = useCallback(() => {
         setState({ ...state, creating: true });
-        createImageBlob(state.width, state.height, state.selectedFormat)
-            .then(blob => {
-                downloadFile('img.' + state.selectedFormat, blob);
-            })
-            .catch(error => {
-                console.error('Error generating image:', error);
-            })
-            .finally(() => {
-                setState({ ...state, creating: false });
-            });
+        saveAsImage(state.width, state.height, state.selectedFormat, () =>
+            setState({ ...state, creating: false }),
+        );
     }, [state]);
 
     const handleSelectFormat = useCallback(

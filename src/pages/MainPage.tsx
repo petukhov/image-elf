@@ -2,13 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import GithubLogo from '../assets/github-logo.svg?react';
 import ImageEditor from '../components/ImageEditor';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
-import {
-    createImageBlob,
-    downloadFile,
-    imageText,
-    toInternalVal,
-    toUIVal,
-} from '../services/utils';
+import { imageText, saveAsImage, toInternalVal, toUIVal } from '../services/utils';
 import { ImageFormat } from '../types';
 
 const CANVAS_ID = 'canvas-id';
@@ -253,20 +247,12 @@ const MainPage = () => {
 
     const handleSave = useCallback(() => {
         setIsCreatingImg(true);
-        createImageBlob(
+        saveAsImage(
             toUIVal(appState.canvasState.width),
             toUIVal(appState.canvasState.height),
             appState.selectedFormat,
-        )
-            .then(blob => {
-                downloadFile('img.' + appState.selectedFormat, blob);
-            })
-            .catch(error => {
-                console.error('Error generating image:', error);
-            })
-            .finally(() => {
-                setIsCreatingImg(false);
-            });
+            () => setIsCreatingImg(false),
+        );
     }, [appState]);
 
     return (

@@ -1,4 +1,3 @@
-
 import { ImageFormat } from '../types';
 import worker_script from '../worker/worker';
 
@@ -22,7 +21,7 @@ export const imageText = (width: number, height: number) => {
     return `${width} x ${height}`;
 };
 
-export const downloadFile = (fileName: string, blob: Blob) => {
+const downloadFile = (fileName: string, blob: Blob) => {
     const url = URL.createObjectURL(blob);
     const element = document.createElement('a');
     element.style.display = 'none';
@@ -34,19 +33,21 @@ export const downloadFile = (fileName: string, blob: Blob) => {
     URL.revokeObjectURL(url);
 };
 
-
 /** Creates the blob for the image to download using a worker */
-export const createImageBlob = async (width: number, height: number, format: ImageFormat): Promise<Blob> => {
-    
+const createImageBlob = async (
+    width: number,
+    height: number,
+    format: ImageFormat,
+): Promise<Blob> => {
     // Create a new Worker instance
     const worker = new Worker(worker_script);
 
     // Create a promise that resolves when the worker sends back the blob
     const blobPromise = new Promise<Blob>((resolve, reject) => {
-        worker.onmessage = (event) => {
+        worker.onmessage = event => {
             resolve(event.data);
         };
-        worker.onerror = (error) => {
+        worker.onerror = error => {
             reject(error);
         };
     });
@@ -56,9 +57,25 @@ export const createImageBlob = async (width: number, height: number, format: Ima
         width: width,
         height: height,
         format: format,
-        imageText: imageText(width, height)
+        imageText: imageText(width, height),
     });
 
     // Wait for the worker to process and send back the blob
     return blobPromise;
+};
+
+export const saveAsImage = (
+    width: number,
+    height: number,
+    format: ImageFormat,
+    onComplete: () => void,
+) => {
+    createImageBlob(width, height, format)
+        .then(blob => {
+            downloadFile('img.' + format, blob);
+        })
+        .catch(error => {
+            console.error('Error generating image:', error);
+        })
+        .finally(onComplete);
 };
