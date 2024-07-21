@@ -57,15 +57,17 @@ const initialState = {
     canvasState: getDefaultCanvasState(),
 };
 
-const useDebounce = (fn: () => void, delay: number) => {
-    const timeoutRef = useRef<number | null>(null);
+const useDebounce = (fn: () => number[], delay: number) => {
+    const thisTimeoutRef = useRef<number | null>(null);
+    const internalTimeoutRefs = useRef<number[]>([]);
 
     return useCallback(() => {
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
+        if (thisTimeoutRef.current) {
+            clearTimeout(thisTimeoutRef.current);
+            internalTimeoutRefs.current.forEach(clearTimeout);
         }
-        timeoutRef.current = window.setTimeout(() => {
-            fn();
+        thisTimeoutRef.current = window.setTimeout(() => {
+            internalTimeoutRefs.current = fn();
         }, delay);
     }, [fn, delay]);
 };
@@ -76,9 +78,32 @@ const MainPage = () => {
 
     const [isCreatingImg, setIsCreatingImg] = useState(false);
 
-    const [shouldShowHelpText, setShouldShowHelpText] = useState(true);
+    const [showingHelpText, setShouldShowHelpText] = useState({
+        part1: false,
+        part2: false,
+        part3: false,
+    });
 
-    const showHelpText = useCallback(() => setShouldShowHelpText(true), []);
+    const showHelpText = useCallback(() => {
+        setShouldShowHelpText(state => ({
+            ...state,
+            part1: true,
+        }));
+        const timeoutRef1 = setTimeout(() => {
+            setShouldShowHelpText(state => ({
+                ...state,
+                part2: true,
+            }));
+        }, 2000);
+        const timeoutRef2 = setTimeout(() => {
+            setShouldShowHelpText(state => ({
+                ...state,
+                part3: true,
+            }));
+        }, 4000);
+        return [timeoutRef1, timeoutRef2];
+    }, []);
+
     const showHelpTextDebounced = useDebounce(showHelpText, 1000);
 
     const handleLogoHover = useCallback(() => {
@@ -94,11 +119,16 @@ const MainPage = () => {
     }, [appState.isMenuWidgetVisible]);
 
     useEffect(() => {
+        showHelpTextDebounced();
         const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
         konvaWrapperRef.current = wrapper;
         wrapper.on('mousedown', ({ evt }) => {
             showHelpTextDebounced();
-            setShouldShowHelpText(false);
+            setShouldShowHelpText({
+                part1: false,
+                part2: false,
+                part3: false,
+            });
             setAppState(state => {
                 return {
                     ...state,
@@ -189,7 +219,7 @@ const MainPage = () => {
             setAppState(state => {
                 return {
                     ...state,
-                    isDragging: true,
+                    isDragging: false,
                     isMenuWidgetVisible: false,
                     canvasState: {
                         ...state.canvasState,
@@ -255,10 +285,18 @@ const MainPage = () => {
 
     return (
         <>
-            {shouldShowHelpText && !appState.isDragging && !appState.isMenuWidgetVisible && (
-                <div className="absolute animate-fadeIn top-0 left-0 w-screen flex justify-center p-10 font-normal text-2xl text-gray-300">
-                    <div className="flex flex-col gap-3">
-                        <p>press and drag the mouse</p>
+            {!appState.isDragging && !appState.isMenuWidgetVisible && (
+                <div className="absolute top-0 left-0 w-screen flex justify-center p-10 font-normal text-2xl text-gray-300">
+                    <div className="w-6/12">
+                        {showingHelpText.part1 && (
+                            <span className="animate-fadeIn">Press thy enchanted mouse </span>
+                        )}
+                        {showingHelpText.part2 && (
+                            <span className="animate-fadeIn">
+                                and glide to summon an image of any size, grand or wee!
+                            </span>
+                        )}
+                        {showingHelpText.part3 && <p className="animate-fadeIn"> - Image Elf</p>}
                     </div>
                 </div>
             )}

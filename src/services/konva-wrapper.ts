@@ -89,9 +89,7 @@ export default class KonvaWrapper {
         if (x < 0 && y < 0) {
             // clearing the stage again asynchronously because sometimes not everything is cleared.
             // this might be a bug in KonvaJs.
-            requestAnimationFrame(() => {
-                this.#stage.clear();
-            });
+            requestAnimationFrame(() => this.#stage.clear());
             return;
         }
 
