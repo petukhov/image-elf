@@ -1,4 +1,8 @@
-const workerFunction = function () {
+/**
+ * This script is used to create a worker that generates a blob representing an image with a gradient background and text.
+ */
+
+const workerFunction = () => {
     self.onmessage = async (event: MessageEvent) => {
         // Extract and validate width and height
         const width = parseInt(event.data.width, 10);
@@ -26,7 +30,7 @@ const workerFunction = function () {
         gradient.addColorStop(0, '#2AE5BC');
         gradient.addColorStop(0.5, '#5BD8BD');
         gradient.addColorStop(1, '#99E0D1');
-        
+
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, width, height);
 
@@ -48,11 +52,14 @@ const workerFunction = function () {
 // Stringify the whole function
 const codeToString = workerFunction.toString();
 // Extract the main code
-const mainCode = codeToString.substring(codeToString.indexOf('{') + 1, codeToString.lastIndexOf('}'));
+const mainCode = codeToString.substring(
+    codeToString.indexOf('{') + 1,
+    codeToString.lastIndexOf('}'),
+);
 
 // Convert the code into a raw data URL
 const blob = new Blob([mainCode], { type: 'application/javascript' });
-const worker_script = URL.createObjectURL(blob);
+const scriptStr = URL.createObjectURL(blob);
 
 // Export the worker script URL
-export default worker_script;
+export default scriptStr;

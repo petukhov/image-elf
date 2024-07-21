@@ -1,5 +1,5 @@
 import { ImageFormat } from '../types';
-import worker_script from '../worker/worker';
+import renderingScript from '../worker/rendering-script';
 
 /**
  * The text values shown in the UI and the exported image size are calculated by multiplying the internal values by 10.
@@ -40,7 +40,7 @@ const createImageBlob = async (
     format: ImageFormat,
 ): Promise<Blob> => {
     // Create a new Worker instance
-    const worker = new Worker(worker_script);
+    const worker = new Worker(renderingScript);
 
     // Create a promise that resolves when the worker sends back the blob
     const blobPromise = new Promise<Blob>((resolve, reject) => {
@@ -64,6 +64,7 @@ const createImageBlob = async (
     return blobPromise;
 };
 
+/** Generates an image and then saves it in a specified format on the user's computer. */
 export const saveAsImage = (
     width: number,
     height: number,
