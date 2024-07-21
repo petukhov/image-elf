@@ -1,5 +1,5 @@
 /**
- * This script is used to create a worker that generates a blob representing an image with a gradient background and text.
+ * This Web Worker generates a Blob representing an image with a gradient background and text.
  */
 
 import imageConfig from '../image-config.json' assert { type: 'json' };
@@ -13,7 +13,7 @@ self.onmessage = async (event: MessageEvent) => {
 
     // Check if width and height are numbers and positive
     if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
-        postMessage('Invalid dimensions for the canvas');
+        postMessage('Web Worker got invalid dimensions for the canvas');
         return;
     }
 
@@ -22,7 +22,7 @@ self.onmessage = async (event: MessageEvent) => {
     const ctx = offscreen.getContext('2d');
 
     if (!ctx) {
-        postMessage('Failed to get 2D context');
+        postMessage('Web Worker failed to get 2D context');
         return;
     }
 

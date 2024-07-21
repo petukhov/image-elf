@@ -45,7 +45,11 @@ const createImageBlob = async (
     // Create a promise that resolves when the worker sends back the blob
     const blobPromise = new Promise<Blob>((resolve, reject) => {
         worker.onmessage = event => {
-            resolve(event.data);
+            if (event.data instanceof Blob) {
+                resolve(event.data);
+            } else {
+                reject(event.data);
+            }
         };
         worker.onerror = error => {
             reject(error);
