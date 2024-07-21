@@ -1,7 +1,6 @@
 import { FormEvent, useCallback, useState } from 'react';
 import { ImageFormat } from '../types';
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 export interface MenuWidgetState {
     width: number;
     height: number;

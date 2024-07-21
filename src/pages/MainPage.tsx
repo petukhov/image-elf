@@ -62,17 +62,17 @@ const initialState = {
     canvasState: getDefaultCanvasState(),
 };
 
-const useDebounce = (fn: Function, delay: number) => {
+const useDebounce = (fn: () => void, delay: number) => {
     const timeoutRef = useRef<number | null>(null);
 
-    return useCallback((...args: any[]) => {
+    return useCallback(() => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
         }
         timeoutRef.current = window.setTimeout(() => {
-            fn(...args);
+            fn();
         }, delay);
-    }, []);
+    }, [fn, delay]);
 };
 
 const MainPage = () => {
@@ -198,7 +198,7 @@ const MainPage = () => {
             window.removeEventListener('resize', handleResize);
             konvaWrapperRef.current?.destroy();
         };
-    }, []);
+    }, [showHelpTextDebounced]);
 
     useEffect(() => {
         konvaWrapperRef.current?.render(appState.canvasState);
