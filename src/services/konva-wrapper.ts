@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import { KonvaEventListener } from 'konva/lib/Node';
 import { Stage } from 'konva/lib/Stage';
+import imageConfig from '../image-config.json' assert { type: 'json' };
 import { toUIVal } from './utils';
 
 export interface CanvasRenderState {
@@ -46,7 +47,14 @@ export default class KonvaWrapper {
         this.#box = new Konva.Rect({
             x: 0,
             y: 0,
-            fillLinearGradientColorStops: [0, '#2AE5BC', 0.5, '#5BD8BD', 1, '#99E0D1'],
+            fillLinearGradientColorStops: [
+                0,
+                imageConfig.colors.primary,
+                0.5,
+                imageConfig.colors.secondary,
+                1,
+                imageConfig.colors.accent,
+            ],
             listening: false,
         });
         this.#layer.add(this.#box);

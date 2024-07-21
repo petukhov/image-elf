@@ -1,5 +1,5 @@
 import { ImageFormat } from '../types';
-import renderingScript from '../worker/rendering-script';
+import RenderingWorker from '../worker/rendering-worker?worker';
 
 /**
  * The text values shown in the UI and the exported image size are calculated by multiplying the internal values by 10.
@@ -33,15 +33,15 @@ const downloadFile = (fileName: string, blob: Blob) => {
     URL.revokeObjectURL(url);
 };
 
+// Create a Web Worker instance to render the image into a blob.
+const worker = new RenderingWorker();
+
 /** Creates the blob for the image to download using a worker */
 const createImageBlob = async (
     width: number,
     height: number,
     format: ImageFormat,
 ): Promise<Blob> => {
-    // Create a new Worker instance
-    const worker = new Worker(renderingScript);
-
     // Create a promise that resolves when the worker sends back the blob
     const blobPromise = new Promise<Blob>((resolve, reject) => {
         worker.onmessage = event => {
