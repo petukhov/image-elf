@@ -80,10 +80,8 @@ const MainPage = () => {
     const konvaWrapperRef = useRef<KonvaWrapper>();
 
     const [shouldShowHelpText, setShouldShowHelpText] = useState(true);
-
-    const showHelpTextDebounced = useDebounce(() => {
-        setShouldShowHelpText(true);
-    }, 1000);
+    const showHelpText = useCallback(() => setShouldShowHelpText(true), []);
+    const showHelpTextDebounced = useDebounce(showHelpText, 1000);
 
     useEffect(() => {
         const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
