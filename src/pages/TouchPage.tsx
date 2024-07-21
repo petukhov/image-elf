@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
+import GithubLogo from '../assets/github-logo.svg?react';
 import Logo from '../assets/logo-white.svg?react';
 import ImageEditor, { MenuWidgetState } from '../components/ImageEditor';
-import { createImageDataUrl, downloadFile } from '../services/utils';
+import { saveAsImage } from '../services/utils';
 import { ImageFormat } from '../types';
 
 const TouchPage = () => {
@@ -9,11 +10,14 @@ const TouchPage = () => {
         selectedFormat: 'png',
         width: 100,
         height: 100,
+        creating: false,
     });
 
     const handleSave = useCallback(() => {
-        const dataUrl = createImageDataUrl(state.width, state.height, state.selectedFormat);
-        downloadFile('img.' + state.selectedFormat, dataUrl);
+        setState({ ...state, creating: true });
+        saveAsImage(state.width, state.height, state.selectedFormat, () =>
+            setState({ ...state, creating: false }),
+        );
     }, [state]);
 
     const handleSelectFormat = useCallback(
@@ -61,6 +65,7 @@ const TouchPage = () => {
                                 width: state.width,
                                 height: state.height,
                                 selectedFormat: state.selectedFormat,
+                                creating: state.creating,
                             }}
                         />
                     </section>
@@ -70,7 +75,16 @@ const TouchPage = () => {
                         Set your desired dimensions, select from multiple image formats, and
                         download your creation instantly!
                     </p>
-                    <small>image-elf &copy; 2024</small>
+                    <div className="flex justify-center">
+                        <a
+                            className="text-white"
+                            target="_blank"
+                            href="https://github.com/petukhov/project-k"
+                        >
+                            <GithubLogo width={30} height={30} />
+                        </a>
+                    </div>
+                    <small>Made in HK by Georgy & Yil</small>
                 </footer>
             </div>
         </div>

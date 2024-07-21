@@ -1,13 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import GithubLogo from '../assets/github-logo.svg?react';
 import ImageEditor from '../components/ImageEditor';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
-import {
-    createImageDataUrl,
-    downloadFile,
-    imageText,
-    toInternalVal,
-    toUIVal,
-} from '../services/utils';
+import { imageText, saveAsImage, toInternalVal, toUIVal } from '../services/utils';
 import { ImageFormat } from '../types';
 
 const CANVAS_ID = 'canvas-id';
@@ -79,9 +74,24 @@ const MainPage = () => {
     const [appState, setAppState] = useState(initialState);
     const konvaWrapperRef = useRef<KonvaWrapper>();
 
+    const [isCreatingImg, setIsCreatingImg] = useState(false);
+
     const [shouldShowHelpText, setShouldShowHelpText] = useState(true);
+
     const showHelpText = useCallback(() => setShouldShowHelpText(true), []);
     const showHelpTextDebounced = useDebounce(showHelpText, 1000);
+
+    const handleLogoHover = useCallback(() => {
+        if (!appState.isMenuWidgetVisible)
+            setAppState(state => {
+                return {
+                    ...state,
+                    isDragging: false,
+                    isMenuWidgetVisible: false,
+                    canvasState: getDefaultCanvasState(),
+                };
+            });
+    }, [appState.isMenuWidgetVisible]);
 
     useEffect(() => {
         const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
@@ -234,20 +244,19 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        downloadFile(
-            'img.' + appState.selectedFormat,
-            createImageDataUrl(
-                toUIVal(appState.canvasState.width),
-                toUIVal(appState.canvasState.height),
-                appState.selectedFormat,
-            ),
+        setIsCreatingImg(true);
+        saveAsImage(
+            toUIVal(appState.canvasState.width),
+            toUIVal(appState.canvasState.height),
+            appState.selectedFormat,
+            () => setIsCreatingImg(false),
         );
     }, [appState]);
 
     return (
         <>
             {shouldShowHelpText && !appState.isDragging && !appState.isMenuWidgetVisible && (
-                <div className="absolute animate-fadeIn top-0 left-0 w-screen flex justify-center m-10 font-normal text-2xl text-gray-300">
+                <div className="absolute animate-fadeIn top-0 left-0 w-screen flex justify-center p-10 font-normal text-2xl text-gray-300">
                     <div className="flex flex-col gap-3">
                         <p>press and drag the mouse</p>
                     </div>
@@ -267,10 +276,20 @@ const MainPage = () => {
                             selectedFormat: appState.selectedFormat,
                             width: toUIVal(appState.canvasState.width),
                             height: toUIVal(appState.canvasState.height),
+                            creating: isCreatingImg,
                         }}
                     />
                 </article>
             )}
+            <div className="absolute z-[9] bottom-0 left-0 m-4" onMouseMove={handleLogoHover}>
+                <a
+                    className="w-full text-slate-800 hover:text-slate-600 duration-150"
+                    target="_blank"
+                    href="https://github.com/petukhov/project-k"
+                >
+                    <GithubLogo width={25} height={25} />
+                </a>
+            </div>
             <div className="bg-gray-50" id={CANVAS_ID}></div>
         </>
     );

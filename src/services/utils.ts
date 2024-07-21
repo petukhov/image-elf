@@ -1,5 +1,5 @@
-import Konva from 'konva';
 import { ImageFormat } from '../types';
+import RenderingWorker from '../worker/rendering-worker?worker';
 
 /**
  * The text values shown in the UI and the exported image size are calculated by multiplying the internal values by 10.
@@ -21,69 +21,66 @@ export const imageText = (width: number, height: number) => {
     return `${width} x ${height}`;
 };
 
-/** Creates a temporary element to download a dataUrl as a specific filename */
-export const downloadFile = (fileName: string, dataUrl: string) => {
+const downloadFile = (fileName: string, blob: Blob) => {
+    const url = URL.createObjectURL(blob);
     const element = document.createElement('a');
-    element.setAttribute('href', dataUrl);
-    element.setAttribute('download', fileName);
     element.style.display = 'none';
+    element.href = url;
+    element.download = fileName;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+    URL.revokeObjectURL(url);
 };
 
-/** Creates the data url for the image to download */
-export const createImageDataUrl = (width: number, height: number, format: ImageFormat) => {
-    const container = document.createElement('div');
-    document.body.appendChild(container);
+/** Creates the blob for the image to download using a worker */
+const createImageBlob = async (
+    width: number,
+    height: number,
+    format: ImageFormat,
+): Promise<Blob> => {
+    // Create a Web Worker instance to render the image into a blob.
+    const worker = new RenderingWorker();
 
-    // creating a temporary konva stage and layer
-    const tempStage = new Konva.Stage({ container, width: 0, height: 0 });
-    const tempLayer = new Konva.Layer();
-    tempStage.add(tempLayer);
+    // Create a promise that resolves when the worker sends back the blob
+    const blobPromise = new Promise<Blob>((resolve, reject) => {
+        worker.onmessage = event => {
+            if (event.data instanceof Blob) {
+                resolve(event.data);
+            } else {
+                reject(event.data);
+            }
+        };
+        worker.onerror = error => {
+            reject(error);
+        };
+    });
 
-    // creating the tempBox based on the image state
-    const tempBox = new Konva.Rect({
-        fillLinearGradientColorStops: [0, '#2AE5BC', 0.5, '#5BD8BD', 1, '#99E0D1'],
-        fillLinearGradientEndPoint: { x: width, y: height },
-        fillLinearGradientStartPoint: { x: 0, y: 0 },
-        height: height,
-        listening: false,
+    // Send data to the worker
+    worker.postMessage({
         width: width,
-        x: 0,
-        y: 0,
-    });
-    tempLayer.add(tempBox);
-
-    // add a temporary text to the temporary layer, updating the size, and centering it
-    const tempText = new Konva.Text({
-        align: 'center',
-        fill: 'white',
-        fontFamily: 'Arial',
-        fontSize: Math.min(width, height) / 10,
-        fontStyle: 'bold',
         height: height,
-        listening: false,
-        text: imageText(width, height),
-        verticalAlign: 'middle',
-        width: width,
-        x: tempBox.x(),
-        y: tempBox.y(),
-    });
-    tempLayer.add(tempText);
-
-    // rendering the temporary layer to the data url
-    const res = tempStage.toDataURL({
-        height: tempBox.height(),
-        width: tempBox.width(),
-        x: tempBox.x(),
-        y: tempBox.y(),
-        mimeType: `image/${format}`,
+        format: format,
+        imageText: imageText(width, height),
     });
 
-    // destroying the temporary stage and the container
-    tempStage.destroy();
-    document.body.removeChild(container);
+    // Wait for the worker to process and send back the blob
+    return blobPromise;
+};
 
-    return res;
+/** Generates an image and then saves it in a specified format on the user's computer. */
+export const saveAsImage = (
+    width: number,
+    height: number,
+    format: ImageFormat,
+    onComplete: () => void,
+) => {
+    createImageBlob(width, height, format)
+        .then(blob => {
+            downloadFile('img.' + format, blob);
+        })
+        .catch(error => {
+            console.error('Error generating image:', error);
+        })
+        .finally(onComplete);
 };
