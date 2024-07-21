@@ -57,31 +57,29 @@ const initialState = {
     canvasState: getDefaultCanvasState(),
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-const useDebounce = (fn: Function, delay: number) => {
+const useDebounce = (fn: () => void, delay: number) => {
     const timeoutRef = useRef<number | null>(null);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return useCallback((...args: any[]) => {
+    return useCallback(() => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
         }
         timeoutRef.current = window.setTimeout(() => {
-            fn(...args);
+            fn();
         }, delay);
-    }, []);
+    }, [fn, delay]);
 };
 
 const MainPage = () => {
     const [appState, setAppState] = useState(initialState);
     const konvaWrapperRef = useRef<KonvaWrapper>();
 
-    const [shouldShowHelpText, setShouldShowHelpText] = useState(true);
     const [isCreatingImg, setIsCreatingImg] = useState(false);
 
-    const showHelpTextDebounced = useDebounce(() => {
-        setShouldShowHelpText(true);
-    }, 1000);
+    const [shouldShowHelpText, setShouldShowHelpText] = useState(true);
+
+    const showHelpText = useCallback(() => setShouldShowHelpText(true), []);
+    const showHelpTextDebounced = useDebounce(showHelpText, 1000);
 
     const handleLogoHover = useCallback(() => {
         if (!appState.isMenuWidgetVisible)
@@ -208,7 +206,7 @@ const MainPage = () => {
             window.removeEventListener('resize', handleResize);
             konvaWrapperRef.current?.destroy();
         };
-    }, []);
+    }, [showHelpTextDebounced]);
 
     useEffect(() => {
         konvaWrapperRef.current?.render(appState.canvasState);
