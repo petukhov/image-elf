@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback } from 'react';
 import { ImageFormat } from '../types';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -6,6 +6,7 @@ export interface MenuWidgetState {
     width: number;
     height: number;
     selectedFormat: ImageFormat;
+    creating: boolean;
 }
 
 export interface MenuWidgetProps {
@@ -30,16 +31,11 @@ const MenuWidget = ({
     state,
     textAlign = 'left',
 }: MenuWidgetProps) => {
-    const [isCreatingImg, setIsCreatingImg] = useState(false);
 
     const saveWrapper = useCallback(
         (event: FormEvent<HTMLFormElement>) => {
             event.preventDefault();
-            setIsCreatingImg(true);
-            setTimeout(() => {
-                onSave();
-                setIsCreatingImg(false);
-            }, 30);
+            onSave();
         },
         [onSave],
     );
@@ -95,10 +91,11 @@ const MenuWidget = ({
                 </div>
             </div>
             <button
-                className="w-full text-white bg-primary hover:bg-secondary font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent"
+                className="w-full text-white bg-primary hover:bg-secondary font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent disabled:bg-accent"
                 type="submit"
+                disabled={state.creating}
             >
-                {isCreatingImg ? 'Creating...' : 'Create Image'}
+                {state.creating ? 'Creating...' : 'Create Image'}
             </button>
         </form>
     );

@@ -2,13 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import GithubLogo from '../assets/github-logo.svg?react';
 import ImageEditor from '../components/ImageEditor';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
-import {
-    createImageDataUrl,
-    downloadFile,
-    imageText,
-    toInternalVal,
-    toUIVal,
-} from '../services/utils';
+import { imageText, saveAsImage, toInternalVal, toUIVal } from '../services/utils';
 import { ImageFormat } from '../types';
 
 const CANVAS_ID = 'canvas-id';
@@ -63,9 +57,11 @@ const initialState = {
     canvasState: getDefaultCanvasState(),
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 const useDebounce = (fn: Function, delay: number) => {
     const timeoutRef = useRef<number | null>(null);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return useCallback((...args: any[]) => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
@@ -81,6 +77,7 @@ const MainPage = () => {
     const konvaWrapperRef = useRef<KonvaWrapper>();
 
     const [shouldShowHelpText, setShouldShowHelpText] = useState(true);
+    const [isCreatingImg, setIsCreatingImg] = useState(false);
 
     const showHelpTextDebounced = useDebounce(() => {
         setShouldShowHelpText(true);
@@ -249,13 +246,12 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        downloadFile(
-            'img.' + appState.selectedFormat,
-            createImageDataUrl(
-                toUIVal(appState.canvasState.width),
-                toUIVal(appState.canvasState.height),
-                appState.selectedFormat,
-            ),
+        setIsCreatingImg(true);
+        saveAsImage(
+            toUIVal(appState.canvasState.width),
+            toUIVal(appState.canvasState.height),
+            appState.selectedFormat,
+            () => setIsCreatingImg(false),
         );
     }, [appState]);
 
@@ -282,6 +278,7 @@ const MainPage = () => {
                             selectedFormat: appState.selectedFormat,
                             width: toUIVal(appState.canvasState.width),
                             height: toUIVal(appState.canvasState.height),
+                            creating: isCreatingImg,
                         }}
                     />
                 </article>

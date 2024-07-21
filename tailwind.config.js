@@ -1,3 +1,5 @@
+import imageConfig from './src/image-config.json' assert { type: 'json' };
+
 /** @type {import('tailwindcss').Config} */
 export default {
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -13,9 +15,9 @@ export default {
                 fadeIn: 'fadeIn 1s ease-in-out',
             },
             colors: {
-                primary: '#2AE5BC',
-                secondary: '#5BD8BD',
-                accent: '#99E0D1',
+                primary: imageConfig.colors.primary,
+                secondary: imageConfig.colors.secondary,
+                accent: imageConfig.colors.accent,
             },
         },
     },
