@@ -28,16 +28,16 @@ self.onmessage = async (event: MessageEvent) => {
 
     // Drawing a rectangle with a linear gradient fill
     const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, imageConfig.colors.primary);
-    gradient.addColorStop(0.5, imageConfig.colors.secondary);
-    gradient.addColorStop(1, imageConfig.colors.accent);
+    gradient.addColorStop(imageConfig.gradientStops[0], imageConfig.colors.primary);
+    gradient.addColorStop(imageConfig.gradientStops[1], imageConfig.colors.secondary);
+    gradient.addColorStop(imageConfig.gradientStops[2], imageConfig.colors.accent);
 
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
     // Adding text
-    ctx.fillStyle = 'white';
-    ctx.font = `bold ${Math.min(width, height) / 10}px Arial`;
+    ctx.fillStyle = imageConfig.textColor;
+    ctx.font = `${imageConfig.fontWeight} ${Math.min(width, height) / 10}px ${imageConfig.font}`;
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
     ctx.fillText(imageText, width / 2, height / 2);
