@@ -10,9 +10,6 @@ import {
     toUIVal,
 } from '../services/utils';
 import { ImageFormat } from '../types';
-import worker_script from '../worker/worker';
-
-let worker: Worker;
 
 const CANVAS_ID = 'canvas-id';
 
@@ -103,13 +100,6 @@ const MainPage = () => {
                 };
             });
     }, [appState.isMenuWidgetVisible]);
-
-    if (window.Worker)
-        worker = new Worker(worker_script)
-
-    useEffect(() => {
-        worker.postMessage("Buenos Dias!");
-    }, [])
 
     useEffect(() => {
         const wrapper = new KonvaWrapper(CANVAS_ID, window.innerWidth, window.innerHeight);
@@ -262,19 +252,22 @@ const MainPage = () => {
     }, []);
 
     const handleSave = useCallback(() => {
-        setIsCreatingImg(true)
-        createImageBlob(toUIVal(appState.canvasState.width), toUIVal(appState.canvasState.height), appState.selectedFormat)
-        .then(blob => {
-            downloadFile('img.' + appState.selectedFormat, blob);
-        })
-        .catch(error => {
-            console.error('Error generating image:', error);
-        })
-        .finally(() => {
-            console.log("Operation completed")
-            setIsCreatingImg(false);
-        });
-        }, [appState]);
+        setIsCreatingImg(true);
+        createImageBlob(
+            toUIVal(appState.canvasState.width),
+            toUIVal(appState.canvasState.height),
+            appState.selectedFormat,
+        )
+            .then(blob => {
+                downloadFile('img.' + appState.selectedFormat, blob);
+            })
+            .catch(error => {
+                console.error('Error generating image:', error);
+            })
+            .finally(() => {
+                setIsCreatingImg(false);
+            });
+    }, [appState]);
 
     return (
         <>

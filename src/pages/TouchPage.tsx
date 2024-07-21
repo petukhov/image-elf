@@ -16,16 +16,15 @@ const TouchPage = () => {
     const handleSave = useCallback(() => {
         setState({ ...state, creating: true });
         createImageBlob(state.width, state.height, state.selectedFormat)
-        .then(blob => {
-            downloadFile('img.' + state.selectedFormat, blob);
-        })
-        .catch(error => {
-            console.error('Error generating image:', error);
-        })
-        .finally(() => {
-            console.log("Operation completed");
-            setState({ ...state, creating: false });
-        });
+            .then(blob => {
+                downloadFile('img.' + state.selectedFormat, blob);
+            })
+            .catch(error => {
+                console.error('Error generating image:', error);
+            })
+            .finally(() => {
+                setState({ ...state, creating: false });
+            });
     }, [state]);
 
     const handleSelectFormat = useCallback(
@@ -92,7 +91,7 @@ const TouchPage = () => {
                             <GithubLogo width={30} height={30} />
                         </a>
                     </div>
-                    <small>image-elf &copy; 2024</small>
+                    <small>Made in HK by Georgy & Yil</small>
                 </footer>
             </div>
         </div>
