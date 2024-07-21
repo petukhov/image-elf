@@ -7,7 +7,7 @@ import { ImageFormat } from '../types';
 
 const TouchPage = () => {
     const [state, setState] = useState<MenuWidgetState>({
-        selectedFormat: 'png',
+        selectedFormat: ImageFormat.JPEG,
         width: 100,
         height: 100,
         creating: false,

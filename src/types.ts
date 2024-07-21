@@ -1,1 +1,4 @@
-export type ImageFormat = 'png' | 'jpeg';
+export enum ImageFormat {
+    PNG = 'png',
+    JPEG = 'jpeg',
+}

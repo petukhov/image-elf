@@ -52,7 +52,7 @@ const initialState = {
     /** the y position of the Menu widget */
     menuY: 0,
     /** the currently selected image format for the generated image */
-    selectedFormat: 'png' as ImageFormat,
+    selectedFormat: ImageFormat.JPEG,
     /** the state of the HTML5 Canvas passed to KonvaWrapper's render() method. */
     canvasState: getDefaultCanvasState(),
 };
