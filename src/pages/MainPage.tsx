@@ -296,7 +296,9 @@ const MainPage = () => {
                                 and glide to summon an image of any size, grand or wee!
                             </span>
                         )}
-                        {showingHelpText.part3 && <p className="animate-fadeIn"> - Image Elf</p>}
+                        {showingHelpText.part3 && (
+                            <p className="animate-fadeIn mt-2 text-accent"> - Image Elf</p>
+                        )}
                     </div>
                 </div>
             )}
