@@ -25,8 +25,8 @@ export default class KonvaWrapper {
     #complexText: Konva.Text;
 
     // x and y axis lines
-    #xAxisLine: Konva.Line;
-    #yAxisLine: Konva.Line;
+    #xAxisLine!: Konva.Line;
+    #yAxisLine!: Konva.Line;
 
     // numbers like 100, 200, 300 added on the x and y axis
     #xAxisTicks: { tickRect: Konva.Rect; tickText: Konva.Text }[] = [];
@@ -89,9 +89,7 @@ export default class KonvaWrapper {
         if (x < 0 && y < 0) {
             // clearing the stage again asynchronously because sometimes not everything is cleared.
             // this might be a bug in KonvaJs.
-            requestAnimationFrame(() => {
-                this.#stage.clear();
-            });
+            requestAnimationFrame(() => this.#stage.clear());
             return;
         }
 
@@ -211,7 +209,7 @@ export default class KonvaWrapper {
         this.#layer.add(this.#yAxisLine);
     }
 
-    #updateTicks(x, y) {
+    #updateTicks(x: number, y: number) {
         this.#xAxisTicks.forEach(({ tickRect, tickText }, i) => {
             if (i === 0) {
                 return;

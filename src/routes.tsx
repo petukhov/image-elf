@@ -6,10 +6,11 @@ import TouchPage from './pages/TouchPage';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
-        <>
-            <Route path="/" element={isMobile ? <TouchPage /> : <MainPage />}></Route>
-            <Route path="*" element={<ErrorPage />}></Route>
-        </>,
+        <Route
+            path="/*"
+            element={isMobile ? <TouchPage /> : <MainPage />}
+            errorElement={<ErrorPage />}
+        ></Route>,
     ),
 );
 

@@ -30,7 +30,6 @@ const MenuWidget = ({
     state,
     textAlign = 'left',
 }: MenuWidgetProps) => {
-
     const saveWrapper = useCallback(
         (event: FormEvent<HTMLFormElement>) => {
             event.preventDefault();
@@ -55,8 +54,8 @@ const MenuWidget = ({
                     onChange={e => onSelectFormat(e.target.value as ImageFormat)}
                     value={state.selectedFormat}
                 >
-                    <option value="png">PNG</option>
-                    <option value="jpeg">JPEG</option>
+                    <option value={ImageFormat.JPEG}>JPEG</option>
+                    <option value={ImageFormat.PNG}>PNG</option>
                 </select>
             </div>
             <div className="flex gap-4">
@@ -90,7 +89,8 @@ const MenuWidget = ({
                 </div>
             </div>
             <button
-                className="w-full text-white bg-primary hover:bg-secondary font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent disabled:bg-accent"
+                className="w-full text-white bg-primary font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-secondary
+                           focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent disabled:bg-accent"
                 type="submit"
                 disabled={state.creating}
             >

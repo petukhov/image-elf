@@ -17,7 +17,7 @@ self.onmessage = async (event: MessageEvent) => {
         return;
     }
 
-    // Create an OffscreenCanvas
+    // Create an OffscreenCanvas since we are in a Web Worker
     const offscreen = new OffscreenCanvas(width, height);
     const ctx = offscreen.getContext('2d');
 
@@ -42,8 +42,10 @@ self.onmessage = async (event: MessageEvent) => {
     ctx.textAlign = 'center';
     ctx.fillText(imageText, width / 2, height / 2);
 
-    // Convert canvas to blob
-    const blob = await offscreen.convertToBlob({ type: `image/${format}` });
+    // Convert canvas to blob, specifying the format and quality.
+    // Quality is only applicable for JPEG. The default quality makes the image too large, similar to PNG size, so we reduce it here.
+    // P.S I tested different values, and it's the one that was not too jarring, while the size was still pretty small. The main problem with the low quality jpeg images is that the gradients look awful.
+    const blob = await offscreen.convertToBlob({ type: `image/${format}`, quality: 0.9 });
 
     // Send the blob back to the main thread
     postMessage(blob);
