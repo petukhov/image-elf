@@ -54,8 +54,8 @@ const MenuWidget = ({
                     onChange={e => onSelectFormat(e.target.value as ImageFormat)}
                     value={state.selectedFormat}
                 >
-                    <option value={ImageFormat.PNG}>PNG</option>
                     <option value={ImageFormat.JPEG}>JPEG</option>
+                    <option value={ImageFormat.PNG}>PNG</option>
                 </select>
             </div>
             <div className="flex gap-4">

@@ -44,6 +44,7 @@ self.onmessage = async (event: MessageEvent) => {
 
     // Convert canvas to blob, specifying the format and quality.
     // Quality is only applicable for JPEG. The default quality makes the image too large, similar to PNG size, so we reduce it here.
+    // P.S I tested different values, and it's the one that was not too jarring, while the size was still pretty small. The main problem with the low quality jpeg images is that the gradients look awful.
     const blob = await offscreen.convertToBlob({ type: `image/${format}`, quality: 0.9 });
 
     // Send the blob back to the main thread
