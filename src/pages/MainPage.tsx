@@ -75,6 +75,7 @@ const useDebounce = (fn: () => number[], delay: number) => {
 const MainPage = () => {
     const [appState, setAppState] = useState(initialState);
     const konvaWrapperRef = useRef<KonvaWrapper>();
+    const helpTextWasShownOnce = useRef(false);
 
     const [isCreatingImg, setIsCreatingImg] = useState(false);
 
@@ -85,6 +86,15 @@ const MainPage = () => {
     });
 
     const showHelpText = useCallback(() => {
+        if (helpTextWasShownOnce.current) {
+            setShouldShowHelpText(() => ({
+                part1: true,
+                part2: true,
+                part3: true,
+            }));
+            return [];
+        }
+        helpTextWasShownOnce.current = true;
         setShouldShowHelpText(state => ({
             ...state,
             part1: true,

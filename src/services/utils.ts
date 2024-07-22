@@ -1,3 +1,4 @@
+import { isMobile } from 'react-device-detect';
 import { ImageFormat } from '../types';
 import RenderingWorker from '../worker/rendering-worker?worker';
 
@@ -75,12 +76,24 @@ export const saveAsImage = (
     format: ImageFormat,
     onComplete: () => void,
 ) => {
+    const loggingData = {
+        width,
+        height,
+        format,
+        isMobile,
+    };
+    window.gtag('event', 'save_img_start', loggingData);
     createImageBlob(width, height, format)
         .then(blob => {
             downloadFile('img.' + format, blob);
+            window.gtag('event', 'save_img_success', loggingData);
         })
         .catch(error => {
             console.error('Error generating image:', error);
+            window.gtag('event', 'save_img_error', {
+                ...loggingData,
+                error,
+            });
         })
         .finally(onComplete);
 };
