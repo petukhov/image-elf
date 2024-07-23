@@ -335,7 +335,7 @@ const MainPage = () => {
                 <a
                     className="w-full text-slate-800 hover:text-slate-600 duration-150"
                     target="_blank"
-                    href="https://github.com/petukhov/project-k"
+                    href="https://github.com/petukhov/image-elf"
                 >
                     <GithubLogo width={25} height={25} />
                 </a>
