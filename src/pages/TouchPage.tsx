@@ -79,7 +79,7 @@ const TouchPage = () => {
                         <a
                             className="text-white"
                             target="_blank"
-                            href="https://github.com/petukhov/project-k"
+                            href="https://github.com/petukhov/image-elf"
                         >
                             <GithubLogo width={30} height={30} />
                         </a>

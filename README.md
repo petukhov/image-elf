@@ -1,5 +1,7 @@
 # Image Elf
 
+Easily create and export images of any size.
+
 ## Usage
 
 Install Packages
