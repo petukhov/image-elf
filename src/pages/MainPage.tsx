@@ -335,8 +335,8 @@ const MainPage = () => {
             )}
             <div className="absolute z-0 top-0 left-0 m-4">
                 <div className="flex flex-row gap-2 justify-center align-middle items-center">
-                    <Logo width={30} height={30} />
-                    <h1 className="text-2xl font-semibold text-secondary select-none">Image Elf</h1>
+                    <Logo width={25} height={25} />
+                    <h1 className="text-xl font-semibold text-secondary select-none">Image Elf</h1>
                 </div>
             </div>
             <div className="absolute z-[9] top-0 right-0 m-4" onMouseMove={handleLogoHover}>
