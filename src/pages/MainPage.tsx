@@ -339,7 +339,10 @@ const MainPage = () => {
                     <h1 className="text-xl font-semibold text-secondary select-none">Image Elf</h1>
                 </div>
             </div>
-            <div className="absolute z-[9] top-0 right-0 m-4" onMouseMove={handleLogoHover}>
+            <div
+                className="absolute z-[9] top-0 right-0 m-4 mt-[18px]"
+                onMouseMove={handleLogoHover}
+            >
                 <a
                     className="w-full text-slate-800 hover:text-slate-600 duration-150"
                     target="_blank"
