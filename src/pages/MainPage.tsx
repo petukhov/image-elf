@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import GithubLogo from '../assets/github-logo.svg?react';
+import Logo from '../assets/logo-gradient.svg?react';
 import ImageEditor from '../components/ImageEditor';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import { imageText, saveAsImage, toInternalVal, toUIVal } from '../services/utils';
 import { ImageFormat } from '../types';
+import { CURRENT_YEAR, REPOSITORY_URL } from '../constants';
 
 const CANVAS_ID = 'canvas-id';
 
@@ -296,8 +298,8 @@ const MainPage = () => {
     return (
         <>
             {!appState.isDragging && !appState.isMenuWidgetVisible && (
-                <div className="absolute top-0 left-0 w-screen flex justify-center p-10 font-normal text-2xl text-gray-300">
-                    <div className="w-6/12">
+                <div className="absolute top-0 left-0 w-screen flex justify-center mt-20 lg:mt-16 font-normal text-2xl text-gray-300">
+                    <div className="w-2/3 md:w-1/2">
                         {showingHelpText.part1 && (
                             <span className="animate-fadeIn">Press thy enchanted mouse </span>
                         )}
@@ -331,14 +333,25 @@ const MainPage = () => {
                     />
                 </article>
             )}
-            <div className="absolute z-[9] bottom-0 left-0 m-4" onMouseMove={handleLogoHover}>
+            <div className="absolute z-0 top-0 left-0 m-4">
+                <div className="flex flex-row gap-2 justify-center align-middle items-center">
+                    <Logo width={30} height={30} />
+                    <h1 className="text-2xl font-semibold text-secondary select-none">Image Elf</h1>
+                </div>
+            </div>
+            <div className="absolute z-[9] top-0 right-0 m-4" onMouseMove={handleLogoHover}>
                 <a
                     className="w-full text-slate-800 hover:text-slate-600 duration-150"
                     target="_blank"
-                    href="https://github.com/petukhov/image-elf"
+                    href={REPOSITORY_URL}
                 >
                     <GithubLogo width={25} height={25} />
                 </a>
+            </div>
+            <div className="absolute z-0 bottom-0 left-0 m-4" onMouseMove={handleLogoHover}>
+                <div className="text-center text-gray-400">
+                    <small>&copy;{CURRENT_YEAR} Image Elf</small>
+                </div>
             </div>
             <div className="bg-gray-50" id={CANVAS_ID}></div>
         </>

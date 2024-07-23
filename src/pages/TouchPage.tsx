@@ -4,6 +4,7 @@ import Logo from '../assets/logo-white.svg?react';
 import ImageEditor, { MenuWidgetState } from '../components/ImageEditor';
 import { saveAsImage } from '../services/utils';
 import { ImageFormat } from '../types';
+import { CURRENT_YEAR, REPOSITORY_URL } from '../constants';
 
 const TouchPage = () => {
     const [state, setState] = useState<MenuWidgetState>({
@@ -76,15 +77,11 @@ const TouchPage = () => {
                         download your creation instantly!
                     </p>
                     <div className="flex justify-center">
-                        <a
-                            className="text-white"
-                            target="_blank"
-                            href="https://github.com/petukhov/image-elf"
-                        >
+                        <a className="text-white" target="_blank" href={REPOSITORY_URL}>
                             <GithubLogo width={30} height={30} />
                         </a>
                     </div>
-                    <small>Made in HK by Georgy & Yil</small>
+                    <small>&copy;{CURRENT_YEAR} Image Elf</small>
                 </footer>
             </div>
         </div>
