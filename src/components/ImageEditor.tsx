@@ -94,7 +94,7 @@ const MenuWidget = ({
                 type="submit"
                 disabled={state.creating}
             >
-                {state.creating ? 'Creating...' : 'Create Image'}
+                {state.creating ? 'Generating...' : 'Generate Image'}
             </button>
         </form>
     );

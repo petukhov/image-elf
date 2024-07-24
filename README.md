@@ -6,9 +6,9 @@
 
 # Image Elf
 
-> Easily create and export images of any size.
+> Easily generate images of any size.
 
-Set your desired dimensions, select from multiple image formats, and download your creation instantly!
+Set your desired dimensions, select the image format, and download your creation instantly!
 
 ## Usage
 
