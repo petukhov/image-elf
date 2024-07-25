@@ -2,9 +2,9 @@ import { useCallback, useState } from 'react';
 import GithubLogo from '../assets/github-logo.svg?react';
 import Logo from '../assets/logo-white.svg?react';
 import ImageEditor, { MenuWidgetState } from '../components/ImageEditor';
+import { CURRENT_YEAR, REPOSITORY_URL } from '../constants';
 import { saveAsImage } from '../services/utils';
 import { ImageFormat } from '../types';
-import { CURRENT_YEAR, REPOSITORY_URL } from '../constants';
 
 const TouchPage = () => {
     const [state, setState] = useState<MenuWidgetState>({
@@ -50,9 +50,7 @@ const TouchPage = () => {
                         <Logo width={30} height={30} />
                         <h1 className="text-3xl font-extrabold">Image Elf</h1>
                     </div>
-                    <h2 className="text-xl font-bold mx-2">
-                        Create custom pixel-perfect images with ease
-                    </h2>
+                    <h2 className="text-xl font-bold mx-2">Generate an image of any size</h2>
                 </header>
                 <main className="m-6">
                     <section className="bg-white rounded-lg shadow-lg p-6">
@@ -73,8 +71,8 @@ const TouchPage = () => {
                 </main>
                 <footer className="flex flex-col justify-end gap-4 mx-4">
                     <p>
-                        Set your desired dimensions, select from multiple image formats, and
-                        download your creation instantly!
+                        Set your desired dimensions, select the image format, and download your
+                        creation instantly!
                     </p>
                     <div className="flex justify-center">
                         <a className="text-white" target="_blank" href={REPOSITORY_URL}>

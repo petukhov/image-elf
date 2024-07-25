@@ -2,17 +2,17 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import GithubLogo from '../assets/github-logo.svg?react';
 import Logo from '../assets/logo-gradient.svg?react';
 import ImageEditor from '../components/ImageEditor';
+import { CURRENT_YEAR, REPOSITORY_URL } from '../constants';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import { imageText, saveAsImage, toInternalVal, toUIVal } from '../services/utils';
 import { ImageFormat } from '../types';
-import { CURRENT_YEAR, REPOSITORY_URL } from '../constants';
 
 const CANVAS_ID = 'canvas-id';
 
 const WIDGET_WIDTH = 250; // approximately
 const WIDGET_HEIGHT = 270; // approximately
 
-// We want to place the menu widget "Create Image" button exactly under
+// We want to place the "Generate Image" button exactly under
 // the mouse cursor when the user releases the mouse button.
 const MOUSE_UP_PLACEMENT_X = 40;
 const MOUSE_UP_PLACEMENT_Y = 210;
