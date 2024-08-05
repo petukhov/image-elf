@@ -58,7 +58,7 @@ async function saveFileNewApi(fileName: string, blob: Blob) {
     console.warn('saveFileNewApi 3 totalBytesWritten ', totalBytesWritten);
     // write our file
     // await writableStream.write(blob);
-    // await writer.close();
+    await writer.close();
 
     // console.warn('saveFileNewApi 4');
     // close the file and write the contents to disk.
