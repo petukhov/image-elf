@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import GithubLogo from '../assets/github-logo.svg?react';
 import Logo from '../assets/logo-white.svg?react';
-import ImageEditor, { MenuWidgetState } from '../components/ImageEditor';
+import ImageEditor, { MenuWidgetState } from '../components/MenuWidget';
 import { CURRENT_YEAR, REPOSITORY_URL } from '../constants';
 import { saveAsImage } from '../services/utils';
 import { ImageFormat } from '../types';

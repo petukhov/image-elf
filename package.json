@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/wicg-file-system-access": "^2023.10.5",
     "konva": "^9.3.6",
     "react": "^18.2.0",
     "react-device-detect": "^2.2.3",

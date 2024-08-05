@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import GithubLogo from '../assets/github-logo.svg?react';
 import Logo from '../assets/logo-gradient.svg?react';
-import ImageEditor from '../components/ImageEditor';
+import ImageEditor from '../components/MenuWidget';
 import { CURRENT_YEAR, REPOSITORY_URL } from '../constants';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
 import { imageText, saveAsImage, toInternalVal, toUIVal } from '../services/utils';
