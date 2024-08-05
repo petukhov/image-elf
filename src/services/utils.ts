@@ -22,7 +22,52 @@ export const imageText = (width: number, height: number) => {
     return `${width} x ${height}`;
 };
 
-const downloadFile = (fileName: string, blob: Blob) => {
+async function saveFileNewApi(fileName: string, blob: Blob) {
+    // create a new handle with the suggested file name
+    console.warn('saveFileNewApi 1');
+    const newHandle = await window.showSaveFilePicker({
+        suggestedName: fileName,
+        types: [
+            {
+                description: 'All Files',
+                accept: {
+                    'application/octet-stream': ['.jpeg'],
+                },
+            },
+        ],
+    });
+
+    console.warn('saveFileNewApi 2');
+    // create a FileSystemWritableFileStream to write to
+    const writableStream = await newHandle.createWritable();
+
+    // Ensure the blob is written completely
+    const reader = blob.stream().getReader();
+    const writer = writableStream.getWriter();
+    // const chunkSize = 64 * 1024; // 64KB chunks
+
+    let totalBytesWritten = 0;
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        await writer.write(value);
+        totalBytesWritten += value.length;
+    }
+
+    console.warn('saveFileNewApi 3 totalBytesWritten ', totalBytesWritten);
+    // write our file
+    // await writableStream.write(blob);
+    // await writer.close();
+
+    // console.warn('saveFileNewApi 4');
+    // close the file and write the contents to disk.
+    // await writableStream.close();
+
+    // console.warn('saveFileNewApi 5');
+}
+
+const saveFileClassicApi = (fileName: string, blob: Blob) => {
     const url = URL.createObjectURL(blob);
     const element = document.createElement('a');
     element.style.display = 'none';
@@ -85,7 +130,9 @@ export const saveAsImage = (
     window.gtag('event', 'save_img_start', loggingData);
     createImageBlob(width, height, format)
         .then(blob => {
-            downloadFile('img.' + format, blob);
+            console.log('created blob with size ', blob.size);
+            // get size of blob
+            saveFileNewApi('img.' + format, blob);
             window.gtag('event', 'save_img_success', loggingData);
         })
         .catch(error => {
