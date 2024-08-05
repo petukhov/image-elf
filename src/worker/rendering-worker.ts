@@ -2,6 +2,8 @@
  * This Web Worker generates a Blob representing an image with a gradient background and text.
  */
 
+import { Buffer } from 'buffer';
+import jpeg from 'jpeg-js';
 import imageConfig from '../image-config.json' assert { type: 'json' };
 
 self.onmessage = async (event: MessageEvent) => {
@@ -45,8 +47,26 @@ self.onmessage = async (event: MessageEvent) => {
     // Convert canvas to blob, specifying the format and quality.
     // Quality is only applicable for JPEG. The default quality makes the image too large, similar to PNG size, so we reduce it here.
     // P.S I tested different values, and it's the one that was not too jarring, while the size was still pretty small. The main problem with the low quality jpeg images is that the gradients look awful.
-    const blob = await offscreen.convertToBlob({ type: `image/${format}`, quality: 0.9 });
+    // const blob = await offscreen.convertToBlob({ type: `image/${format}`, quality: 0.9 });
+
+    // var width = 320,
+    //     height = 180;
+    const frameData = new Buffer(width * height * 4);
+    let i = 0;
+    while (i < frameData.length) {
+        frameData[i++] = 0xff; // red
+        frameData[i++] = 0x00; // green
+        frameData[i++] = 0x00; // blue
+        frameData[i++] = 0xff; // alpha - ignored in JPEGs
+    }
+    const rawImageData = {
+        data: frameData,
+        width: width,
+        height: height,
+    };
+    const jpegImageData = jpeg.encode(rawImageData, 50);
+    console.log(jpegImageData);
 
     // Send the blob back to the main thread
-    postMessage(blob);
+    postMessage(jpegImageData);
 };
