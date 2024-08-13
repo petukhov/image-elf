@@ -1,8 +1,6 @@
-import { Buffer } from 'buffer';
 import { isMobile } from 'react-device-detect';
 import { ImageFormat } from '../types';
-// import RenderingWorker from '../worker/rendering-worker?worker';
-import jpeg from 'jpeg-js';
+import RenderingWorker from '../worker/rendering-worker?worker';
 
 /**
  * The text values shown in the UI and the exported image size are calculated by multiplying the internal values by 10.
@@ -24,7 +22,7 @@ export const imageText = (width: number, height: number) => {
     return `${width} x ${height}`;
 };
 
-async function saveFileNewApi(fileName: string) {
+async function saveFileNewApi(fileName: string, dataArray: Uint8Array) {
     // create a new handle with the suggested file name
     console.warn('saveFileNewApi 1');
     const newHandle = await window.showSaveFilePicker({
@@ -39,25 +37,6 @@ async function saveFileNewApi(fileName: string) {
         // ],
     });
 
-    const width = 10000;
-    const height = 10000;
-
-    const frameData = new Buffer(width * height * 4);
-    let i = 0;
-    while (i < frameData.length) {
-        frameData[i++] = 0xff; // red
-        frameData[i++] = 0x00; // green
-        frameData[i++] = 0x00; // blue
-        frameData[i++] = 0xff; // alpha - ignored in JPEGs
-    }
-    const rawImageData = {
-        data: frameData,
-        width: width,
-        height: height,
-    };
-    const jpegImageData = jpeg.encode(rawImageData, 50);
-    console.log(jpegImageData);
-
     console.warn('saveFileNewApi 2');
     // create a FileSystemWritableFileStream to write to
     const writableStream = await newHandle.createWritable();
@@ -71,7 +50,7 @@ async function saveFileNewApi(fileName: string) {
     // while (true) {
     // const { done, value } = await reader.read();
     // if (done) break;
-    const dataArray = jpegImageData.data;
+
     await writer.write(dataArray);
     totalBytesWritten += dataArray.length;
     // }
@@ -101,39 +80,39 @@ const saveFileClassicApi = (fileName: string, blob: Blob) => {
 };
 
 /** Creates the blob for the image to download using a worker */
-// const createImageBlob = async (
-//     width: number,
-//     height: number,
-//     format: ImageFormat,
-// ): Promise<Uint8Array> => {
-//     // Create a Web Worker instance to render the image into a blob.
-//     const worker = new RenderingWorker();
+const createImageBlob = async (
+    width: number,
+    height: number,
+    format: ImageFormat,
+): Promise<Uint8Array> => {
+    // Create a Web Worker instance to render the image into a blob.
+    const worker = new RenderingWorker();
 
-//     // Create a promise that resolves when the worker sends back the blob
-//     const blobPromise = new Promise<Blob>((resolve, reject) => {
-//         worker.onmessage = event => {
-//             if (event.data.data instanceof Uint8Array) {
-//                 resolve(event.data.data);
-//             } else {
-//                 reject(event.data);
-//             }
-//         };
-//         worker.onerror = error => {
-//             reject(error);
-//         };
-//     });
+    // Create a promise that resolves when the worker sends back the blob
+    const blobPromise = new Promise<Uint8Array>((resolve, reject) => {
+        worker.onmessage = event => {
+            if (event.data.data instanceof Uint8Array) {
+                resolve(event.data.data);
+            } else {
+                reject(event.data);
+            }
+        };
+        worker.onerror = error => {
+            reject(error);
+        };
+    });
 
-//     // Send data to the worker
-//     worker.postMessage({
-//         width: width,
-//         height: height,
-//         format: format,
-//         imageText: imageText(width, height),
-//     });
+    // Send data to the worker
+    worker.postMessage({
+        width: width,
+        height: height,
+        format: format,
+        imageText: imageText(width, height),
+    });
 
-//     // Wait for the worker to process and send back the blob
-//     return blobPromise;
-// };
+    // Wait for the worker to process and send back the blob
+    return blobPromise;
+};
 
 /** Generates an image and then saves it in a specified format on the user's computer. */
 export const saveAsImage = (
@@ -149,20 +128,19 @@ export const saveAsImage = (
         isMobile,
     };
     window.gtag('event', 'save_img_start', loggingData);
-    saveFileNewApi('img.' + format).finally(onComplete);
-    // createImageBlob(width, height, format)
-    //     .then(blob => {
-    //         // console.log('created blob with size ', blob.size);
-    //         // get size of blob
-    //         saveFileNewApi('img.' + format, blob);
-    //         window.gtag('event', 'save_img_success', loggingData);
-    //     })
-    //     .catch(error => {
-    //         console.error('Error generating image:', error);
-    //         window.gtag('event', 'save_img_error', {
-    //             ...loggingData,
-    //             error,
-    //         });
-    //     })
-    //     .finally(onComplete);
+    createImageBlob(width, height, format)
+        .then(blob => {
+            // console.log('created blob with size ', blob.size);
+            // get size of blob
+            saveFileNewApi('img.' + format, blob);
+            window.gtag('event', 'save_img_success', loggingData);
+        })
+        .catch(error => {
+            console.error('Error generating image:', error);
+            window.gtag('event', 'save_img_error', {
+                ...loggingData,
+                error,
+            });
+        })
+        .finally(onComplete);
 };
