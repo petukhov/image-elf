@@ -1,6 +1,7 @@
 import { isMobile } from 'react-device-detect';
 import { ImageFormat } from '../types';
 import RenderingWorker from '../worker/rendering-worker?worker';
+import { generateAndSaveLargeBMP } from './bmp';
 
 /**
  * The text values shown in the UI and the exported image size are calculated by multiplying the internal values by 10.
@@ -23,42 +24,44 @@ export const imageText = (width: number, height: number) => {
 };
 
 async function saveFileNewApi(fileName: string, dataArray: Uint8Array) {
+    // await generateAndStreamSimplePNG();
+    await generateAndSaveLargeBMP();
     // create a new handle with the suggested file name
-    console.warn('saveFileNewApi 1');
-    const newHandle = await window.showSaveFilePicker({
-        suggestedName: fileName,
-        // types: [
-        //     {
-        //         description: 'All Files',
-        //         accept: {
-        //             'application/octet-stream': ['.jpeg'],
-        //         },
-        //     },
-        // ],
-    });
+    // console.warn('saveFileNewApi 1');
+    // const newHandle = await window.showSaveFilePicker({
+    //     suggestedName: fileName,
+    //     // types: [
+    //     //     {
+    //     //         description: 'All Files',
+    //     //         accept: {
+    //     //             'application/octet-stream': ['.jpeg'],
+    //     //         },
+    //     //     },
+    //     // ],
+    // });
 
-    console.warn('saveFileNewApi 2');
-    // create a FileSystemWritableFileStream to write to
-    const writableStream = await newHandle.createWritable();
+    // console.warn('saveFileNewApi 2');
+    // // create a FileSystemWritableFileStream to write to
+    // const writableStream = await newHandle.createWritable();
 
-    // Ensure the blob is written completely
-    // const reader = blob.stream().getReader();
-    const writer = writableStream.getWriter();
-    // const chunkSize = 64 * 1024; // 64KB chunks
+    // // Ensure the blob is written completely
+    // // const reader = blob.stream().getReader();
+    // const writer = writableStream.getWriter();
+    // // const chunkSize = 64 * 1024; // 64KB chunks
 
-    let totalBytesWritten = 0;
-    // while (true) {
-    // const { done, value } = await reader.read();
-    // if (done) break;
+    // let totalBytesWritten = 0;
+    // // while (true) {
+    // // const { done, value } = await reader.read();
+    // // if (done) break;
 
-    await writer.write(dataArray);
-    totalBytesWritten += dataArray.length;
-    // }
+    // await writer.write(dataArray);
+    // totalBytesWritten += dataArray.length;
+    // // }
 
-    console.warn('saveFileNewApi 3 totalBytesWritten ', totalBytesWritten);
-    // write our file
-    // await writableStream.write(blob);
-    await writer.close();
+    // console.warn('saveFileNewApi 3 totalBytesWritten ', totalBytesWritten);
+    // // write our file
+    // // await writableStream.write(blob);
+    // await writer.close();
 
     // console.warn('saveFileNewApi 4');
     // close the file and write the contents to disk.
