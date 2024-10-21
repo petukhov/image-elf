@@ -6,6 +6,7 @@ export interface MenuWidgetState {
     height: number;
     selectedFormat: ImageFormat;
     creating: boolean;
+    multiplierOn: boolean;
 }
 
 export interface MenuWidgetProps {
@@ -13,6 +14,7 @@ export interface MenuWidgetProps {
     onHeightChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onSave: () => void;
     onSelectFormat: (format: ImageFormat) => void;
+    onMultiplierToggle?: () => void;
     state: MenuWidgetState;
     textAlign?: 'left' | 'center' | 'right';
 }
@@ -27,6 +29,7 @@ const MenuWidget = ({
     onHeightChange,
     onSave,
     onSelectFormat,
+    onMultiplierToggle,
     state,
     textAlign = 'left',
 }: MenuWidgetProps) => {
@@ -88,6 +91,11 @@ const MenuWidget = ({
                     />
                 </div>
             </div>
+            <div className="flex items-center">
+                        <input defaultChecked={state.multiplierOn} id="checked-checkbox" type="checkbox" value="" className="w-4 h-4 text-gray-900 bg-gray-100 border-gray-300 rounded focus:border-accent"
+                            onClick={onMultiplierToggle}/>
+                        <label htmlFor="checked-checkbox" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">10x size</label>
+                    </div>
             <button
                 className="w-full text-white bg-primary font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-secondary
                            focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary focus-visible:ring-accent disabled:bg-accent"
