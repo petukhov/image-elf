@@ -218,9 +218,9 @@ export default class KonvaWrapper {
             tickRect.y(y);
             tickRect.x(x + Math.floor(100 * i));
 
+            tickText.text(toUIVal(Math.floor(100 * i)).toString());
             tickText.y(y - 15);
             tickText.x(x + Math.floor(100 * i - tickText.width() / 2));
-            tickText.text(toUIVal(Math.floor(100 * i)).toString());
         });
         this.#xAxisLine.x(x);
         this.#xAxisLine.y(y);
@@ -232,9 +232,9 @@ export default class KonvaWrapper {
             tickRect.x(x);
             tickRect.y(y + Math.floor(100 * i));
 
+            tickText.text(toUIVal(Math.floor(100 * i)).toString());
             tickText.x(x - tickText.width() - 3);
             tickText.y(y + Math.floor(100 * i) - 5);
-            tickText.text(toUIVal(Math.floor(100 * i)).toString());
         });
 
         this.#yAxisLine.x(x);

@@ -4,6 +4,7 @@ import Logo from '../assets/logo-gradient.svg?react';
 import ImageEditor from '../components/ImageEditor';
 import { CURRENT_YEAR, REPOSITORY_URL } from '../constants';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
+import { set10X } from '../services/multiplier';
 import { imageText, saveAsImage, toInternalVal, toUIVal } from '../services/utils';
 import { ImageFormat } from '../types';
 
@@ -55,6 +56,8 @@ const initialState = {
     menuY: 0,
     /** the currently selected image format for the generated image */
     selectedFormat: ImageFormat.JPEG,
+    /** whether the multiplier is on or off */
+    multiplierOn: true,
     /** the state of the HTML5 Canvas passed to KonvaWrapper's render() method. */
     canvasState: getDefaultCanvasState(),
 };
@@ -252,7 +255,7 @@ const MainPage = () => {
 
     useEffect(() => {
         konvaWrapperRef.current?.render(appState.canvasState);
-    }, [appState.canvasState]);
+    }, [appState.canvasState, appState.multiplierOn]);
 
     const handleHeightInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const height = toInternalVal(+e.target.value);
@@ -283,6 +286,23 @@ const MainPage = () => {
             ...state,
             selectedFormat: format,
         }));
+    }, []);
+
+    const handleMultiplierToggle = useCallback(() => {
+        setAppState(state => {
+            set10X(!state.multiplierOn);
+            return {
+                ...state,
+                multiplierOn: !state.multiplierOn,
+                canvasState: {
+                    ...state.canvasState,
+                    text: imageText(
+                        toUIVal(state.canvasState.width),
+                        toUIVal(state.canvasState.height),
+                    ),
+                },
+            };
+        });
     }, []);
 
     const handleSave = useCallback(() => {
@@ -324,11 +344,13 @@ const MainPage = () => {
                         onWidthChange={handleWidthInput}
                         onSelectFormat={handleSelectFormat}
                         onSave={handleSave}
+                        onMultiplierToggle={handleMultiplierToggle}
                         state={{
                             selectedFormat: appState.selectedFormat,
                             width: toUIVal(appState.canvasState.width),
                             height: toUIVal(appState.canvasState.height),
                             creating: isCreatingImg,
+                            multiplierOn: appState.multiplierOn,
                         }}
                     />
                 </article>

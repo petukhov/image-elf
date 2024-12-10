@@ -12,6 +12,7 @@ const TouchPage = () => {
         width: 100,
         height: 100,
         creating: false,
+        multiplierOn: true,
     });
 
     const handleSave = useCallback(() => {
@@ -65,6 +66,7 @@ const TouchPage = () => {
                                 height: state.height,
                                 selectedFormat: state.selectedFormat,
                                 creating: state.creating,
+                                multiplierOn: state.multiplierOn,
                             }}
                         />
                     </section>
