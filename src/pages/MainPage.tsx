@@ -4,9 +4,9 @@ import Logo from '../assets/logo-gradient.svg?react';
 import ImageEditor from '../components/ImageEditor';
 import { CURRENT_YEAR, REPOSITORY_URL } from '../constants';
 import KonvaWrapper, { CanvasRenderState } from '../services/konva-wrapper';
+import { set10X } from '../services/multiplier';
 import { imageText, saveAsImage, toInternalVal, toUIVal } from '../services/utils';
 import { ImageFormat } from '../types';
-import { set10X } from '../services/multiplier';
 
 const CANVAS_ID = 'canvas-id';
 
@@ -296,7 +296,10 @@ const MainPage = () => {
                 multiplierOn: !state.multiplierOn,
                 canvasState: {
                     ...state.canvasState,
-                    text: imageText(toUIVal(state.canvasState.width), toUIVal(state.canvasState.height)),
+                    text: imageText(
+                        toUIVal(state.canvasState.width),
+                        toUIVal(state.canvasState.height),
+                    ),
                 },
             };
         });
