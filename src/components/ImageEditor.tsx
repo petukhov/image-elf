@@ -100,10 +100,7 @@ const MenuWidget = ({
                     className="w-4 h-4 rounded accent-primary hover:cursor-pointer"
                     onClick={onMultiplierToggle}
                 />
-                <label
-                    htmlFor="checked-checkbox"
-                    className="ms-2 text-sm font-medium text-gray-900"
-                >
+                <label htmlFor="checked-checkbox" className="ms-2 text-sm text-gray-900">
                     10x size
                 </label>
             </div>
