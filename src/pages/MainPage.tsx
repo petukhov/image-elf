@@ -321,15 +321,13 @@ const MainPage = () => {
                 <div className="absolute top-0 left-0 w-screen flex justify-center mt-20 lg:mt-16 font-normal text-2xl text-gray-300">
                     <div className="w-2/3 md:w-1/2">
                         {showingHelpText.part1 && (
-                            <span className="animate-fadeIn">Press thy enchanted mouse </span>
+                            <span className="animate-fadeIn">{window.l10n.intro1}</span>
                         )}
                         {showingHelpText.part2 && (
-                            <span className="animate-fadeIn">
-                                and glide to summon an image of any size, grand or wee!
-                            </span>
+                            <span className="animate-fadeIn"> {window.l10n.intro2}</span>
                         )}
                         {showingHelpText.part3 && (
-                            <p className="animate-fadeIn mt-2 text-accent"> - Image Elf</p>
+                            <p className="animate-fadeIn mt-2 text-accent"> {window.l10n.intro3}</p>
                         )}
                     </div>
                 </div>

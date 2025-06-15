@@ -49,7 +49,7 @@ const MenuWidget = ({
         <form className="space-y-4" onSubmit={saveWrapper}>
             <div>
                 <label className={labelClass} htmlFor="selectedFormat">
-                    Image Format
+                    {window.l10n.imageFormat}
                 </label>
                 <select
                     className={inputClass}
@@ -64,7 +64,7 @@ const MenuWidget = ({
             <div className="flex gap-4">
                 <div>
                     <label className={labelClass} htmlFor="width">
-                        Width (px)
+                        {window.l10n.widthPx}
                     </label>
                     <input
                         className={inputClass}
@@ -78,7 +78,7 @@ const MenuWidget = ({
                 </div>
                 <div>
                     <label htmlFor="height" className={labelClass}>
-                        Height (px)
+                        {window.l10n.heightPx}
                     </label>
                     <input
                         className={inputClass}
@@ -104,7 +104,7 @@ const MenuWidget = ({
                     htmlFor="checked-checkbox"
                     className="ms-2 text-sm font-medium text-gray-900"
                 >
-                    10x size
+                    {window.l10n.tenXSize}
                 </label>
             </div>
             <button
