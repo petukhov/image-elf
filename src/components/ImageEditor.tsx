@@ -113,7 +113,7 @@ const MenuWidget = ({
                 type="submit"
                 disabled={state.creating}
             >
-                {state.creating ? 'Generating...' : 'Generate Image'}
+                {state.creating ? window.l10n.generating : window.l10n.generateImage}
             </button>
         </form>
     );
