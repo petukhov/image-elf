@@ -51,7 +51,7 @@ const TouchPage = () => {
                         <Logo width={30} height={30} />
                         <h1 className="text-3xl font-extrabold">Image Elf</h1>
                     </div>
-                    <h2 className="text-xl font-bold mx-2">Generate an image of any size</h2>
+                    <h2 className="text-xl font-bold mx-2">{window.l10n.mobileSubtitle}</h2>
                 </header>
                 <main className="m-6">
                     <section className="bg-white rounded-lg shadow-lg p-6">
@@ -72,10 +72,7 @@ const TouchPage = () => {
                     </section>
                 </main>
                 <footer className="flex flex-col justify-end gap-4 mx-4">
-                    <p>
-                        Set your desired dimensions, select the image format, and download your
-                        creation instantly!
-                    </p>
+                    <p>{window.l10n.mobileDescription}</p>
                     <div className="flex justify-center">
                         <a className="text-white" target="_blank" href={REPOSITORY_URL}>
                             <GithubLogo width={30} height={30} />
